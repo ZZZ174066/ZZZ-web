@@ -251,10 +251,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>此功能正在开发中，敬请期待...</p>
             </div>
         `;
-        
+    
         // 添加关闭按钮事件监听
         document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
-    }
+                }
     
     // 移除点击空白区域关闭的功能
     // 现在只能通过右上角的关闭按钮关闭
@@ -389,7 +389,7 @@ const additionalStyles = `
 // 将样式添加到页面
 const styleSheet = document.createElement('style');
 styleSheet.textContent = additionalStyles;
-document.head.appendChild(styleSheet);
+document.head.appendChild(styleSheet); 
 
 // 迷你后台播放器 UI
 (function(){
@@ -653,18 +653,10 @@ document.head.appendChild(styleSheet);
 		`;
 		const inner = document.createElement('div');
 		inner.style.cssText = 'position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:flex-end;gap:3px;padding:8px 12px 4px 12px;';
-		
-		// 创建音律条，中间活跃，两边不活跃
 		for (let i = 0; i < NUM_BARS; i++) {
 			const bar = document.createElement('div');
-			// 根据位置设置不同的样式
-			if (i >= NUM_BARS * 0.3 && i < NUM_BARS * 0.7) {
-				// 中间区域：活跃的音律条
-				bar.style.cssText = 'flex:1;background:#000;height:8px;border-radius:4px 4px 0 0;transition:height 0.1s ease;';
-			} else {
-				// 两边区域：不活跃的音律条
-				bar.style.cssText = 'flex:1;background:#666;height:8px;border-radius:4px 4px 0 0;opacity:0.6;transition:height 0.1s ease;';
-			}
+			// 设置初始高度为15%，让所有频段都有基础活跃度
+			bar.style.cssText = 'flex:1;background:#000;height:15%;border-radius:4px 4px 0 0;';
 			meterBars.push(bar);
 			inner.appendChild(bar);
 		}
@@ -681,6 +673,16 @@ document.head.appendChild(styleSheet);
 			function animateMeter(){
 			// 使用真实音频数据或保持当前状态
 			if (meterAnimId) {
+				// 即使没有真实音频数据，也保持轻微的动画效果
+				// 让所有频段都有轻微的随机波动，保持活跃
+				for (let i = 0; i < meterBars.length; i++) {
+					const currentHeight = parseInt(meterBars[i].style.height || '15');
+					// 添加轻微的随机波动（±2%）
+					const variation = (Math.random() - 0.5) * 4;
+					const newHeight = Math.max(12, Math.min(20, currentHeight + variation));
+					meterBars[i].style.height = newHeight + '%';
+				}
+				
 				meterAnimId = requestAnimationFrame(animateMeter);
 			}
 		}
@@ -690,46 +692,22 @@ document.head.appendChild(styleSheet);
 			const len = Math.min(bars.length, meterBars.length);
 			for (let i = 0; i < len; i++) {
 				let v = Math.max(0, Math.min(1, bars[i]));
+				// 增强视觉效果：更大的动态范围和幅度
+				v = Math.pow(v, 0.3); // 进一步降低幂次，让幅度更大
+				v = Math.max(0.05, v); // 提高最小高度到5%
 				
-				// 根据位置调整活跃度
-				if (i >= len * 0.3 && i < len * 0.7) {
-					// 中间区域：活跃的音律条，保持原有响应
-					v = Math.pow(v, 0.4);
-					v = Math.max(0.03, v);
-					const heightPercent = Math.round(v * 90);
-					meterBars[i].style.height = heightPercent + '%';
-					// 动态更新样式，确保活跃状态
-					meterBars[i].style.background = '#000';
-					meterBars[i].style.opacity = '1';
-				} else {
-					// 两边区域：不活跃的音律条，降低响应
-					v = Math.pow(v, 0.8); // 降低响应度
-					v = Math.max(0.02, v);
-					const heightPercent = Math.round(v * 40); // 最大高度降低
-					meterBars[i].style.height = heightPercent + '%';
-					// 保持不活跃的样式
-					meterBars[i].style.background = '#666';
-					meterBars[i].style.opacity = '0.6';
-				}
+				// 让幅度更大，从90%提升到95%
+				const heightPercent = Math.round(v * 95); // 0-95%
+				meterBars[i].style.height = heightPercent + '%';
 			}
 		}
 
 		function pauseMeter(){
-			// 音频暂停时缓慢衰减
-			for (let i = 0; i < meterBars.length; i++) {
-				const bar = meterBars[i];
+			// 音频暂停时缓慢衰减，但保持一定的活跃度
+			for (const bar of meterBars) {
 				const h = parseInt(bar.style.height || '0');
-				
-				// 根据位置调整衰减速度
-				if (i >= meterBars.length * 0.3 && i < meterBars.length * 0.7) {
-					// 中间区域：缓慢衰减
-					const nh = Math.max(3, Math.floor(h * 0.85));
-					bar.style.height = nh + '%';
-				} else {
-					// 两边区域：快速衰减
-					const nh = Math.max(2, Math.floor(h * 0.7));
-					bar.style.height = nh + '%';
-				}
+				const nh = Math.max(8, Math.floor(h * 0.9)); // 衰减到最小8%，衰减更慢
+				bar.style.height = nh + '%';
 			}
 		}
 
