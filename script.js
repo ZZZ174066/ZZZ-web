@@ -851,25 +851,62 @@ document.addEventListener('keydown', (e) => {
                 }
             }
 
-            function sampleAndPost(){
-                if (!analyser) return;
-                analyser.getByteFrequencyData(freqArray);
-                // 将频谱压缩成 VIS_BARS 个条
-                const bucketSize = Math.floor(freqArray.length / VIS_BARS);
-                const bars = [];
-                for (let i = 0; i < VIS_BARS; i++) {
-                    let sum = 0;
-                    let start = i * bucketSize;
-                    let end = start + bucketSize;
-                    for (let j = start; j < end; j++) sum += freqArray[j];
-                    const avg = sum / bucketSize; // 0..255
-                    bars.push(Math.min(1, avg / 255));
+                            function sampleAndPost(){
+                    if (!analyser) return;
+                    analyser.getByteFrequencyData(freqArray);
+                    // 将频谱压缩成 VIS_BARS 个条，重点采样中频段
+                    const bars = [];
+                    const totalBars = VIS_BARS;
+                    
+                    // 重点采样中频段（人声和主要乐器频率）
+                    const lowFreqStart = Math.floor(freqArray.length * 0.1);  // 低频开始
+                    const midFreqStart = Math.floor(freqArray.length * 0.2);  // 中频开始
+                    const highFreqStart = Math.floor(freqArray.length * 0.6); // 高频开始
+                    
+                    for (let i = 0; i < totalBars; i++) {
+                        let sum = 0;
+                        let count = 0;
+                        
+                        if (i < totalBars * 0.3) {
+                            // 低频段：较少采样
+                            const start = lowFreqStart + (i / (totalBars * 0.3)) * (midFreqStart - lowFreqStart);
+                            const end = start + 2;
+                            for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
+                                sum += freqArray[j];
+                                count++;
+                            }
+                        } else if (i < totalBars * 0.7) {
+                            // 中频段：密集采样（重点区域）
+                            const start = midFreqStart + ((i - totalBars * 0.3) / (totalBars * 0.4)) * (highFreqStart - midFreqStart);
+                            const end = start + 8; // 更密集的采样
+                            for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
+                                sum += freqArray[j];
+                                count++;
+                            }
+                        } else {
+                            // 高频段：较少采样
+                            const start = highFreqStart + ((i - totalBars * 0.7) / (totalBars * 0.3)) * (freqArray.length - highFreqStart);
+                            const end = start + 2;
+                            for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
+                                sum += freqArray[j];
+                                count++;
+                            }
+                        }
+                        
+                        const avg = count > 0 ? sum / count : 0;
+                        // 增强中频段的响应
+                        let normalized = Math.min(1, avg / 255);
+                        if (i >= totalBars * 0.3 && i < totalBars * 0.7) {
+                            normalized = Math.pow(normalized, 0.6); // 提升中频段
+                        }
+                        bars.push(normalized);
+                    }
+                    
+                    try {
+                        window.parent.postMessage({ type: 'visualizerData', bars }, '*');
+                    } catch (_) {}
+                    rafId = window.requestAnimationFrame(sampleAndPost);
                 }
-                try {
-                    window.parent.postMessage({ type: 'visualizerData', bars }, '*');
-                } catch (_) {}
-                rafId = window.requestAnimationFrame(sampleAndPost);
-            }
 
             function startVisualizer(){
                 ensureAudioGraph();

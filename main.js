@@ -435,13 +435,13 @@ document.head.appendChild(styleSheet);
         if (visualizer) return visualizer;
         visualizer = document.createElement('div');
         visualizer.id = 'audio-visualizer';
-        visualizer.style.cssText = 'position:fixed;left:0;right:0;bottom:0;height:56px;display:none;pointer-events:none;z-index:1200;';
+        visualizer.style.cssText = 'position:fixed;left:0;right:0;bottom:0;height:80px;display:none;pointer-events:none;z-index:1200;';
         const inner = document.createElement('div');
-        inner.style.cssText = 'position:absolute;left:0;right:0;bottom:0;top:0;display:flex;align-items:flex-end;gap:3px;padding:4px 8px;height:100%;';
+        inner.style.cssText = 'position:absolute;left:0;right:0;bottom:0;top:0;display:flex;align-items:flex-end;gap:6px;padding:8px 12px;height:100%;';
         for (let i = 0; i < VIS_NUM_BARS; i++) {
             const bar = document.createElement('div');
             bar.className = 'viz-bar';
-            bar.style.cssText = 'flex:1;background:#000;height:4px;border-radius:2px 2px 0 0;';
+            bar.style.cssText = 'flex:1;background:#000;height:8px;border-radius:4px 4px 0 0;min-width:8px;';
             inner.appendChild(bar);
             visualizerBars.push(bar);
         }
@@ -462,8 +462,11 @@ document.head.appendChild(styleSheet);
         const len = Math.min(bars.length, visualizerBars.length);
         for (let i = 0; i < len; i++) {
             let v = Math.max(0, Math.min(1, bars[i]));
-            v = Math.pow(v, 0.8);
-            visualizerBars[i].style.height = Math.round(v * 100) + '%';
+            // 增强视觉效果：更大的动态范围
+            v = Math.pow(v, 0.5); // 提升低幅值
+            v = Math.max(0.05, v); // 确保最小高度
+            const heightPercent = Math.round(v * 100);
+            visualizerBars[i].style.height = heightPercent + '%';
         }
     }
 
@@ -474,8 +477,8 @@ document.head.appendChild(styleSheet);
             let anyAbove = false;
             for (const bar of visualizerBars) {
                 const h = parseInt(bar.style.height || '0');
-                const nh = Math.max(4, Math.floor(h * 0.9));
-                if (nh > 4) anyAbove = true;
+                const nh = Math.max(8, Math.floor(h * 0.85)); // 调整最小高度和衰减速度
+                if (nh > 8) anyAbove = true;
                 bar.style.height = nh + '%';
             }
             if (anyAbove) visualizerDecayId = requestAnimationFrame(step);
