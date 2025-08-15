@@ -884,9 +884,9 @@ document.addEventListener('keydown', (e) => {
                                 count++;
                             }
                         } else {
-                            // 高频段：较少采样
+                            // 高频段：增加采样密度，让最后1/3也动起来
                             const start = highFreqStart + ((i - totalBars * 0.7) / (totalBars * 0.3)) * (freqArray.length - highFreqStart);
-                            const end = start + 2;
+                            const end = start + 6; // 增加高频段采样
                             for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
                                 sum += freqArray[j];
                                 count++;
@@ -898,6 +898,8 @@ document.addEventListener('keydown', (e) => {
                         let normalized = Math.min(1, avg / 255);
                         if (i >= totalBars * 0.3 && i < totalBars * 0.7) {
                             normalized = Math.pow(normalized, 0.6); // 提升中频段
+                        } else if (i >= totalBars * 0.7) {
+                            normalized = Math.pow(normalized, 0.7); // 提升高频段
                         }
                         bars.push(normalized);
                     }
