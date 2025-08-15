@@ -429,15 +429,15 @@ document.head.appendChild(styleSheet);
     let visualizer = null;
     let visualizerBars = [];
     let visualizerDecayId = 0;
-    const VIS_NUM_BARS = 32;
+    const VIS_NUM_BARS = 64; // 将32条增加到64条
 
     function ensureVisualizer(){
         if (visualizer) return visualizer;
         visualizer = document.createElement('div');
         visualizer.id = 'audio-visualizer';
-        visualizer.style.cssText = 'position:fixed;left:0;right:0;bottom:-40px;height:160px;display:none;pointer-events:none;z-index:5;';
+        visualizer.style.cssText = 'position:fixed;left:100px;right:0;bottom:-80px;height:160px;display:none;pointer-events:none;z-index:5;';
         const inner = document.createElement('div');
-        inner.style.cssText = 'position:absolute;left:0;right:0;bottom:0;top:0;display:flex;align-items:flex-end;gap:4px;padding:8px 12px;height:100%;';
+        inner.style.cssText = 'position:absolute;left:0;right:0;bottom:0;top:0;display:flex;align-items:flex-end;gap:2px;padding:8px 12px;height:100%;';
         for (let i = 0; i < VIS_NUM_BARS; i++) {
             const bar = document.createElement('div');
             bar.className = 'viz-bar';

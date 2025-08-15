@@ -832,9 +832,9 @@ document.addEventListener('keydown', (e) => {
             let audioContext = null;
             let analyser = null;
             let sourceNode = null;
-            let rafId = 0;
-            const VIS_BARS = 32;
-            const freqArray = new Uint8Array(1024);
+                            let rafId = 0;
+                const VIS_BARS = 64; // 将32条增加到64条
+                const freqArray = new Uint8Array(1024);
 
             function ensureAudioGraph(){
                 if (audioContext) return;
