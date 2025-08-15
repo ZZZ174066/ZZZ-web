@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // 非迷你播放器状态下，关闭界面歌词
+        // 非迷你播放器状态下，关闭界面歌词和音律显示
         if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
             window.interfaceLyrics.hide();
             // 通知播放器更新按钮状态
@@ -216,6 +216,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     iframe.contentWindow.postMessage({
                         type: 'interfaceLyricsToggle',
+                        isActive: false
+                    }, '*');
+                } catch (err) {
+                    // 忽略错误
+                }
+            }
+        }
+        
+        // 关闭音律显示
+        if (window.meterControl && window.meterControl.isVisible()) {
+            window.meterControl.hide();
+            // 通知播放器更新音律显示按钮状态
+            const iframe = document.querySelector('.sub-interface iframe');
+            if (iframe && iframe.contentWindow) {
+                try {
+                    iframe.contentWindow.postMessage({
+                        type: 'meterToggle',
                         isActive: false
                     }, '*');
                 } catch (err) {
@@ -636,9 +653,18 @@ document.head.appendChild(styleSheet);
 		`;
 		const inner = document.createElement('div');
 		inner.style.cssText = 'position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:flex-end;gap:3px;padding:8px 12px 4px 12px;';
+		
+		// 创建音律条，中间活跃，两边不活跃
 		for (let i = 0; i < NUM_BARS; i++) {
 			const bar = document.createElement('div');
-			bar.style.cssText = 'flex:1;background:#000;height:8px;border-radius:4px 4px 0 0;';
+			// 根据位置设置不同的样式
+			if (i >= NUM_BARS * 0.3 && i < NUM_BARS * 0.7) {
+				// 中间区域：活跃的音律条
+				bar.style.cssText = 'flex:1;background:#000;height:8px;border-radius:4px 4px 0 0;transition:height 0.1s ease;';
+			} else {
+				// 两边区域：不活跃的音律条
+				bar.style.cssText = 'flex:1;background:#666;height:8px;border-radius:4px 4px 0 0;opacity:0.6;transition:height 0.1s ease;';
+			}
 			meterBars.push(bar);
 			inner.appendChild(bar);
 		}
@@ -664,20 +690,46 @@ document.head.appendChild(styleSheet);
 			const len = Math.min(bars.length, meterBars.length);
 			for (let i = 0; i < len; i++) {
 				let v = Math.max(0, Math.min(1, bars[i]));
-				// 增强视觉效果：更大的动态范围
-				v = Math.pow(v, 0.4); // 提升低幅值
-				v = Math.max(0.03, v); // 确保最小高度
-				const heightPercent = Math.round(v * 90); // 0-90%
-				meterBars[i].style.height = heightPercent + '%';
+				
+				// 根据位置调整活跃度
+				if (i >= len * 0.3 && i < len * 0.7) {
+					// 中间区域：活跃的音律条，保持原有响应
+					v = Math.pow(v, 0.4);
+					v = Math.max(0.03, v);
+					const heightPercent = Math.round(v * 90);
+					meterBars[i].style.height = heightPercent + '%';
+					// 动态更新样式，确保活跃状态
+					meterBars[i].style.background = '#000';
+					meterBars[i].style.opacity = '1';
+				} else {
+					// 两边区域：不活跃的音律条，降低响应
+					v = Math.pow(v, 0.8); // 降低响应度
+					v = Math.max(0.02, v);
+					const heightPercent = Math.round(v * 40); // 最大高度降低
+					meterBars[i].style.height = heightPercent + '%';
+					// 保持不活跃的样式
+					meterBars[i].style.background = '#666';
+					meterBars[i].style.opacity = '0.6';
+				}
 			}
 		}
 
 		function pauseMeter(){
 			// 音频暂停时缓慢衰减
-			for (const bar of meterBars) {
+			for (let i = 0; i < meterBars.length; i++) {
+				const bar = meterBars[i];
 				const h = parseInt(bar.style.height || '0');
-				const nh = Math.max(3, Math.floor(h * 0.85)); // 衰减到最小3%
-				bar.style.height = nh + '%';
+				
+				// 根据位置调整衰减速度
+				if (i >= meterBars.length * 0.3 && i < meterBars.length * 0.7) {
+					// 中间区域：缓慢衰减
+					const nh = Math.max(3, Math.floor(h * 0.85));
+					bar.style.height = nh + '%';
+				} else {
+					// 两边区域：快速衰减
+					const nh = Math.max(2, Math.floor(h * 0.7));
+					bar.style.height = nh + '%';
+				}
 			}
 		}
 
@@ -689,7 +741,7 @@ document.head.appendChild(styleSheet);
 			meterAnimId = 0;
 		}
 
-			window.addEventListener('message', function(e){
+					window.addEventListener('message', function(e){
 			const data = e.data || {};
 			if (data.type === 'meterToggle') {
 				if (data.isActive) {
@@ -709,7 +761,25 @@ document.head.appendChild(styleSheet);
 				pauseMeter();
 			}
 		});
-})();
+		
+		// 确保音律显示框被创建
+		ensureMeterBox();
+		
+		// 暴露音律显示框给全局使用
+		window.meterBox = meterBox;
+		
+		// 暴露音律显示控制函数给全局使用
+		window.meterControl = {
+			hide: () => {
+				if (meterBox) {
+					meterBox.style.display = 'none';
+				}
+			},
+			isVisible: () => {
+				return meterBox && meterBox.style.display === 'block';
+			}
+		};
+	})();
 
 // 界面歌词显示功能
 (function(){

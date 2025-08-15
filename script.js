@@ -997,7 +997,7 @@ document.addEventListener('keydown', (e) => {
             });
         }
 
-        // 处理界面歌词状态同步
+        // 处理界面歌词和音律显示状态同步
         window.addEventListener('message', function(e){
             const data = e.data || {};
             if (data.type === 'interfaceLyricsToggle') {
@@ -1007,6 +1007,15 @@ document.addEventListener('keydown', (e) => {
                         interfaceLyricsBtn.classList.add('active');
                     } else {
                         interfaceLyricsBtn.classList.remove('active');
+                    }
+                }
+            } else if (data.type === 'meterToggle') {
+                const meterToggleBtn = document.getElementById('meterToggleBtn');
+                if (meterToggleBtn) {
+                    if (data.isActive) {
+                        meterToggleBtn.classList.add('active');
+                    } else {
+                        meterToggleBtn.classList.remove('active');
                     }
                 }
             }
