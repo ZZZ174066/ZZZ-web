@@ -828,6 +828,68 @@ document.addEventListener('keydown', (e) => {
         // 监听来自播放器的播放状态变化
         const videoPlayer = document.getElementById('videoPlayer');
         if (videoPlayer) {
+            // --- 可视化：初始化 ---
+            let audioContext = null;
+            let analyser = null;
+            let sourceNode = null;
+            let rafId = 0;
+            const VIS_BARS = 32;
+            const freqArray = new Uint8Array(1024);
+
+            function ensureAudioGraph(){
+                if (audioContext) return;
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 2048;
+                    analyser.smoothingTimeConstant = 0.85;
+                    sourceNode = audioContext.createMediaElementSource(videoPlayer);
+                    sourceNode.connect(analyser);
+                    analyser.connect(audioContext.destination);
+                } catch (err) {
+                    // 忽略可视化初始化失败
+                }
+            }
+
+            function sampleAndPost(){
+                if (!analyser) return;
+                analyser.getByteFrequencyData(freqArray);
+                // 将频谱压缩成 VIS_BARS 个条
+                const bucketSize = Math.floor(freqArray.length / VIS_BARS);
+                const bars = [];
+                for (let i = 0; i < VIS_BARS; i++) {
+                    let sum = 0;
+                    let start = i * bucketSize;
+                    let end = start + bucketSize;
+                    for (let j = start; j < end; j++) sum += freqArray[j];
+                    const avg = sum / bucketSize; // 0..255
+                    bars.push(Math.min(1, avg / 255));
+                }
+                try {
+                    window.parent.postMessage({ type: 'visualizerData', bars }, '*');
+                } catch (_) {}
+                rafId = window.requestAnimationFrame(sampleAndPost);
+            }
+
+            function startVisualizer(){
+                ensureAudioGraph();
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume().catch(() => {});
+                }
+                if (!rafId) {
+                    rafId = window.requestAnimationFrame(sampleAndPost);
+                }
+            }
+
+            function stopVisualizer(){
+                if (rafId) {
+                    window.cancelAnimationFrame(rafId);
+                    rafId = 0;
+                }
+                // 通知父页面暂停（用于停止动画/衰减）
+                try { window.parent.postMessage({ type: 'visualizerPause' }, '*'); } catch (_) {}
+            }
+
             videoPlayer.addEventListener('play', function() {
                 try {
                     window.parent.postMessage({
@@ -837,6 +899,7 @@ document.addEventListener('keydown', (e) => {
                 } catch (err) {
                     // 忽略错误
                 }
+                startVisualizer();
             });
 
             videoPlayer.addEventListener('pause', function() {
@@ -848,6 +911,11 @@ document.addEventListener('keydown', (e) => {
                 } catch (err) {
                     // 忽略错误
                 }
+                stopVisualizer();
+            });
+
+            videoPlayer.addEventListener('ended', function(){
+                stopVisualizer();
             });
         }
 

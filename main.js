@@ -425,6 +425,68 @@ document.head.appendChild(styleSheet);
         }
     }
 
+    // --- 底部音频可视化（仅演示）---
+    let visualizer = null;
+    let visualizerBars = [];
+    let visualizerDecayId = 0;
+    const VIS_NUM_BARS = 32;
+
+    function ensureVisualizer(){
+        if (visualizer) return visualizer;
+        visualizer = document.createElement('div');
+        visualizer.id = 'audio-visualizer';
+        visualizer.style.cssText = 'position:fixed;left:0;right:0;bottom:0;height:56px;display:none;pointer-events:none;z-index:1200;';
+        const inner = document.createElement('div');
+        inner.style.cssText = 'position:absolute;left:0;right:0;bottom:0;top:0;display:flex;align-items:flex-end;gap:3px;padding:4px 8px;height:100%;';
+        for (let i = 0; i < VIS_NUM_BARS; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'viz-bar';
+            bar.style.cssText = 'flex:1;background:#000;height:4px;border-radius:2px 2px 0 0;';
+            inner.appendChild(bar);
+            visualizerBars.push(bar);
+        }
+        visualizer.appendChild(inner);
+        document.body.appendChild(visualizer);
+        return visualizer;
+    }
+
+    function setVisualizerVisible(visible){
+        const el = ensureVisualizer();
+        el.style.display = visible ? 'block' : 'none';
+    }
+
+    function renderVisualizer(bars){
+        if (!document.body.classList.contains('mini-player-active')) return;
+        setVisualizerVisible(true);
+        if (!bars || bars.length === 0) return;
+        const len = Math.min(bars.length, visualizerBars.length);
+        for (let i = 0; i < len; i++) {
+            let v = Math.max(0, Math.min(1, bars[i]));
+            v = Math.pow(v, 0.8);
+            visualizerBars[i].style.height = Math.round(v * 100) + '%';
+        }
+    }
+
+    function pauseVisualizer(){
+        // 缓慢衰减到较低高度，表现暂停
+        if (visualizerDecayId) cancelAnimationFrame(visualizerDecayId);
+        function step(){
+            let anyAbove = false;
+            for (const bar of visualizerBars) {
+                const h = parseInt(bar.style.height || '0');
+                const nh = Math.max(4, Math.floor(h * 0.9));
+                if (nh > 4) anyAbove = true;
+                bar.style.height = nh + '%';
+            }
+            if (anyAbove) visualizerDecayId = requestAnimationFrame(step);
+        }
+        visualizerDecayId = requestAnimationFrame(step);
+    }
+
+    function hideVisualizer(){
+        setVisualizerVisible(false);
+    }
+
     function postToIframe(message){
         const iframe = document.querySelector('.sub-interface iframe');
         if (iframe && iframe.contentWindow) {
@@ -455,6 +517,8 @@ document.head.appendChild(styleSheet);
 
     function restoreFromBackground(){
         if (!isBackground) return;
+
+        hideVisualizer();
 
         // 显示播放器容器（不重建 iframe，避免打断）
         const sub = document.getElementById('subInterface');
@@ -505,9 +569,19 @@ document.head.appendChild(styleSheet);
         const data = e.data || {};
         if (data.type === 'requestBackgroundPlay') {
             enterBackground();
+            setVisualizerVisible(true);
         } else if (data.type === 'playbackStateChanged') {
             isPlaying = data.isPlaying;
             updatePlayPauseButton();
+            if (isPlaying) {
+                setVisualizerVisible(true);
+            } else {
+                pauseVisualizer();
+            }
+        } else if (data.type === 'visualizerData') {
+            renderVisualizer(data.bars);
+        } else if (data.type === 'visualizerPause') {
+            pauseVisualizer();
         }
     });
 })();
@@ -618,13 +692,14 @@ document.head.appendChild(styleSheet);
         interfaceLyrics.id = 'interface-lyrics';
         interfaceLyrics.style.cssText = `
             position: fixed;
-            top: 17px;
+            top: 15px;
             right: 240px;
             width: 400px;
+            height: 56px;
             background: #fff;
             border: 3px solid #000;
             border-radius: 8px;
-            padding: 12px;
+            padding: 8px 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             z-index: 2001;
             display: none;
@@ -638,7 +713,7 @@ document.head.appendChild(styleSheet);
         if (!isInterfaceLyricsActive) return;
         const lyricsDiv = ensureInterfaceLyrics();
         lyricsDiv.innerHTML = `
-            <div style="font-size: 14px; line-height: 1.4; color: #000; max-height: 120px; overflow-y: auto; text-align: center; font-weight: bold;">${lyricsText || '暂无歌词'}</div>
+            <div style="font-size: 18px; line-height: 1.2; color: #000; height: 40px; overflow: hidden; text-align: center; font-weight: bold; display: flex; align-items: center; justify-content: center;">${lyricsText || '暂无歌词'}</div>
         `;
         lyricsDiv.style.display = 'block';
     }
