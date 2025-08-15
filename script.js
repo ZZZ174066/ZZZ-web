@@ -871,9 +871,15 @@ document.addEventListener('keydown', (e) => {
                     analyser = audioContext.createAnalyser();
                     analyser.fftSize = 2048;
                     analyser.smoothingTimeConstant = 0.85;
+                    
+                    // 创建音频源节点
                     sourceNode = audioContext.createMediaElementSource(videoPlayer);
+                    
+                    // 连接音频图：source -> analyser -> destination
                     sourceNode.connect(analyser);
                     analyser.connect(audioContext.destination);
+                    
+                    console.log('音频分析图初始化成功');
                 } catch (err) {
                     console.error('音频分析初始化失败:', err);
                 }
