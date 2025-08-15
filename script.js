@@ -33,7 +33,17 @@ const LYRICS_TIME_OFFSET = {
     "溯.txt": -1.3,
     "NOX LUX.txt": 0,
     "New Rules(Remix).txt": 0.5,
-    "春娇与志明.txt": 0.3
+    "春娇与志明.txt": 0.3,
+    "Просто.txt": 0,
+    "花束.txt": 0,
+    "ヒミツ.txt": 0,
+    "妄想哀歌.txt": 0,
+    "Axel F.txt": 0,
+    "DADDY.txt": 0,
+    "New Face.txt": 0,
+    "江南Style.txt": 0,
+    "Gentle Man.txt": 0,
+    "MONTAGEM CORAL.txt": 0
 };
 
 class VideoPlayer {
