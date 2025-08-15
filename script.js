@@ -383,15 +383,27 @@ class VideoPlayer {
             line.classList.remove('active');
         });
         let activeLine = null;
+        let currentLyricsText = '';
         for (let i = this.lyrics.length - 1; i >= 0; i--) {
             if (currentTime >= this.lyrics[i].time) {
                 activeLine = this.lyricsContainer.querySelector(`[data-time="${this.lyrics[i].time}"]`);
+                currentLyricsText = this.lyrics[i].text;
                 break;
             }
         }
         if (activeLine) {
             activeLine.classList.add('active');
             activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // 发送当前歌词到父页面（用于界面歌词显示）
+            try {
+                window.parent.postMessage({
+                    type: 'updateInterfaceLyrics',
+                    lyrics: currentLyricsText
+                }, '*');
+            } catch (err) {
+                // 忽略错误
+            }
         }
     }
 
@@ -715,3 +727,149 @@ document.addEventListener('keydown', (e) => {
             break;
     }
 }); 
+
+// 背景播放：与父页面通信，最小化到迷你控制条
+(function(){
+    function setupBackgroundPlayMessaging(){
+        const bgBtn = document.getElementById('backgroundPlayBtn');
+        if (bgBtn) {
+            bgBtn.addEventListener('click', function(){
+                try {
+                    // 发送当前播放状态到父页面
+                    const videoPlayer = document.getElementById('videoPlayer');
+                    const currentState = {
+                        type: 'requestBackgroundPlay',
+                        currentTime: videoPlayer ? videoPlayer.currentTime : 0,
+                        paused: videoPlayer ? videoPlayer.paused : true,
+                        currentSrc: videoPlayer ? videoPlayer.currentSrc : '',
+                        volume: videoPlayer ? videoPlayer.volume : 1,
+                        playbackRate: videoPlayer ? videoPlayer.playbackRate : 1
+                    };
+                    window.parent.postMessage(currentState, '*');
+                } catch (err) {
+                    console.error('postMessage requestBackgroundPlay failed', err);
+                }
+            });
+        }
+
+        // 界面歌词按钮
+        const interfaceLyricsBtn = document.getElementById('interfaceLyricsBtn');
+        if (interfaceLyricsBtn) {
+            interfaceLyricsBtn.addEventListener('click', function(){
+                try {
+                    // 切换按钮的选中状态
+                    this.classList.toggle('active');
+                    const isActive = this.classList.contains('active');
+                    
+                    // 发送状态到父页面
+                    window.parent.postMessage({ 
+                        type: 'interfaceLyricsToggle',
+                        isActive: isActive
+                    }, '*');
+                } catch (err) {
+                    console.error('postMessage interfaceLyricsToggle failed', err);
+                }
+            });
+        }
+
+        // 父页面发来的控制指令：prev / togglePlay / next / requestState
+        window.addEventListener('message', function(e){
+            const data = e.data || {};
+            if (!data || data.type !== 'control') return;
+            try {
+                switch(data.action){
+                    case 'prev': {
+                        const btn = document.getElementById('prevBtn');
+                        if (btn) btn.click();
+                        break;
+                    }
+                    case 'next': {
+                        const btn = document.getElementById('nextBtn');
+                        if (btn) btn.click();
+                        break;
+                    }
+                    case 'togglePlay': {
+                        const btn = document.getElementById('playPauseBtn');
+                        if (btn) btn.click();
+                        break;
+                    }
+                }
+            } catch (err) {
+                console.error('handle control message failed', err);
+            }
+        });
+
+        // 处理播放状态同步
+        window.addEventListener('message', function(e){
+            const data = e.data || {};
+            if (!data || data.type !== 'syncPlaybackState') return;
+            try {
+                const videoPlayer = document.getElementById('videoPlayer');
+                if (videoPlayer && data.currentSrc) {
+                    // 设置相同的视频源
+                    if (videoPlayer.src !== data.currentSrc) {
+                        videoPlayer.src = data.currentSrc;
+                    }
+                    // 同步播放状态
+                    videoPlayer.currentTime = data.currentTime || 0;
+                    videoPlayer.volume = data.volume || 1;
+                    videoPlayer.playbackRate = data.playbackRate || 1;
+                    
+                    // 根据暂停状态决定是否播放
+                    if (!data.paused) {
+                        videoPlayer.play().catch(() => {});
+                    }
+                }
+            } catch (err) {
+                console.error('sync playback state failed', err);
+            }
+        });
+
+        // 监听来自播放器的播放状态变化
+        const videoPlayer = document.getElementById('videoPlayer');
+        if (videoPlayer) {
+            videoPlayer.addEventListener('play', function() {
+                try {
+                    window.parent.postMessage({
+                        type: 'playbackStateChanged',
+                        isPlaying: true
+                    }, '*');
+                } catch (err) {
+                    // 忽略错误
+                }
+            });
+
+            videoPlayer.addEventListener('pause', function() {
+                try {
+                    window.parent.postMessage({
+                        type: 'playbackStateChanged',
+                        isPlaying: false
+                    }, '*');
+                } catch (err) {
+                    // 忽略错误
+                }
+            });
+        }
+
+        // 处理界面歌词状态同步
+        window.addEventListener('message', function(e){
+            const data = e.data || {};
+            if (data.type === 'interfaceLyricsToggle') {
+                const interfaceLyricsBtn = document.getElementById('interfaceLyricsBtn');
+                if (interfaceLyricsBtn) {
+                    if (data.isActive) {
+                        interfaceLyricsBtn.classList.add('active');
+                    } else {
+                        interfaceLyricsBtn.classList.remove('active');
+                    }
+                }
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupBackgroundPlayMessaging);
+    } else {
+        setupBackgroundPlayMessaging();
+    }
+})(); 

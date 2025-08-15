@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页</title>
+    <link rel="stylesheet" href="main.css">
+    <style>
+        /* 雪花飘落效果 */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            z-index: 1000;
+            user-select: none;
+            cursor: default;
+            font-size: 24px;
+            color: white;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            animation-name: snowflakes-fall, snowflakes-shake;
+            animation-duration: 10s, 3s;
+            animation-timing-function: linear, ease-in-out;
+            animation-iteration-count: infinite, infinite;
+            animation-play-state: running, running;
+        }
+
+        @keyframes snowflakes-fall {
+            0% {
+                top: -10px;
+            }
+            100% {
+                top: 100vh;
+            }
+        }
+
+        @keyframes snowflakes-shake {
+            0% {
+                transform: translateX(0px);
+            }
+            50% {
+                transform: translateX(80px);
+            }
+            100% {
+                transform: translateX(0px);
+            }
+        }
+
+        .snowflake:nth-of-type(1) {
+            left: 10%;
+            animation-delay: 1s, 1s;
+        }
+
+        .snowflake:nth-of-type(2) {
+            left: 20%;
+            animation-delay: 6s, 0.5s;
+        }
+
+        .snowflake:nth-of-type(3) {
+            left: 30%;
+            animation-delay: 4s, 2s;
+        }
+
+        .snowflake:nth-of-type(4) {
+            left: 40%;
+            animation-delay: 2s, 2s;
+        }
+
+        .snowflake:nth-of-type(5) {
+            left: 50%;
+            animation-delay: 8s, 3s;
+        }
+
+        .snowflake:nth-of-type(6) {
+            left: 60%;
+            animation-delay: 6s, 2s;
+        }
+
+        .snowflake:nth-of-type(7) {
+            left: 70%;
+            animation-delay: 2.5s, 1s;
+        }
+
+        .snowflake:nth-of-type(8) {
+            left: 80%;
+            animation-delay: 1s, 0s;
+        }
+
+        .snowflake:nth-of-type(9) {
+            left: 90%;
+            animation-delay: 3s, 1.5s;
+        }
+
+        .snowflake:nth-of-type(10) {
+            left: 25%;
+            animation-delay: 2s, 0s;
+        }
+
+        .snowflake:nth-of-type(11) {
+            left: 65%;
+            animation-delay: 4s, 2.5s;
+        }
+
+        .snowflake:nth-of-type(12) {
+            left: 15%;
+            animation-delay: 3s, 1s;
+        }
+
+        .snowflake:nth-of-type(13) {
+            left: 75%;
+            animation-delay: 5s, 0.5s;
+        }
+
+        .snowflake:nth-of-type(14) {
+            left: 35%;
+            animation-delay: 7s, 2s;
+        }
+
+        .snowflake:nth-of-type(15) {
+            left: 85%;
+            animation-delay: 1.5s, 1.5s;
+        }
+
+        .snowflake:nth-of-type(16) {
+            left: 5%;
+            animation-delay: 3.5s, 1.2s;
+        }
+
+        .snowflake:nth-of-type(17) {
+            left: 95%;
+            animation-delay: 2.5s, 0.8s;
+        }
+
+        .snowflake:nth-of-type(18) {
+            left: 45%;
+            animation-delay: 5.5s, 2.2s;
+        }
+
+        .snowflake:nth-of-type(19) {
+            left: 55%;
+            animation-delay: 1.8s, 1.8s;
+        }
+
+        .snowflake:nth-of-type(20) {
+            left: 8%;
+            animation-delay: 4.2s, 0.3s;
+        }
+
+        .snowflake:nth-of-type(21) {
+            left: 92%;
+            animation-delay: 6.8s, 1.7s;
+        }
+
+        .snowflake:nth-of-type(22) {
+            left: 18%;
+            animation-delay: 3.2s, 0.9s;
+        }
+
+        .snowflake:nth-of-type(23) {
+            left: 82%;
+            animation-delay: 5.8s, 2.1s;
+        }
+
+        .snowflake:nth-of-type(24) {
+            left: 28%;
+            animation-delay: 2.8s, 1.4s;
+        }
+
+        .snowflake:nth-of-type(25) {
+            left: 72%;
+            animation-delay: 4.8s, 0.6s;
+        }
+
+        .snowflake:nth-of-type(26) {
+            left: 12%;
+            animation-delay: 6.2s, 1.9s;
+        }
+
+        .snowflake:nth-of-type(27) {
+            left: 88%;
+            animation-delay: 3.8s, 0.4s;
+        }
+
+        .snowflake:nth-of-type(28) {
+            left: 22%;
+            animation-delay: 5.2s, 1.6s;
+        }
+
+        .snowflake:nth-of-type(29) {
+            left: 78%;
+            animation-delay: 2.2s, 0.7s;
+        }
+
+        .snowflake:nth-of-type(30) {
+            left: 32%;
+            animation-delay: 7.2s, 2.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- 雪花元素 -->
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+    <div class="snowflake">❅</div>
+    <div class="snowflake">❆</div>
+
+    <div class="main-container">
+        <!-- 背景图 -->
+        <div class="background-image"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="content-wrapper">
+            <!-- 头像区域 -->
+            <div class="avatar-section">
+                <div class="avatar-container">
+                    <img src="头像.jpg" alt="头像" class="avatar-image" id="avatarImage">
+                </div>
+                <div class="nickname">ZZZ</div>
+            </div>
+            
+            <!-- 左侧菜单 -->
+            <div class="left-menu">
+                <div class="menu-item bordered">
+                    <span>资料卡</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>个人履历</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>奇怪的东西</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>音乐播放器</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>游戏卡片管理</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>智汇出行系统</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>3D机器人</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>跑酷小游戏</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>俄罗斯方块</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>2048</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>赛车游戏</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>贪吃蛇</span>
+                </div>
+                <div class="menu-item bordered">
+                    <span>坦克大战</span>
+                </div>
+            </div>
+            
+            <!-- 中央内容区域 -->
+            <div class="center-content">
+                <!-- 子界面容器 -->
+                <div class="sub-interface" id="subInterface">
+                    <!-- 音乐播放器将在这里加载 -->
+                    <div class="player-placeholder">
+                        <h2>音乐播放器</h2>
+                        <p>点击"音乐播放器"开始播放音乐</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+    
+    <script src="main.js"></script>
+</body>
+</html> 
