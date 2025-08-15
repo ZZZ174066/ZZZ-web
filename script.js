@@ -100,10 +100,8 @@ class VideoPlayer {
         document.getElementById('randomStartBtn').addEventListener('click', () => this.randomStart());
         document.getElementById('playPauseBtn').addEventListener('click', () => this.togglePlayPause());
 
-        // 播放模式按钮事件
-        document.getElementById('singleLoopBtn').addEventListener('click', () => this.setPlayMode('single'));
-        document.getElementById('listLoopBtn').addEventListener('click', () => this.setPlayMode('list'));
-        document.getElementById('shuffleBtn').addEventListener('click', () => this.setPlayMode('shuffle'));
+        // 播放模式按钮事件（合并为一个，循环切换）
+        document.getElementById('playModeBtn').addEventListener('click', () => this.cyclePlayMode());
 
         // 歌词矫正按钮
         if (this.lyricsCorrectBtn) {
@@ -227,28 +225,44 @@ class VideoPlayer {
         }
     }
 
+    cyclePlayMode() {
+        // 循环切换播放模式：列表循环 -> 单曲循环 -> 随机播放 -> 列表循环
+        switch (this.playMode) {
+            case 'list':
+                this.playMode = 'single';
+                document.getElementById('playModeBtn').textContent = '单曲循环';
+                console.log('已切换到单曲循环模式');
+                break;
+            case 'single':
+                this.playMode = 'shuffle';
+                document.getElementById('playModeBtn').textContent = '随机播放';
+                console.log('已切换到随机播放模式');
+                break;
+            case 'shuffle':
+                this.playMode = 'list';
+                document.getElementById('playModeBtn').textContent = '列表循环';
+                console.log('已切换到列表循环模式');
+                break;
+        }
+    }
+
     setPlayMode(mode) {
         this.playMode = mode;
         
-        // 更新按钮状态
-        document.getElementById('singleLoopBtn').classList.remove('active');
-        document.getElementById('listLoopBtn').classList.remove('active');
-        document.getElementById('shuffleBtn').classList.remove('active');
-        
-        // 根据模式设置对应的按钮为选中状态
-        switch(mode) {
-            case 'single':
-                document.getElementById('singleLoopBtn').classList.add('active');
-                console.log('已切换到单曲循环模式');
-                break;
-            case 'list':
-                document.getElementById('listLoopBtn').classList.add('active');
-                console.log('已切换到列表循环模式');
-                break;
-            case 'shuffle':
-                document.getElementById('shuffleBtn').classList.add('active');
-                console.log('已切换到随机播放模式');
-                break;
+        // 更新按钮状态和文本
+        const playModeBtn = document.getElementById('playModeBtn');
+        if (playModeBtn) {
+            switch(mode) {
+                case 'single':
+                    playModeBtn.textContent = '单曲循环';
+                    break;
+                case 'list':
+                    playModeBtn.textContent = '列表循环';
+                    break;
+                case 'shuffle':
+                    playModeBtn.textContent = '随机播放';
+                    break;
+            }
         }
     }
 
@@ -393,7 +407,13 @@ class VideoPlayer {
         }
         if (activeLine) {
             activeLine.classList.add('active');
-            activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const container = this.lyricsContainer;
+            if (container) {
+                const centerTop = activeLine.offsetTop - Math.max(0, (container.clientHeight - activeLine.offsetHeight) / 2);
+                const maxTop = Math.max(0, container.scrollHeight - container.clientHeight);
+                const clampedTop = Math.min(maxTop, Math.max(0, centerTop));
+                container.scrollTo({ top: clampedTop, behavior: 'smooth' });
+            }
             
             // 发送当前歌词到父页面（用于界面歌词显示）
             try {
@@ -757,17 +777,25 @@ document.addEventListener('keydown', (e) => {
         if (interfaceLyricsBtn) {
             interfaceLyricsBtn.addEventListener('click', function(){
                 try {
-                    // 切换按钮的选中状态
                     this.classList.toggle('active');
                     const isActive = this.classList.contains('active');
-                    
-                    // 发送状态到父页面
-                    window.parent.postMessage({ 
-                        type: 'interfaceLyricsToggle',
-                        isActive: isActive
-                    }, '*');
+                    window.parent.postMessage({ type: 'interfaceLyricsToggle', isActive }, '*');
                 } catch (err) {
                     console.error('postMessage interfaceLyricsToggle failed', err);
+                }
+            });
+        }
+
+        // 音律显示按钮（仅模拟）
+        const meterToggleBtn = document.getElementById('meterToggleBtn');
+        if (meterToggleBtn) {
+            meterToggleBtn.addEventListener('click', function(){
+                try {
+                    this.classList.toggle('active');
+                    const isActive = this.classList.contains('active');
+                    window.parent.postMessage({ type: 'meterToggle', isActive }, '*');
+                } catch (err) {
+                    console.error('postMessage meterToggle failed', err);
                 }
             });
         }
@@ -828,15 +856,15 @@ document.addEventListener('keydown', (e) => {
         // 监听来自播放器的播放状态变化
         const videoPlayer = document.getElementById('videoPlayer');
         if (videoPlayer) {
-            // --- 可视化：初始化 ---
+            // 音频分析相关变量
             let audioContext = null;
             let analyser = null;
             let sourceNode = null;
-                            let rafId = 0;
-                const VIS_BARS = 64; // 将32条增加到64条
-                const freqArray = new Uint8Array(1024);
+            let rafId = 0;
+            const FREQ_BARS = 48; // 与主页面保持一致
+            const freqArray = new Uint8Array(1024);
 
-            function ensureAudioGraph(){
+            function ensureAudioGraph() {
                 if (audioContext) return;
                 try {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -847,70 +875,74 @@ document.addEventListener('keydown', (e) => {
                     sourceNode.connect(analyser);
                     analyser.connect(audioContext.destination);
                 } catch (err) {
-                    // 忽略可视化初始化失败
+                    console.error('音频分析初始化失败:', err);
                 }
             }
 
-                            function sampleAndPost(){
-                    if (!analyser) return;
-                    analyser.getByteFrequencyData(freqArray);
-                    // 将频谱压缩成 VIS_BARS 个条，重点采样中频段
-                    const bars = [];
-                    const totalBars = VIS_BARS;
+            function sampleAndPost() {
+                if (!analyser) return;
+                analyser.getByteFrequencyData(freqArray);
+                
+                // 将频谱数据压缩成48个条，重点采样中频段
+                const bars = [];
+                const totalBars = FREQ_BARS;
+                
+                // 重点采样中频段（人声和主要乐器频率）
+                const lowFreqStart = Math.floor(freqArray.length * 0.1);
+                const midFreqStart = Math.floor(freqArray.length * 0.2);
+                const highFreqStart = Math.floor(freqArray.length * 0.6);
+                
+                for (let i = 0; i < totalBars; i++) {
+                    let sum = 0;
+                    let count = 0;
                     
-                    // 重点采样中频段（人声和主要乐器频率）
-                    const lowFreqStart = Math.floor(freqArray.length * 0.1);  // 低频开始
-                    const midFreqStart = Math.floor(freqArray.length * 0.2);  // 中频开始
-                    const highFreqStart = Math.floor(freqArray.length * 0.6); // 高频开始
-                    
-                    for (let i = 0; i < totalBars; i++) {
-                        let sum = 0;
-                        let count = 0;
-                        
-                        if (i < totalBars * 0.3) {
-                            // 低频段：较少采样
-                            const start = lowFreqStart + (i / (totalBars * 0.3)) * (midFreqStart - lowFreqStart);
-                            const end = start + 2;
-                            for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
-                                sum += freqArray[j];
-                                count++;
-                            }
-                        } else if (i < totalBars * 0.7) {
-                            // 中频段：密集采样（重点区域）
-                            const start = midFreqStart + ((i - totalBars * 0.3) / (totalBars * 0.4)) * (highFreqStart - midFreqStart);
-                            const end = start + 8; // 更密集的采样
-                            for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
-                                sum += freqArray[j];
-                                count++;
-                            }
-                        } else {
-                            // 高频段：增加采样密度，让最后1/3也动起来
-                            const start = highFreqStart + ((i - totalBars * 0.7) / (totalBars * 0.3)) * (freqArray.length - highFreqStart);
-                            const end = start + 6; // 增加高频段采样
-                            for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
-                                sum += freqArray[j];
-                                count++;
-                            }
+                    if (i < totalBars * 0.3) {
+                        // 低频段：较少采样
+                        const start = lowFreqStart + (i / (totalBars * 0.3)) * (midFreqStart - lowFreqStart);
+                        const end = start + 2;
+                        for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
+                            sum += freqArray[j];
+                            count++;
                         }
-                        
-                        const avg = count > 0 ? sum / count : 0;
-                        // 增强中频段的响应
-                        let normalized = Math.min(1, avg / 255);
-                        if (i >= totalBars * 0.3 && i < totalBars * 0.7) {
-                            normalized = Math.pow(normalized, 0.6); // 提升中频段
-                        } else if (i >= totalBars * 0.7) {
-                            normalized = Math.pow(normalized, 0.7); // 提升高频段
+                    } else if (i < totalBars * 0.7) {
+                        // 中频段：密集采样（重点区域）
+                        const start = midFreqStart + ((i - totalBars * 0.3) / (totalBars * 0.4)) * (highFreqStart - midFreqStart);
+                        const end = start + 8;
+                        for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
+                            sum += freqArray[j];
+                            count++;
                         }
-                        bars.push(normalized);
+                    } else {
+                        // 高频段：增加采样密度
+                        const start = highFreqStart + ((i - totalBars * 0.7) / (totalBars * 0.3)) * (freqArray.length - highFreqStart);
+                        const end = start + 6;
+                        for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
+                            sum += freqArray[j];
+                            count++;
+                        }
                     }
                     
-                    try {
-                        window.parent.postMessage({ type: 'visualizerData', bars }, '*');
-                    } catch (_) {}
-                    rafId = window.requestAnimationFrame(sampleAndPost);
+                    const avg = count > 0 ? sum / count : 0;
+                    let normalized = Math.min(1, avg / 255);
+                    
+                    // 增强中频段的响应
+                    if (i >= totalBars * 0.3 && i < totalBars * 0.7) {
+                        normalized = Math.pow(normalized, 0.6);
+                    } else if (i >= totalBars * 0.7) {
+                        normalized = Math.pow(normalized, 0.7);
+                    }
+                    
+                    bars.push(normalized);
                 }
+                
+                try {
+                    window.parent.postMessage({ type: 'meterData', bars }, '*');
+                } catch (_) {}
+                
+                rafId = window.requestAnimationFrame(sampleAndPost);
+            }
 
-            function startVisualizer(){
+            function startMeter() {
                 ensureAudioGraph();
                 if (audioContext && audioContext.state === 'suspended') {
                     audioContext.resume().catch(() => {});
@@ -920,13 +952,14 @@ document.addEventListener('keydown', (e) => {
                 }
             }
 
-            function stopVisualizer(){
+            function stopMeter() {
                 if (rafId) {
                     window.cancelAnimationFrame(rafId);
                     rafId = 0;
                 }
-                // 通知父页面暂停（用于停止动画/衰减）
-                try { window.parent.postMessage({ type: 'visualizerPause' }, '*'); } catch (_) {}
+                try {
+                    window.parent.postMessage({ type: 'meterPause' }, '*');
+                } catch (_) {}
             }
 
             videoPlayer.addEventListener('play', function() {
@@ -938,7 +971,7 @@ document.addEventListener('keydown', (e) => {
                 } catch (err) {
                     // 忽略错误
                 }
-                startVisualizer();
+                startMeter();
             });
 
             videoPlayer.addEventListener('pause', function() {
@@ -950,11 +983,11 @@ document.addEventListener('keydown', (e) => {
                 } catch (err) {
                     // 忽略错误
                 }
-                stopVisualizer();
+                stopMeter();
             });
 
-            videoPlayer.addEventListener('ended', function(){
-                stopVisualizer();
+            videoPlayer.addEventListener('ended', function() {
+                stopMeter();
             });
         }
 

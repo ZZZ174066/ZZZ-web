@@ -425,70 +425,7 @@ document.head.appendChild(styleSheet);
         }
     }
 
-    // --- 底部音频可视化（仅演示）---
-    let visualizer = null;
-    let visualizerBars = [];
-    let visualizerDecayId = 0;
-    const VIS_NUM_BARS = 64; // 将32条增加到64条
 
-    function ensureVisualizer(){
-        if (visualizer) return visualizer;
-        visualizer = document.createElement('div');
-        visualizer.id = 'audio-visualizer';
-        visualizer.style.cssText = 'position:fixed;left:300px;right:0;bottom:-20px;height:50px;display:none;pointer-events:none;z-index:5;';
-        const inner = document.createElement('div');
-        inner.style.cssText = 'position:absolute;left:0;right:0;bottom:0;top:0;display:flex;align-items:flex-end;gap:2px;padding:8px 12px;height:100%;';
-        for (let i = 0; i < VIS_NUM_BARS; i++) {
-            const bar = document.createElement('div');
-            bar.className = 'viz-bar';
-            bar.style.cssText = 'flex:1;background:#000;height:8px;border-radius:4px 4px 0 0;';
-            inner.appendChild(bar);
-            visualizerBars.push(bar);
-        }
-        visualizer.appendChild(inner);
-        document.body.appendChild(visualizer);
-        return visualizer;
-    }
-
-    function setVisualizerVisible(visible){
-        const el = ensureVisualizer();
-        el.style.display = visible ? 'block' : 'none';
-    }
-
-    function renderVisualizer(bars){
-        if (!document.body.classList.contains('mini-player-active')) return;
-        setVisualizerVisible(true);
-        if (!bars || bars.length === 0) return;
-        const len = Math.min(bars.length, visualizerBars.length);
-        for (let i = 0; i < len; i++) {
-            let v = Math.max(0, Math.min(1, bars[i]));
-            // 增强视觉效果：更大的动态范围
-            v = Math.pow(v, 0.4); // 进一步提升低幅值
-            v = Math.max(0.03, v); // 确保最小高度
-            const heightPercent = Math.round(v * 200); // 最大高度翻倍
-            visualizerBars[i].style.height = heightPercent + '%';
-        }
-    }
-
-    function pauseVisualizer(){
-        // 缓慢衰减到较低高度，表现暂停
-        if (visualizerDecayId) cancelAnimationFrame(visualizerDecayId);
-        function step(){
-            let anyAbove = false;
-            for (const bar of visualizerBars) {
-                const h = parseInt(bar.style.height || '0');
-                const nh = Math.max(6, Math.floor(h * 0.85)); // 调整最小高度和衰减速度
-                if (nh > 6) anyAbove = true;
-                bar.style.height = nh + '%';
-            }
-            if (anyAbove) visualizerDecayId = requestAnimationFrame(step);
-        }
-        visualizerDecayId = requestAnimationFrame(step);
-    }
-
-    function hideVisualizer(){
-        setVisualizerVisible(false);
-    }
 
     function postToIframe(message){
         const iframe = document.querySelector('.sub-interface iframe');
@@ -520,8 +457,6 @@ document.head.appendChild(styleSheet);
 
     function restoreFromBackground(){
         if (!isBackground) return;
-
-        hideVisualizer();
 
         // 显示播放器容器（不重建 iframe，避免打断）
         const sub = document.getElementById('subInterface');
@@ -572,19 +507,9 @@ document.head.appendChild(styleSheet);
         const data = e.data || {};
         if (data.type === 'requestBackgroundPlay') {
             enterBackground();
-            setVisualizerVisible(true);
         } else if (data.type === 'playbackStateChanged') {
             isPlaying = data.isPlaying;
             updatePlayPauseButton();
-            if (isPlaying) {
-                setVisualizerVisible(true);
-            } else {
-                pauseVisualizer();
-            }
-        } else if (data.type === 'visualizerData') {
-            renderVisualizer(data.bars);
-        } else if (data.type === 'visualizerPause') {
-            pauseVisualizer();
         }
     });
 })();
@@ -594,7 +519,7 @@ document.head.appendChild(styleSheet);
     const css = `
     .mini-player {
         position: fixed;
-        top: 12px;
+        top: 31px;
         right: 12px;
         display: none;
         gap: 8px;
@@ -602,7 +527,7 @@ document.head.appendChild(styleSheet);
         background: rgba(255,255,255,0.95);
         border: 3px solid #000;
         border-radius: 8px;
-        padding: 8px 10px;
+        padding: 5px 7px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         z-index: 2000;
         display: none;
@@ -684,6 +609,108 @@ document.head.appendChild(styleSheet);
 	document.head.appendChild(style);
 })();
 
+// 模拟音律显示（与真实音频无关）
+(function(){
+	let meterBox = null;
+	let meterBars = [];
+	let meterAnimId = 0;
+	const NUM_BARS = 48;
+
+	function ensureMeterBox(){
+		if (meterBox) return meterBox;
+		meterBox = document.createElement('div');
+		meterBox.id = 'simulated-meter-box';
+		meterBox.style.cssText = `
+			position: fixed;
+			top: 100px; /* 界面歌词和迷你播放器下方，下移10px */
+			right: 12px;
+			width: 628px;
+			height: 56px;
+			background: #fff;
+			border: 3px solid #000;
+			border-radius: 8px;
+			padding: 6px 10px;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+			z-index: 2000; /* 在迷你播放器下方一层 */
+			display: none;
+		`;
+		const inner = document.createElement('div');
+		inner.style.cssText = 'position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:flex-end;gap:3px;padding:8px 12px 4px 12px;';
+		for (let i = 0; i < NUM_BARS; i++) {
+			const bar = document.createElement('div');
+			bar.style.cssText = 'flex:1;background:#000;height:8px;border-radius:4px 4px 0 0;';
+			meterBars.push(bar);
+			inner.appendChild(bar);
+		}
+		meterBox.appendChild(inner);
+		document.body.appendChild(meterBox);
+		return meterBox;
+	}
+
+	function setMeterVisible(visible){
+		const el = ensureMeterBox();
+		el.style.display = visible ? 'block' : 'none';
+	}
+
+			function animateMeter(){
+			// 使用真实音频数据或保持当前状态
+			if (meterAnimId) {
+				meterAnimId = requestAnimationFrame(animateMeter);
+			}
+		}
+
+			function renderMeter(bars){
+			// 根据真实音频数据更新音律条高度
+			const len = Math.min(bars.length, meterBars.length);
+			for (let i = 0; i < len; i++) {
+				let v = Math.max(0, Math.min(1, bars[i]));
+				// 增强视觉效果：更大的动态范围
+				v = Math.pow(v, 0.4); // 提升低幅值
+				v = Math.max(0.03, v); // 确保最小高度
+				const heightPercent = Math.round(v * 90); // 0-90%
+				meterBars[i].style.height = heightPercent + '%';
+			}
+		}
+
+		function pauseMeter(){
+			// 音频暂停时缓慢衰减
+			for (const bar of meterBars) {
+				const h = parseInt(bar.style.height || '0');
+				const nh = Math.max(3, Math.floor(h * 0.85)); // 衰减到最小3%
+				bar.style.height = nh + '%';
+			}
+		}
+
+		function startMeter(){
+			if (!meterAnimId) meterAnimId = requestAnimationFrame(animateMeter);
+		}
+		function stopMeter(){
+			if (meterAnimId) cancelAnimationFrame(meterAnimId);
+			meterAnimId = 0;
+		}
+
+			window.addEventListener('message', function(e){
+			const data = e.data || {};
+			if (data.type === 'meterToggle') {
+				if (data.isActive) {
+					setMeterVisible(true);
+					startMeter();
+				} else {
+					stopMeter();
+					setMeterVisible(false);
+				}
+			} else if (data.type === 'meterData') {
+				// 接收真实音频数据并更新音律显示
+				if (data.bars && data.bars.length > 0) {
+					renderMeter(data.bars);
+				}
+			} else if (data.type === 'meterPause') {
+				// 音频暂停时的衰减效果
+				pauseMeter();
+			}
+		});
+})();
+
 // 界面歌词显示功能
 (function(){
     let interfaceLyrics = null;
@@ -695,7 +722,7 @@ document.head.appendChild(styleSheet);
         interfaceLyrics.id = 'interface-lyrics';
         interfaceLyrics.style.cssText = `
             position: fixed;
-            top: 15px;
+            top: 30px;
             right: 240px;
             width: 400px;
             height: 56px;
