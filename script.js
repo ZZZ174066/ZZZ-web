@@ -889,39 +889,39 @@ document.addEventListener('keydown', (e) => {
                 if (!analyser) return;
                 analyser.getByteFrequencyData(freqArray);
                 
-                // 将频谱数据压缩成48个条，让所有频段都更活跃
+                // 将频谱数据压缩成48个条，重点采样中频段
                 const bars = [];
                 const totalBars = FREQ_BARS;
                 
-                // 重新分配频段采样，让所有频段都更均匀活跃
-                const lowFreqStart = Math.floor(freqArray.length * 0.05);  // 扩大低频范围
-                const midFreqStart = Math.floor(freqArray.length * 0.15);
-                const highFreqStart = Math.floor(freqArray.length * 0.5);  // 扩大中频范围
+                // 重点采样中频段（人声和主要乐器频率）
+                const lowFreqStart = Math.floor(freqArray.length * 0.1);
+                const midFreqStart = Math.floor(freqArray.length * 0.2);
+                const highFreqStart = Math.floor(freqArray.length * 0.6);
                 
                 for (let i = 0; i < totalBars; i++) {
                     let sum = 0;
                     let count = 0;
                     
-                    if (i < totalBars * 0.25) {
-                        // 低频段：增加采样密度，让低频更活跃
-                        const start = lowFreqStart + (i / (totalBars * 0.25)) * (midFreqStart - lowFreqStart);
-                        const end = start + 4;  // 增加采样数量
+                    if (i < totalBars * 0.3) {
+                        // 低频段：较少采样
+                        const start = lowFreqStart + (i / (totalBars * 0.3)) * (midFreqStart - lowFreqStart);
+                        const end = start + 2;
                         for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
                             sum += freqArray[j];
                             count++;
                         }
-                    } else if (i < totalBars * 0.75) {
-                        // 中频段：保持密集采样
-                        const start = midFreqStart + ((i - totalBars * 0.25) / (totalBars * 0.5)) * (highFreqStart - midFreqStart);
-                        const end = start + 10;  // 增加采样数量
+                    } else if (i < totalBars * 0.7) {
+                        // 中频段：密集采样（重点区域）
+                        const start = midFreqStart + ((i - totalBars * 0.3) / (totalBars * 0.4)) * (highFreqStart - midFreqStart);
+                        const end = start + 8;
                         for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
                             sum += freqArray[j];
                             count++;
                         }
                     } else {
-                        // 高频段：增加采样密度，让高频更活跃
-                        const start = highFreqStart + ((i - totalBars * 0.75) / (totalBars * 0.25)) * (freqArray.length - highFreqStart);
-                        const end = start + 8;  // 增加采样数量
+                        // 高频段：增加采样密度
+                        const start = highFreqStart + ((i - totalBars * 0.7) / (totalBars * 0.3)) * (freqArray.length - highFreqStart);
+                        const end = start + 6;
                         for (let j = Math.floor(start); j < Math.min(end, freqArray.length); j++) {
                             sum += freqArray[j];
                             count++;
@@ -931,27 +931,12 @@ document.addEventListener('keydown', (e) => {
                     const avg = count > 0 ? sum / count : 0;
                     let normalized = Math.min(1, avg / 255);
                     
-                    // 让所有频段都更活跃，减少某些频段不动的情况
-                    // 添加基础活跃度，确保即使静音时也有轻微活动
-                    const baseActivity = 0.05;  // 5%的基础活跃度
-                    normalized = Math.max(baseActivity, normalized);
-                    
-                    // 增强所有频段的响应，让幅度更大
-                    if (i < totalBars * 0.25) {
-                        // 低频段：增强响应
-                        normalized = Math.pow(normalized, 0.5);
-                    } else if (i < totalBars * 0.75) {
-                        // 中频段：增强响应
-                        normalized = Math.pow(normalized, 0.4);
-                    } else {
-                        // 高频段：增强响应
-                        normalized = Math.pow(normalized, 0.45);
+                    // 增强中频段的响应
+                    if (i >= totalBars * 0.3 && i < totalBars * 0.7) {
+                        normalized = Math.pow(normalized, 0.6);
+                    } else if (i >= totalBars * 0.7) {
+                        normalized = Math.pow(normalized, 0.7);
                     }
-                    
-                    // 添加随机波动，让频段更活跃
-                    const randomFactor = 0.1;  // 10%的随机波动
-                    const randomVariation = (Math.random() - 0.5) * randomFactor;
-                    normalized = Math.max(0, Math.min(1, normalized + randomVariation));
                     
                     bars.push(normalized);
                 }

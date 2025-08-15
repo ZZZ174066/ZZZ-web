@@ -655,8 +655,7 @@ document.head.appendChild(styleSheet);
 		inner.style.cssText = 'position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:flex-end;gap:3px;padding:8px 12px 4px 12px;';
 		for (let i = 0; i < NUM_BARS; i++) {
 			const bar = document.createElement('div');
-			// 设置初始高度为15%，让所有频段都有基础活跃度
-			bar.style.cssText = 'flex:1;background:#000;height:15%;border-radius:4px 4px 0 0;';
+			bar.style.cssText = 'flex:1;background:#000;height:8px;border-radius:4px 4px 0 0;';
 			meterBars.push(bar);
 			inner.appendChild(bar);
 		}
@@ -673,16 +672,6 @@ document.head.appendChild(styleSheet);
 			function animateMeter(){
 			// 使用真实音频数据或保持当前状态
 			if (meterAnimId) {
-				// 即使没有真实音频数据，也保持轻微的动画效果
-				// 让所有频段都有轻微的随机波动，保持活跃
-				for (let i = 0; i < meterBars.length; i++) {
-					const currentHeight = parseInt(meterBars[i].style.height || '15');
-					// 添加轻微的随机波动（±2%）
-					const variation = (Math.random() - 0.5) * 4;
-					const newHeight = Math.max(12, Math.min(20, currentHeight + variation));
-					meterBars[i].style.height = newHeight + '%';
-				}
-				
 				meterAnimId = requestAnimationFrame(animateMeter);
 			}
 		}
@@ -692,21 +681,19 @@ document.head.appendChild(styleSheet);
 			const len = Math.min(bars.length, meterBars.length);
 			for (let i = 0; i < len; i++) {
 				let v = Math.max(0, Math.min(1, bars[i]));
-				// 增强视觉效果：更大的动态范围和幅度
-				v = Math.pow(v, 0.3); // 进一步降低幂次，让幅度更大
-				v = Math.max(0.05, v); // 提高最小高度到5%
-				
-				// 让幅度更大，从90%提升到95%
-				const heightPercent = Math.round(v * 95); // 0-95%
+				// 增强视觉效果：更大的动态范围
+				v = Math.pow(v, 0.4); // 提升低幅值
+				v = Math.max(0.03, v); // 确保最小高度
+				const heightPercent = Math.round(v * 90); // 0-90%
 				meterBars[i].style.height = heightPercent + '%';
 			}
 		}
 
 		function pauseMeter(){
-			// 音频暂停时缓慢衰减，但保持一定的活跃度
+			// 音频暂停时缓慢衰减
 			for (const bar of meterBars) {
 				const h = parseInt(bar.style.height || '0');
-				const nh = Math.max(8, Math.floor(h * 0.9)); // 衰减到最小8%，衰减更慢
+				const nh = Math.max(3, Math.floor(h * 0.85)); // 衰减到最小3%
 				bar.style.height = nh + '%';
 			}
 		}
