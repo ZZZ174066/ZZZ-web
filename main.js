@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showPlaceholder('游戏卡片管理');
                     break;
                 case '智汇出行系统':
-                    showPlaceholder('智汇出行系统');
+                    openZhihuiTravelSystem();
                     break;
                 case '3D机器人':
                     showPlaceholder('3D机器人');
@@ -841,3 +841,53 @@ document.head.appendChild(styleSheet);
         return panel;
     }
 })(); 
+
+// 智汇出行系统功能
+function openZhihuiTravelSystem() {
+    if (document.body.classList.contains('mini-player-active')) {
+        // 在迷你播放器状态下，使用前景面板显示
+        const panel = ensureForegroundPanel();
+        panel.classList.add('active');
+        panel.innerHTML = `
+            <div class="close-button" id="closeBtn">✕</div>
+            <div class="zhihui-travel-container">
+                <iframe src="智汇出行/login.html" 
+                        frameborder="0" 
+                        style="width: 100%; height: 100%; border: none;">
+                </iframe>
+            </div>
+        `;
+        
+        // 添加关闭按钮事件监听
+        document.getElementById('closeBtn').addEventListener('click', function() {
+            panel.classList.remove('active');
+        });
+        return;
+    }
+    
+    // 非迷你播放器状态下，关闭界面歌词和音律显示
+    if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
+        window.interfaceLyrics.hide();
+    }
+    
+    if (window.meterControl && window.meterControl.isVisible()) {
+        window.meterControl.hide();
+    }
+    
+    const subInterface = document.getElementById('subInterface');
+    subInterface.classList.add('active');
+    
+    // 创建iframe来加载智汇出行系统
+    subInterface.innerHTML = `
+        <div class="close-button" id="closeBtn">✕</div>
+        <div class="zhihui-travel-container">
+            <iframe src="智汇出行/login.html" 
+                    frameborder="0" 
+                    style="width: 100%; height: 100%; border: none;">
+            </iframe>
+        </div>
+    `;
+    
+    // 添加关闭按钮事件监听
+    document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
+} 
