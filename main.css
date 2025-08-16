@@ -279,6 +279,7 @@ body {
     background: #fff;
     border-radius: 8px;
     overflow: hidden;
+    margin-left: 420px; /* 增加左边距，将内容向右移动 */
 }
 
 .zhihui-travel-container iframe {

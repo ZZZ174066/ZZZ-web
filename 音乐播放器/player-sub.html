@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐播放器</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* 子界面适配样式 */
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+        }
+        
+        .player-container {
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* 调整播放器尺寸以适应子界面 */
+        .player-container .player-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+        }
+        
+        /* 隐藏原始播放器的边框 */
+        .player-container .player-container {
+            border: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <div class="player-container">
+            <!-- 左侧播放列表 -->
+            <div class="playlist-section">
+                <h2 class="section-title">播放列表</h2>
+                <div class="playlist-container" id="playlistContainer">
+                    <!-- 播放列表将通过JavaScript动态生成 -->
+                </div>
+                <div class="playlist-tools">
+                    <!-- 随机开始按键已移动到播放控制区域 -->
+                </div>
+            </div>
+
+            <!-- 中间视频区域 -->
+            <div class="video-section">
+                <div class="video-container">
+                    <video id="videoPlayer">
+                        <source src="../音乐/深蓝与夜的呼吸.mp4" type="video/mp4">
+                        您的浏览器不支持视频播放。
+                    </video>
+                    <!-- 自定义进度条 -->
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill">
+                                <div class="progress-thumb"></div>
+                            </div>
+                        </div>
+                        <div class="time-display">
+                            <span id="currentTime">00:00</span>
+                            <span>/</span>
+                            <span id="totalTime">00:00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 播放控制按钮 -->
+                <div class="control-buttons">
+                    <div class="control-row">
+                        <div class="volume-control">
+                            <span class="control-label">音量</span>
+                            <div class="volume-bar">
+                                <div class="volume-fill" id="volumeFill">
+                                    <div class="volume-thumb"></div>
+                                </div>
+                                <div class="control-value" id="volumeValue">50</div>
+                            </div>
+                        </div>
+                        <button class="control-btn icon-btn" id="prevBtn">⏮</button>
+                        <button class="control-btn icon-btn" id="playPauseBtn">⏸</button>
+                        <button class="control-btn icon-btn" id="nextBtn">⏭</button>
+                        <div class="speed-control">
+                            <div class="speed-bar">
+                                <div class="speed-fill" id="speedFill">
+                                    <div class="speed-thumb"></div>
+                                </div>
+                                <div class="control-value" id="speedValue">1.0x</div>
+                            </div>
+                            <span class="control-label">速度</span>
+                        </div>
+                    </div>
+                    <div class="control-row">
+                        <button class="control-btn" id="randomStartBtn">随机开始</button>
+                        <button class="control-btn" id="playModeBtn">列表循环</button>
+                        <button class="control-btn" id="meterToggleBtn">音律显示</button>
+                        <button class="control-btn" id="interfaceLyricsBtn">界面歌词</button>
+                        <button class="control-btn" id="backgroundPlayBtn">后台播放</button>
+                        <button class="control-btn" id="lyricsCorrectBtn">歌词矫正</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧歌词区域 -->
+            <div class="lyrics-section">
+                <h2 class="section-title">歌词区域</h2>
+                <div class="lyrics-container" id="lyricsContainer">
+                    <!-- 歌词内容将通过JavaScript动态加载 -->
+                </div>
+                <div class="lyrics-tools">
+                    <!-- 歌词矫正按键已移动到播放控制区域 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="lyrics.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 

@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
         subInterface.innerHTML = `
             <div class="close-button" id="closeBtn">✕</div>
             <div class="player-container">
-                <iframe src="player-sub.html" width="100%" height="100%" frameborder="0"></iframe>
+                <iframe src="音乐播放器/player-sub.html" width="100%" height="100%" frameborder="0"></iframe>
             </div>
         `;
         
@@ -199,11 +199,25 @@ document.addEventListener('DOMContentLoaded', function() {
             const panel = ensureForegroundPanel();
             panel.classList.add('active');
             panel.innerHTML = `
+                <div class="close-button" id="closeBtn">✕</div>
                 <div class="placeholder-content">
                     <h2>${title}</h2>
                     <p>此功能正在开发中，敬请期待...</p>
                 </div>
             `;
+            
+            // 使用事件委托，在panel上监听点击事件
+            panel.addEventListener('click', function(e) {
+                if (e.target.classList.contains('close-button')) {
+                    panel.classList.remove('active');
+                    // 重置菜单项状态
+                    if (activeMenuItem) {
+                        activeMenuItem.classList.remove('active');
+                        activeMenuItem.style.transform = 'none';
+                        activeMenuItem = null;
+                    }
+                }
+            });
             return;
         }
         
@@ -261,6 +275,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 关闭子界面
     function closeSubInterface() {
+        // 关闭界面歌词显示
+        if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
+            window.interfaceLyrics.reset();
+            // 通知播放器更新按钮状态
+            const iframe = document.querySelector('.sub-interface iframe');
+            if (iframe && iframe.contentWindow) {
+                try {
+                    iframe.contentWindow.postMessage({
+                        type: 'interfaceLyricsToggle',
+                        isActive: false
+                    }, '*');
+                } catch (err) {
+                    // 忽略错误
+                }
+            }
+        }
+        
+        // 关闭音律显示
+        if (window.meterControl && window.meterControl.isVisible()) {
+            window.meterControl.hide();
+            // 通知播放器更新音律显示按钮状态
+            const iframe = document.querySelector('.sub-interface iframe');
+            if (iframe && iframe.contentWindow) {
+                try {
+                    iframe.contentWindow.postMessage({
+                        type: 'meterToggle',
+                        isActive: false
+                    }, '*');
+                } catch (err) {
+                    // 忽略错误
+                }
+            }
+        }
+        
         subInterface.classList.remove('active');
         if (activeMenuItem) {
             activeMenuItem.classList.remove('active');
@@ -339,7 +387,7 @@ const additionalStyles = `
         font-size: 24px;
         font-weight: bold;
         cursor: pointer;
-        z-index: 1000;
+        z-index: 2000;
         transition: all 0.3s ease;
         font-family: Arial, sans-serif;
     }
@@ -821,7 +869,11 @@ document.head.appendChild(styleSheet);
         show: showInterfaceLyrics,
         hide: hideInterfaceLyrics,
         toggle: toggleInterfaceLyrics,
-        isActive: () => isInterfaceLyricsActive
+        isActive: () => isInterfaceLyricsActive,
+        reset: () => {
+            isInterfaceLyricsActive = false;
+            hideInterfaceLyrics();
+        }
     };
 })();
 
@@ -858,9 +910,17 @@ function openZhihuiTravelSystem() {
             </div>
         `;
         
-        // 添加关闭按钮事件监听
-        document.getElementById('closeBtn').addEventListener('click', function() {
-            panel.classList.remove('active');
+        // 使用事件委托，在panel上监听点击事件
+        panel.addEventListener('click', function(e) {
+            if (e.target.classList.contains('close-button')) {
+                panel.classList.remove('active');
+                // 重置菜单项状态
+                if (activeMenuItem) {
+                    activeMenuItem.classList.remove('active');
+                    activeMenuItem.style.transform = 'none';
+                    activeMenuItem = null;
+                }
+            }
         });
         return;
     }
