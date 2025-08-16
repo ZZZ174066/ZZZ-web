@@ -101,6 +101,9 @@ class Tetris {
         document.getElementById('standardModeBtn').addEventListener('click', () => this.setMode('standard'));
         document.getElementById('wideModeBtn').addEventListener('click', () => this.setMode('wide'));
         document.getElementById('ultraWideModeBtn').addEventListener('click', () => this.setMode('ultra-wide'));
+        
+        // 为所有按钮添加墨水飞溅效果
+        this.addInkSplashToButtons();
     }
     
     handleKeyPress(e) {
@@ -422,7 +425,7 @@ class Tetris {
         
         if (!this.nextPiece) return;
         
-        const blockSize = 20;
+        const blockSize = 30;
         const offsetX = (this.nextCanvas.width - this.nextPiece.shape[0].length * blockSize) / 2;
         const offsetY = (this.nextCanvas.height - this.nextPiece.shape.length * blockSize) / 2;
         
@@ -435,7 +438,7 @@ class Tetris {
                     this.nextCtx.fillStyle = '#000';
                     this.nextCtx.fillRect(x, y, blockSize, blockSize);
                     this.nextCtx.strokeStyle = '#fff';
-                    this.nextCtx.lineWidth = 1;
+                    this.nextCtx.lineWidth = 2;
                     this.nextCtx.strokeRect(x, y, blockSize, blockSize);
                 }
             }
@@ -506,6 +509,93 @@ class Tetris {
         if (this.score > currentHighScore) {
             localStorage.setItem('tetrisHighScore', this.score.toString());
             document.getElementById('highScore').textContent = this.score;
+        }
+    }
+    
+    // 为所有按钮添加墨水飞溅效果
+    addInkSplashToButtons() {
+        const buttons = document.querySelectorAll('.game-btn, .mode-btn');
+        buttons.forEach(button => {
+            button.addEventListener('mousedown', (e) => this.createInkSplash(e, button));
+        });
+    }
+    
+    // 创建墨水飞溅效果
+    createInkSplash(event, element) {
+        const rect = element.getBoundingClientRect();
+        const elementWidth = rect.width;
+        const elementHeight = rect.height;
+
+        // 动态创建12个墨水滴
+        for (let i = 0; i < 12; i++) {
+            const inkDrop = document.createElement('div');
+            inkDrop.className = 'ink-drop';
+            inkDrop.style.cssText = `
+                position: fixed;
+                width: ${8 + Math.random() * 12}px;
+                height: ${8 + Math.random() * 12}px;
+                background: #000;
+                border-radius: 50%;
+                opacity: 0;
+                pointer-events: none;
+                z-index: 9999;
+                box-shadow: 0 0 4px rgba(0, 0, 0, 0.5), 0 0 8px rgba(0, 0, 0, 0.3);
+                filter: blur(0.5px);
+            `;
+            document.body.appendChild(inkDrop);
+
+            // 在控件四周边缘随机选择起始位置（基于页面坐标）
+            let startX, startY;
+            const side = Math.floor(Math.random() * 4); // 0:上, 1:右, 2:下, 3:左
+            
+            switch(side) {
+                case 0: // 上边
+                    startX = rect.left + Math.random() * elementWidth;
+                    startY = rect.top;
+                    break;
+                case 1: // 右边
+                    startX = rect.right;
+                    startY = rect.top + Math.random() * elementHeight;
+                    break;
+                case 2: // 下边
+                    startX = rect.left + Math.random() * elementWidth;
+                    startY = rect.bottom;
+                    break;
+                case 3: // 左边
+                    startX = rect.left;
+                    startY = rect.top + Math.random() * elementHeight;
+                    break;
+            }
+            
+            // 计算飞溅方向（从边缘向外，添加更多随机性）
+            const centerX = rect.left + elementWidth / 2;
+            const centerY = rect.top + elementHeight / 2;
+            const baseAngle = Math.atan2(startY - centerY, startX - centerX);
+            const randomAngle = baseAngle + (Math.random() - 0.5) * 1.0; // 更大的角度随机性
+            const distance = 80 + Math.random() * 120; // 更大的飞溅距离
+            const finalX = Math.cos(randomAngle) * distance;
+            const finalY = Math.sin(randomAngle) * distance;
+
+            inkDrop.style.left = `${startX}px`;
+            inkDrop.style.top = `${startY}px`;
+            inkDrop.style.transform = 'translate(0, 0) scale(1)';
+            inkDrop.style.opacity = '1';
+
+            // 随机延迟动画
+            const delay = Math.random() * 150;
+            const rotation = (Math.random() - 0.5) * 360; // 随机旋转角度
+            setTimeout(() => {
+                inkDrop.style.transition = 'all 0.8s ease-out';
+                inkDrop.style.transform = `translate(${finalX}px, ${finalY}px) scale(${0.3 + Math.random() * 0.7}) rotate(${rotation}deg)`;
+                inkDrop.style.opacity = '0';
+            }, delay);
+
+            // 清理元素
+            setTimeout(() => {
+                if (inkDrop.parentNode) {
+                    inkDrop.parentNode.removeChild(inkDrop);
+                }
+            }, 800 + delay);
         }
     }
 }

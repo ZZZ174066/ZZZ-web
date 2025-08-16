@@ -33,7 +33,7 @@
 
         .game-header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             margin-top: 0;
         }
 
@@ -46,20 +46,44 @@
             padding: 6px;
         }
 
+        .score-info {
+            background: #fff;
+            border: 4px solid #000;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .score-info h3 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: #000;
+            font-size: 1rem;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
         .score-item {
             text-align: center;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 5px;
+            padding: 4px;
         }
 
         .score-item .label {
             display: block;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #000;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .score-item .value {
             display: block;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #000;
         }
@@ -147,6 +171,18 @@
             min-width: 180px;
         }
 
+        .game-sidebar-right {
+            margin-top: 20px;
+            justify-content: flex-start;
+            gap: 50px;
+        }
+
+        .game-sidebar-left {
+            justify-content: flex-start;
+            gap: 50px;
+            margin-top: 20px;
+        }
+
         .next-piece, .controls, .high-score {
             background: #fff;
             border: 4px solid #000;
@@ -167,8 +203,8 @@
             border-radius: 5px;
             display: block;
             margin: 0 auto;
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            height: 120px;
         }
 
         .control-item {
@@ -283,20 +319,6 @@
 <body>
     <div class="game-container">
         <div class="game-header">
-            <div class="score-board">
-                <div class="score-item">
-                    <span class="label">分数:</span>
-                    <span class="value" id="score">0</span>
-                </div>
-                <div class="score-item">
-                    <span class="label">等级:</span>
-                    <span class="value" id="level">1</span>
-                </div>
-                <div class="score-item">
-                    <span class="label">行数:</span>
-                    <span class="value" id="lines">0</span>
-                </div>
-            </div>
         </div>
         
         <div class="game-main">
@@ -341,9 +363,26 @@
             </div>
             
             <div class="game-sidebar-right">
-                <div class="high-score">
-                    <h3>最高分</h3>
-                    <div class="score-value" id="highScore">0</div>
+                <div class="score-info">
+                    <h3>游戏信息</h3>
+                    <div class="score-grid">
+                        <div class="score-item">
+                            <span class="label">分数</span>
+                            <span class="value" id="score">0</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="label">等级</span>
+                            <span class="value" id="level">1</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="label">行数</span>
+                            <span class="value" id="lines">0</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="label">最高分</span>
+                            <span class="value" id="highScore">0</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="game-mode">

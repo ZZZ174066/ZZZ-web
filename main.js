@@ -1,12 +1,12 @@
 // 主界面JavaScript
+// 当前激活的菜单项
+let activeMenuItem = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     // 获取元素
     const menuItems = document.querySelectorAll('.menu-item');
     const subInterface = document.getElementById('subInterface');
     const playerPlaceholder = document.querySelector('.player-placeholder');
-    
-    // 当前激活的菜单项
-    let activeMenuItem = null;
     
     // 为每个菜单项添加点击事件
     menuItems.forEach((item, index) => {
@@ -982,6 +982,13 @@ function openZhihuiTravelSystem() {
             activeMenuItem = null;
         }
         
+        // 确保所有菜单项都重置状态
+        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+        allMenuItems.forEach(item => {
+            item.classList.remove('active');
+            item.style.transform = 'none';
+        });
+        
         // 恢复占位符
         setTimeout(() => {
             subInterface.innerHTML = `
@@ -1033,6 +1040,15 @@ function openTetrisGame() {
                     item.classList.remove('active');
                     item.style.transform = 'none';
                 });
+                
+                // 特别确保俄罗斯方块菜单项被重置
+                const tetrisMenuItem = Array.from(allMenuItems).find(item => 
+                    item.querySelector('span').textContent.trim() === '俄罗斯方块'
+                );
+                if (tetrisMenuItem) {
+                    tetrisMenuItem.classList.remove('active');
+                    tetrisMenuItem.style.transform = 'none';
+                }
             }
         };
         
@@ -1072,6 +1088,22 @@ function openTetrisGame() {
             activeMenuItem.classList.remove('active');
             activeMenuItem.style.transform = 'none';
             activeMenuItem = null;
+        }
+        
+        // 确保所有菜单项都重置状态
+        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+        allMenuItems.forEach(item => {
+            item.classList.remove('active');
+            item.style.transform = 'none';
+        });
+        
+        // 特别确保俄罗斯方块菜单项被重置
+        const tetrisMenuItem = Array.from(allMenuItems).find(item => 
+            item.querySelector('span').textContent.trim() === '俄罗斯方块'
+        );
+        if (tetrisMenuItem) {
+            tetrisMenuItem.classList.remove('active');
+            tetrisMenuItem.style.transform = 'none';
         }
         
         // 恢复占位符
