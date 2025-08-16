@@ -54,6 +54,67 @@ html {
             margin-top: -10px;
             padding: 6px;
             position: relative;
+            margin-left: -10px;
+        }
+
+        /* 搜索容器样式 */
+        .title-search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+
+        /* 搜索图标样式 */
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 30%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .search-icon:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* 搜索框样式 */
+        .search-input {
+            position: absolute;
+            left: 0.5%;
+            top: -8px;
+            width: 94.5%;
+            height: 110%;
+            border: 2px solid #000;
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+            padding: 6px;
+            border-radius: 4px;
+            z-index: 5;
+        }
+
+        .search-input:focus {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5);
         }
 
         @media (max-width: 1400px) {
@@ -61,12 +122,20 @@ html {
                 font-size: 20px;
                 padding: 8px;
             }
+            
+            .search-input {
+                font-size: 16px;
+            }
         }
 
         @media (max-width: 1200px) {
             .section-title {
                 font-size: 18px;
                 padding: 6px;
+            }
+            
+            .search-input {
+                font-size: 14px;
             }
         }
 

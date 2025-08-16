@@ -43,7 +43,35 @@ const LYRICS_TIME_OFFSET = {
     "New Face.txt": 0,
     "江南Style.txt": 0,
     "Gentle Man.txt": 0,
-    "MONTAGEM CORAL.txt": 0
+    "MONTAGEM CORAL.txt": 0,
+    "一点.txt": 0,
+    "赛博朋克：边缘行者.txt": 0,
+    "Wild.txt": 0,
+    "Hush.txt": 0,
+    "infinity.txt": 0,
+    "The Ocean.txt": 0,
+    "Wrap Me In Plastic.txt": 0,
+    "BODY SHAMING.txt": 0,
+    "Kẻ Cắp Gặp Bà Già.txt": 0,
+    "See Tình.txt": 0,
+    "Cure For Me.txt": 0,
+    "Betty Boop.txt": 0,
+    "Shut up My Moms Calling.txt": 0,
+    "Crucified.txt": 0,
+    "GoneBad.txt": 0,
+    "Lightning moment.txt": 0,
+    "Shake And Sway.txt": 0,
+    "If We Never Broke Up.txt": 0,
+    "Verbatim.txt": 0,
+    "L.I.F.E.txt": 0,
+    "Shivers.txt": 0,
+    "Insomnia.txt": 0,
+    "雑踏、僕らの街.txt": 0,
+    "Thrift Shop.txt": 0,
+    "UNO.txt": 0,
+    "改革春风吹满地.txt": 0,
+    "Xin Đừng Nhấc Máy（Remix）.txt": 0,
+    "I Miss You.txt": 0
 };
 
 class VideoPlayer {
@@ -103,6 +131,44 @@ class VideoPlayer {
                 this.playTrack(index);
             });
         });
+
+        // 搜索功能事件
+        const searchIcon = document.getElementById('searchIcon');
+        const searchInput = document.getElementById('searchInput');
+        const sectionTitle = document.querySelector('.section-title');
+        
+        if (searchIcon && searchInput) {
+            searchIcon.addEventListener('click', () => {
+                if (searchInput.style.display === 'none') {
+                    // 显示搜索框
+                    searchInput.style.display = 'block';
+                    searchInput.focus();
+                    sectionTitle.style.visibility = 'hidden';
+                } else {
+                    // 隐藏搜索框
+                    searchInput.style.display = 'none';
+                    sectionTitle.style.visibility = 'visible';
+                    searchInput.value = '';
+                    this.showAllPlaylistItems();
+                }
+            });
+
+            // 搜索框输入事件
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                this.filterPlaylist(searchTerm);
+            });
+
+            // 搜索框回车事件
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    searchInput.style.display = 'none';
+                    sectionTitle.style.visibility = 'visible';
+                    searchInput.value = '';
+                    this.showAllPlaylistItems();
+                }
+            });
+        }
 
         // 播放控制按钮事件
         document.getElementById('prevBtn').addEventListener('click', () => this.previous());
@@ -730,6 +796,28 @@ class VideoPlayer {
         // 清空本次数据，避免重复导出
         this.correctedLines = [];
         this.correctedSet = new Set();
+    }
+
+    // 搜索播放列表
+    filterPlaylist(searchTerm) {
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        
+        playlistItems.forEach(item => {
+            const songName = item.querySelector('.song-name').textContent.toLowerCase();
+            if (searchTerm === '' || songName.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // 显示所有播放列表项
+    showAllPlaylistItems() {
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        playlistItems.forEach(item => {
+            item.style.display = 'block';
+        });
     }
 
 }
