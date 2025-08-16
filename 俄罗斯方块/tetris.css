@@ -1,0 +1,255 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.game-container {
+    background: #111;
+    border: 3px solid #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 0;
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-around;
+    background: #000;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.score-item {
+    text-align: center;
+}
+
+.score-item .label {
+    display: block;
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 5px;
+}
+
+.score-item .value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.game-main {
+    display: flex;
+    gap: 15px;
+}
+
+.game-area {
+    position: relative;
+}
+
+#gameCanvas {
+    background: #000;
+    border: 3px solid #fff;
+    border-radius: 5px;
+    display: block;
+}
+
+.game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.overlay-content {
+    text-align: center;
+    color: #fff;
+}
+
+.overlay-content h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.overlay-content p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+.game-btn {
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 5px;
+    transition: all 0.3s ease;
+}
+
+.game-btn:hover {
+    background: #fff;
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+
+.game-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 200px;
+}
+
+.next-piece, .controls, .high-score {
+    background: #000;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    padding: 12px 12px 8px 12px;
+}
+
+.next-piece h3, .controls h3, .high-score h3 {
+    text-align: center;
+    margin-bottom: 12px;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+#nextCanvas {
+    background: #000;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto;
+}
+
+.control-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 4px 0;
+}
+
+.control-item .key {
+    background: #fff;
+    color: #000;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    min-width: 40px;
+    text-align: center;
+}
+
+.control-item .desc {
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.high-score .score-value {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    padding: 8px;
+    background: #111;
+    border-radius: 5px;
+    border: 1px solid #fff;
+}
+
+.mode-switch {
+    background: transparent;
+    border: none;
+    padding: 8px 0 0 0;
+}
+
+.mode-btn {
+    width: 100%;
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-btn:hover {
+    background: #fff;
+    color: #000;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.3);
+}
+
+.mode-btn.active {
+    background: #fff;
+    color: #000;
+}
+
+/* 游戏状态样式 */
+.game-overlay.hidden {
+    display: none;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .game-container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .game-main {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-sidebar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .next-piece, .controls, .high-score {
+        min-width: 150px;
+    }
+    
+    #gameCanvas {
+        width: 250px;
+        height: 500px;
+    }
+    
+    #nextCanvas {
+        width: 100px;
+        height: 100px;
+    }
+} 

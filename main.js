@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showPlaceholder('跑酷小游戏');
                     break;
                 case '俄罗斯方块':
-                    showPlaceholder('俄罗斯方块');
+                    openTetrisGame();
                     break;
                 case '2048':
                     showPlaceholder('2048');
@@ -206,8 +206,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             
-            // 使用事件委托，在panel上监听点击事件
-            panel.addEventListener('click', function(e) {
+            // 移除之前的事件监听器，避免重复绑定
+            panel.removeEventListener('click', panel._placeholderCloseHandler);
+            
+            // 创建新的事件处理函数并保存引用
+            panel._placeholderCloseHandler = function(e) {
                 if (e.target.classList.contains('close-button')) {
                     panel.classList.remove('active');
                     // 重置菜单项状态
@@ -217,7 +220,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         activeMenuItem = null;
                     }
                 }
-            });
+            };
+            
+            // 添加事件监听器
+            panel.addEventListener('click', panel._placeholderCloseHandler);
             return;
         }
         
@@ -310,9 +316,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         subInterface.classList.remove('active');
+        
+        // 重置所有菜单项状态，确保音乐播放器按键也能正确重置
+        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+        allMenuItems.forEach(item => {
+            item.classList.remove('active', 'pinned-active');
+            item.style.transform = 'none';
+        });
+        
         if (activeMenuItem) {
-            activeMenuItem.classList.remove('active');
-            activeMenuItem.style.transform = 'none'; // 重置transform
             activeMenuItem = null;
         }
         
@@ -910,8 +922,11 @@ function openZhihuiTravelSystem() {
             </div>
         `;
         
-        // 使用事件委托，在panel上监听点击事件
-        panel.addEventListener('click', function(e) {
+        // 移除之前的事件监听器，避免重复绑定
+        panel.removeEventListener('click', panel._zhihuiCloseHandler);
+        
+        // 创建新的事件处理函数并保存引用
+        panel._zhihuiCloseHandler = function(e) {
             if (e.target.classList.contains('close-button')) {
                 panel.classList.remove('active');
                 // 重置菜单项状态
@@ -920,8 +935,17 @@ function openZhihuiTravelSystem() {
                     activeMenuItem.style.transform = 'none';
                     activeMenuItem = null;
                 }
+                // 确保所有菜单项都重置状态
+                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+                allMenuItems.forEach(item => {
+                    item.classList.remove('active');
+                    item.style.transform = 'none';
+                });
             }
-        });
+        };
+        
+        // 添加事件监听器
+        panel.addEventListener('click', panel._zhihuiCloseHandler);
         return;
     }
     
@@ -948,6 +972,120 @@ function openZhihuiTravelSystem() {
         </div>
     `;
     
-    // 添加关闭按钮事件监听
-    document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
+    // 为智汇出行系统添加专门的关闭处理
+    document.getElementById('closeBtn').addEventListener('click', function() {
+        // 关闭智汇出行系统
+        subInterface.classList.remove('active');
+        if (activeMenuItem) {
+            activeMenuItem.classList.remove('active');
+            activeMenuItem.style.transform = 'none';
+            activeMenuItem = null;
+        }
+        
+        // 恢复占位符
+        setTimeout(() => {
+            subInterface.innerHTML = `
+                <div class="close-button" id="closeBtn">✕</div>
+                <div class="player-placeholder">
+                    <h2>音乐播放器</h2>
+                    <p>点击"音乐播放器"开始播放音乐</p>
+                </div>
+            `;
+            
+            // 添加关闭按钮事件监听
+            document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
+        }, 500);
+    });
 } 
+
+// 俄罗斯方块游戏功能
+function openTetrisGame() {
+    if (document.body.classList.contains('mini-player-active')) {
+        // 在迷你播放器状态下，使用前景面板显示
+        const panel = ensureForegroundPanel();
+        panel.classList.add('active');
+        panel.innerHTML = `
+            <div class="close-button" id="closeBtn">✕</div>
+            <div class="tetris-container">
+                <iframe src="俄罗斯方块/tetris-embed.html" 
+                        frameborder="0" 
+                        style="width: 100%; height: 100vh; border: none; display: block;">
+                </iframe>
+            </div>
+        `;
+        
+        // 移除之前的事件监听器，避免重复绑定
+        panel.removeEventListener('click', panel._tetrisCloseHandler);
+        
+        // 创建新的事件处理函数并保存引用
+        panel._tetrisCloseHandler = function(e) {
+            if (e.target.classList.contains('close-button')) {
+                panel.classList.remove('active');
+                // 重置菜单项状态
+                if (activeMenuItem) {
+                    activeMenuItem.classList.remove('active');
+                    activeMenuItem.style.transform = 'none';
+                    activeMenuItem = null;
+                }
+                // 确保所有菜单项都重置状态
+                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+                allMenuItems.forEach(item => {
+                    item.classList.remove('active');
+                    item.style.transform = 'none';
+                });
+            }
+        };
+        
+        // 添加事件监听器
+        panel.addEventListener('click', panel._tetrisCloseHandler);
+        return;
+    }
+    
+    // 非迷你播放器状态下，关闭界面歌词和音律显示
+    if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
+        window.interfaceLyrics.hide();
+    }
+    
+    if (window.meterControl && window.meterControl.isVisible()) {
+        window.meterControl.hide();
+    }
+    
+    const subInterface = document.getElementById('subInterface');
+    subInterface.classList.add('active');
+    
+    // 创建iframe来加载俄罗斯方块游戏
+    subInterface.innerHTML = `
+        <div class="close-button" id="closeBtn">✕</div>
+        <div class="tetris-container">
+            <iframe src="俄罗斯方块/tetris-embed.html" 
+                    frameborder="0" 
+                    style="width: 100%; height: 100vh; border: none; display: block;">
+            </iframe>
+        </div>
+    `;
+    
+    // 为俄罗斯方块游戏添加专门的关闭处理
+    document.getElementById('closeBtn').addEventListener('click', function() {
+        // 关闭俄罗斯方块游戏
+        subInterface.classList.remove('active');
+        if (activeMenuItem) {
+            activeMenuItem.classList.remove('active');
+            activeMenuItem.style.transform = 'none';
+            activeMenuItem = null;
+        }
+        
+        // 恢复占位符
+        setTimeout(() => {
+            subInterface.innerHTML = `
+                <div class="close-button" id="closeBtn">✕</div>
+                <div class="player-placeholder">
+                    <h2>音乐播放器</h2>
+                    <p>点击"音乐播放器"开始播放音乐</p>
+                </div>
+            `;
+            
+            // 添加关闭按钮事件监听
+            document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
+        }, 500);
+    });
+}
