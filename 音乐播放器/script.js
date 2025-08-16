@@ -77,9 +77,7 @@ class VideoPlayer {
         
         this.initializePlayer();
         this.bindEvents();
-        this.loadLyrics().catch(error => {
-            console.error('加载歌词失败:', error);
-        });
+        this.loadLyrics();
         this.initInkSplashEffect();
     }
 
@@ -169,9 +167,7 @@ class VideoPlayer {
         this.video.play();
         
         this.updateActivePlaylistItem();
-        this.loadLyrics(lyricsFile).catch(error => {
-            console.error('加载歌词失败:', error);
-        });
+        this.loadLyrics(lyricsFile);
     }
 
     previous() {
@@ -311,7 +307,7 @@ class VideoPlayer {
         });
     }
 
-    async loadLyrics(lyricsFile = null) {
+    loadLyrics(lyricsFile = null) {
         if (!lyricsFile) {
             lyricsFile = this.playlist[this.currentIndex].dataset.lyrics;
         }
@@ -319,23 +315,22 @@ class VideoPlayer {
         // 离开当前歌曲时重置矫正（不丢数据，仅清空标记）
         this.correctedLines = [];
         this.correctedSet = new Set();
-        
-        try {
-            // 从歌词文件夹中动态读取歌词文件
-            const response = await fetch(`../歌词/${lyricsFile}`);
-            if (response.ok) {
-                const lyricsText = await response.text();
-                this.lyrics = this.parseLyrics(lyricsText);
+        // 从内置歌词数据中获取歌词
+        const data = LYRICS_DATA[lyricsFile];
+        if (data) {
+            if (Array.isArray(data)) {
+                this.lyrics = data.slice().sort((a, b) => a.time - b.time);
+            } else if (typeof data === 'string') {
+                this.lyrics = this.parseLyrics(data);
             } else {
-                console.error('未找到歌词文件:', lyricsFile);
                 this.lyrics = [];
             }
-        } catch (error) {
-            console.error('读取歌词文件失败:', error);
+            this.displayLyrics();
+        } else {
+            console.error('未找到歌词文件:', lyricsFile);
             this.lyrics = [];
+            this.displayLyrics();
         }
-        
-        this.displayLyrics();
     }
 
     parseLyrics(lyricsText) {
