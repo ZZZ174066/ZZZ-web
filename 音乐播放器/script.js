@@ -1,53 +1,3 @@
-// 动态扫描音乐文件夹和歌词文件夹
-async function scanMusicAndLyrics() {
-    try {
-        // 扫描音乐文件夹
-        const musicResponse = await fetch('../音乐/');
-        const musicText = await musicResponse.text();
-        const musicFiles = extractFilesFromDirectoryListing(musicText, '.mp4');
-        
-        // 扫描歌词文件夹
-        const lyricsResponse = await fetch('../音乐播放器/歌词/');
-        const lyricsText = await lyricsResponse.text();
-        const lyricsFiles = extractFilesFromDirectoryListing(lyricsText, '.txt');
-        
-        // 匹配音乐文件和歌词文件
-        const playlist = [];
-        for (const musicFile of musicFiles) {
-            const baseName = musicFile.replace('.mp4', '');
-            const lyricsFile = `${baseName}.txt`;
-            
-            if (lyricsFiles.includes(lyricsFile)) {
-                playlist.push({
-                    video: musicFile,
-                    lyrics: lyricsFile,
-                    name: baseName
-                });
-            }
-        }
-        
-        return playlist;
-    } catch (error) {
-        console.error('扫描音乐文件夹失败:', error);
-        // 如果扫描失败，返回空数组
-        return [];
-    }
-}
-
-// 从目录列表HTML中提取文件
-function extractFilesFromDirectoryListing(html, extension) {
-    const files = [];
-    const regex = new RegExp(`href="([^"]*\\.${extension.replace('.', '')})"`, 'g');
-    let match;
-    
-    while ((match = regex.exec(html)) !== null) {
-        files.push(match[1]);
-    }
-    
-    return files;
-}
-
-// 歌词时间偏移配置（保留原有的偏移设置）
 const LYRICS_TIME_OFFSET = {
     "真夜中のドアStay With Me.txt": 0,
     "SPECIALZ.txt": 0,
@@ -99,7 +49,7 @@ const LYRICS_TIME_OFFSET = {
 class VideoPlayer {
     constructor() {
         this.video = document.getElementById('videoPlayer');
-        this.playlist = []; // 将存储动态扫描的播放列表
+        this.playlist = document.querySelectorAll('.playlist-item');
         this.currentIndex = 0;
         this.playMode = 'list'; // 'single', 'list', 'shuffle'
         this.lyrics = [];
@@ -125,53 +75,18 @@ class VideoPlayer {
         this.lyricsCorrectBtn = document.getElementById('lyricsCorrectBtn');
         this.currentLyricsFile = null;
         
-        this.init();
-    }
-    
-    async init() {
-        await this.loadPlaylist();
         this.initializePlayer();
         this.bindEvents();
-        await this.loadLyrics();
-        this.initInkSplashEffect();
-    }
-    
-    async loadPlaylist() {
-        this.playlist = await scanMusicAndLyrics();
-        this.generatePlaylistHTML();
-    }
-    
-    generatePlaylistHTML() {
-        const container = document.getElementById('playlistContainer');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        this.playlist.forEach((item, index) => {
-            const playlistItem = document.createElement('div');
-            playlistItem.className = 'playlist-item';
-            playlistItem.dataset.video = item.video;
-            playlistItem.dataset.lyrics = item.lyrics;
-            playlistItem.dataset.index = index;
-            
-            if (index === 0) {
-                playlistItem.classList.add('active');
-            }
-            
-            playlistItem.innerHTML = `<span class="song-name">${item.name}</span>`;
-            container.appendChild(playlistItem);
-            
-            // 为播放列表项添加墨水飞溅效果
-            this.addInkSplashToButton(playlistItem);
+        this.loadLyrics().catch(error => {
+            console.error('加载歌词失败:', error);
         });
+        this.initInkSplashEffect();
     }
 
     initializePlayer() {
-        if (this.playlist.length > 0) {
-            // 设置视频源
-            this.video.src = `../音乐/${this.playlist[this.currentIndex].video}`;
-            this.updateActivePlaylistItem();
-        }
+        // 设置视频源
+                    this.video.src = `../音乐/${this.playlist[this.currentIndex].dataset.video}`;
+        this.updateActivePlaylistItem();
         
         // 设置默认播放模式按钮状态
         this.setPlayMode(this.playMode);
@@ -184,13 +99,11 @@ class VideoPlayer {
     }
 
     bindEvents() {
-        // 播放列表点击事件（使用事件委托）
-        document.getElementById('playlistContainer').addEventListener('click', (e) => {
-            const playlistItem = e.target.closest('.playlist-item');
-            if (playlistItem) {
-                const index = parseInt(playlistItem.dataset.index);
+        // 播放列表点击事件
+        this.playlist.forEach((item, index) => {
+            item.addEventListener('click', () => {
                 this.playTrack(index);
-            }
+            });
         });
 
         // 播放控制按钮事件
@@ -243,8 +156,8 @@ class VideoPlayer {
 
     playTrack(index) {
         this.currentIndex = index;
-        const videoFile = this.playlist[index].video;
-        const lyricsFile = this.playlist[index].lyrics;
+        const videoFile = this.playlist[index].dataset.video;
+        const lyricsFile = this.playlist[index].dataset.lyrics;
         
         this.video.src = `../音乐/${videoFile}`;
         this.video.load();
@@ -393,15 +306,14 @@ class VideoPlayer {
     }
 
     updateActivePlaylistItem() {
-        const playlistItems = document.querySelectorAll('.playlist-item');
-        playlistItems.forEach((item, index) => {
+        this.playlist.forEach((item, index) => {
             item.classList.toggle('active', index === this.currentIndex);
         });
     }
 
     async loadLyrics(lyricsFile = null) {
         if (!lyricsFile) {
-            lyricsFile = this.playlist[this.currentIndex].lyrics;
+            lyricsFile = this.playlist[this.currentIndex].dataset.lyrics;
         }
         this.currentLyricsFile = lyricsFile;
         // 离开当前歌曲时重置矫正（不丢数据，仅清空标记）
@@ -409,8 +321,8 @@ class VideoPlayer {
         this.correctedSet = new Set();
         
         try {
-            // 从歌词文件夹动态加载歌词文件
-            const response = await fetch(`../音乐播放器/歌词/${lyricsFile}`);
+            // 从歌词文件夹中动态读取歌词文件
+            const response = await fetch(`../歌词/${lyricsFile}`);
             if (response.ok) {
                 const lyricsText = await response.text();
                 this.lyrics = this.parseLyrics(lyricsText);
@@ -419,7 +331,7 @@ class VideoPlayer {
                 this.lyrics = [];
             }
         } catch (error) {
-            console.error('加载歌词文件失败:', error);
+            console.error('读取歌词文件失败:', error);
             this.lyrics = [];
         }
         
@@ -476,20 +388,15 @@ class VideoPlayer {
             line.className = 'lyrics-line';
             line.textContent = lyric.text;
             line.dataset.time = lyric.time;
-            
-            // 添加点击事件
-            line.addEventListener('click', () => {
-                if (this.isCorrectionMode) {
-                    this.handleLyricClick(lyric);
-                } else {
+            // 矫正模式下：禁用点击跳转，启用矫正
+            if (this.isCorrectionMode) {
+                line.addEventListener('click', () => this.handleLyricClick(lyric));
+            } else {
+                line.addEventListener('click', () => {
                     this.seekToLyric(lyric.time);
-                }
-            });
-            
+                });
+            }
             this.lyricsContainer.appendChild(line);
-            
-            // 为歌词行添加墨水飞溅效果
-            this.addInkSplashToButton(line);
         });
     }
 
@@ -600,8 +507,7 @@ class VideoPlayer {
     seekToLyric(time) {
         // 矫正模式下禁用点击跳转
         if (this.isCorrectionMode) return;
-        
-        const lyricsFile = this.playlist[this.currentIndex].lyrics;
+        const lyricsFile = this.playlist[this.currentIndex].dataset.lyrics;
         const offset = LYRICS_TIME_OFFSET[lyricsFile] || 0;
         const adjustedTime = time - offset;
         this.video.currentTime = Math.max(0, adjustedTime);
@@ -670,6 +576,18 @@ class VideoPlayer {
         const controlButtons = document.querySelectorAll('.control-btn');
         controlButtons.forEach(button => {
             this.addInkSplashToButton(button);
+        });
+
+        // 为播放列表项添加墨水飞溅效果
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        playlistItems.forEach(item => {
+            this.addInkSplashToButton(item);
+        });
+
+        // 为歌词行添加墨水飞溅效果
+        const lyricsLines = document.querySelectorAll('.lyrics-line');
+        lyricsLines.forEach(line => {
+            this.addInkSplashToButton(line);
         });
     }
 
