@@ -298,7 +298,7 @@ body {
 .detail-section {
     flex: 0 0 320px;
     background: white;
-    padding: 2px 15px 15px 15px;
+    padding: 21px 15px 15px 15px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
