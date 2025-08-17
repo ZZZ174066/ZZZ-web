@@ -1,33 +1,23 @@
-// 主界面JavaScript
-// 当前激活的菜单项
 let activeMenuItem = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 获取元素
     const menuItems = document.querySelectorAll('.menu-item');
     const subInterface = document.getElementById('subInterface');
     const playerPlaceholder = document.querySelector('.player-placeholder');
     
-    // 为每个菜单项添加点击事件
     menuItems.forEach((item, index) => {
         item.addEventListener('click', function() {
-            // 若迷你播放器存在，禁止再次弹出音乐播放器界面
             const menuText = this.querySelector('span').textContent.trim();
             if (menuText === '音乐播放器' && document.body.classList.contains('mini-player-active')) {
                 return;
             }
-            // 移除之前的激活状态
             if (activeMenuItem) {
                 activeMenuItem.classList.remove('active');
             }
-            
-            // 添加当前激活状态
             this.classList.add('active');
-            this.style.transform = 'none'; // 确保激活状态不移位
+            this.style.transform = 'none';
             activeMenuItem = this;
             
-            // 根据菜单项显示不同内容
-            // 注意：menuText 已在上方获取
             switch(menuText) {
                 case '音乐播放器':
                     showMusicPlayer();
@@ -73,32 +63,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // 添加悬停效果
         item.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-3px)';
         });
         
         item.addEventListener('mouseleave', function() {
-            if (!this.classList.contains('active')) {
-                this.style.transform = 'translateY(0)';
-            } else {
-                this.style.transform = 'none';
-            }
+            this.style.transform = this.classList.contains('active') ? 'none' : 'translateY(0)';
         });
 
-        // 添加墨水飞溅效果
         item.addEventListener('mousedown', function(e) {
             createInkSplash(e, this);
         });
     });
 
-    // 创建墨水飞溅效果
     function createInkSplash(event, element) {
         const rect = element.getBoundingClientRect();
         const elementWidth = rect.width;
         const elementHeight = rect.height;
 
-        // 动态创建12个墨水滴
         for (let i = 0; i < 12; i++) {
             const inkDrop = document.createElement('div');
             inkDrop.className = 'ink-drop';
@@ -116,35 +98,33 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             document.body.appendChild(inkDrop);
 
-            // 在控件四周边缘随机选择起始位置（基于页面坐标）
             let startX, startY;
-            const side = Math.floor(Math.random() * 4); // 0:上, 1:右, 2:下, 3:左
+            const side = Math.floor(Math.random() * 4);
             
             switch(side) {
-                case 0: // 上边
+                case 0:
                     startX = rect.left + Math.random() * elementWidth;
                     startY = rect.top;
                     break;
-                case 1: // 右边
+                case 1:
                     startX = rect.right;
                     startY = rect.top + Math.random() * elementHeight;
                     break;
-                case 2: // 下边
+                case 2:
                     startX = rect.left + Math.random() * elementWidth;
                     startY = rect.bottom;
                     break;
-                case 3: // 左边
+                case 3:
                     startX = rect.left;
                     startY = rect.top + Math.random() * elementHeight;
                     break;
             }
             
-            // 计算飞溅方向（从边缘向外，添加更多随机性）
             const centerX = rect.left + elementWidth / 2;
             const centerY = rect.top + elementHeight / 2;
             const baseAngle = Math.atan2(startY - centerY, startX - centerX);
-            const randomAngle = baseAngle + (Math.random() - 0.5) * 1.0; // 更大的角度随机性
-            const distance = 80 + Math.random() * 120; // 更大的飞溅距离
+            const randomAngle = baseAngle + (Math.random() - 0.5) * 1.0;
+            const distance = 80 + Math.random() * 120;
             const finalX = Math.cos(randomAngle) * distance;
             const finalY = Math.sin(randomAngle) * distance;
 
@@ -153,16 +133,14 @@ document.addEventListener('DOMContentLoaded', function() {
             inkDrop.style.transform = 'translate(0, 0) scale(1)';
             inkDrop.style.opacity = '1';
 
-            // 随机延迟动画
             const delay = Math.random() * 150;
-            const rotation = (Math.random() - 0.5) * 360; // 随机旋转角度
+            const rotation = (Math.random() - 0.5) * 360;
             setTimeout(() => {
                 inkDrop.style.transition = 'all 0.8s ease-out';
                 inkDrop.style.transform = `translate(${finalX}px, ${finalY}px) scale(${0.3 + Math.random() * 0.7}) rotate(${rotation}deg)`;
                 inkDrop.style.opacity = '0';
             }, delay);
 
-            // 清理元素
             setTimeout(() => {
                 if (inkDrop.parentNode) {
                     inkDrop.parentNode.removeChild(inkDrop);
@@ -171,16 +149,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 显示音乐播放器
     function showMusicPlayer() {
         const subInterface = document.getElementById('subInterface');
-        // 若迷你播放器开启，恢复到主容器展示
         if (document.body.classList.contains('mini-player-active')) {
             restoreFromBackground();
         }
         subInterface.classList.add('active');
         
-        // 清空子界面内容
         subInterface.innerHTML = `
             <div class="close-button" id="closeBtn">✕</div>
             <div class="player-container">
@@ -188,14 +163,11 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        // 添加关闭按钮事件监听
         document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
     }
     
-    // 显示占位符内容
     function showPlaceholder(title) {
         if (document.body.classList.contains('mini-player-active')) {
-            // 在前景面板显示
             const panel = ensureForegroundPanel();
             panel.classList.add('active');
             panel.innerHTML = `
@@ -206,14 +178,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             
-            // 移除之前的事件监听器，避免重复绑定
             panel.removeEventListener('click', panel._placeholderCloseHandler);
             
-            // 创建新的事件处理函数并保存引用
             panel._placeholderCloseHandler = function(e) {
                 if (e.target.classList.contains('close-button')) {
                     panel.classList.remove('active');
-                    // 重置菜单项状态
                     if (activeMenuItem) {
                         activeMenuItem.classList.remove('active');
                         activeMenuItem.style.transform = 'none';
@@ -222,15 +191,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             };
             
-            // 添加事件监听器
             panel.addEventListener('click', panel._placeholderCloseHandler);
             return;
         }
         
-        // 非迷你播放器状态下，关闭界面歌词和音律显示
         if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
             window.interfaceLyrics.hide();
-            // 通知播放器更新按钮状态
             const iframe = document.querySelector('.sub-interface iframe');
             if (iframe && iframe.contentWindow) {
                 try {
@@ -238,16 +204,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: 'interfaceLyricsToggle',
                         isActive: false
                     }, '*');
-                } catch (err) {
-                    // 忽略错误
-                }
+                } catch (err) {}
             }
         }
         
-        // 关闭音律显示
         if (window.meterControl && window.meterControl.isVisible()) {
             window.meterControl.hide();
-            // 通知播放器更新音律显示按钮状态
             const iframe = document.querySelector('.sub-interface iframe');
             if (iframe && iframe.contentWindow) {
                 try {
@@ -255,9 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: 'meterToggle',
                         isActive: false
                     }, '*');
-                } catch (err) {
-                    // 忽略错误
-                }
+                } catch (err) {}
             }
         }
         
@@ -271,20 +231,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>此功能正在开发中，敬请期待...</p>
             </div>
         `;
-    
-        // 添加关闭按钮事件监听
+        
         document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
-                }
+    }
     
-    // 移除点击空白区域关闭的功能
-    // 现在只能通过右上角的关闭按钮关闭
     
-    // 关闭子界面
     function closeSubInterface() {
-        // 关闭界面歌词显示
         if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
             window.interfaceLyrics.reset();
-            // 通知播放器更新按钮状态
             const iframe = document.querySelector('.sub-interface iframe');
             if (iframe && iframe.contentWindow) {
                 try {
@@ -292,16 +246,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: 'interfaceLyricsToggle',
                         isActive: false
                     }, '*');
-                } catch (err) {
-                    // 忽略错误
-                }
+                } catch (err) {}
             }
         }
         
-        // 关闭音律显示
         if (window.meterControl && window.meterControl.isVisible()) {
             window.meterControl.hide();
-            // 通知播放器更新音律显示按钮状态
             const iframe = document.querySelector('.sub-interface iframe');
             if (iframe && iframe.contentWindow) {
                 try {
@@ -309,26 +259,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         type: 'meterToggle',
                         isActive: false
                     }, '*');
-                } catch (err) {
-                    // 忽略错误
-                }
+                } catch (err) {}
             }
         }
         
         subInterface.classList.remove('active');
         
-        // 重置所有菜单项状态，确保音乐播放器按键也能正确重置
         const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
         allMenuItems.forEach(item => {
             item.classList.remove('active', 'pinned-active');
             item.style.transform = 'none';
         });
         
-        if (activeMenuItem) {
-            activeMenuItem = null;
-        }
+        activeMenuItem = null;
         
-        // 恢复占位符
         setTimeout(() => {
             subInterface.innerHTML = `
                 <div class="close-button" id="closeBtn">✕</div>
@@ -338,28 +282,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             
-            // 添加关闭按钮事件监听
             document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
         }, 500);
     }
     
-
     
-    // 添加键盘快捷键
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeSubInterface();
         }
     });
     
-    // 添加背景图片加载错误处理
     const backgroundImage = document.querySelector('.background-image');
     backgroundImage.addEventListener('error', function() {
-        // 如果背景图片加载失败，使用渐变背景
         this.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
     });
     
-    // 添加页面加载动画
     window.addEventListener('load', function() {
         document.body.style.opacity = '0';
         document.body.style.transition = 'opacity 1s ease-in-out';
@@ -370,7 +308,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// 添加CSS样式到页面
 const additionalStyles = `
     .menu-item.active, .menu-item.pinned-active {
         background: #000 !important;
@@ -486,7 +423,88 @@ document.head.appendChild(styleSheet);
                 return;
             }
         });
+
+        // 为迷你播放器按键添加墨水飞溅特效
+        miniPlayer.addEventListener('mousedown', function(e) {
+            const btn = e.target.closest('.mini-btn');
+            if (btn) {
+                createMiniInkSplash(e, btn);
+            }
+        });
         return miniPlayer;
+    }
+
+    function createMiniInkSplash(event, element) {
+        const rect = element.getBoundingClientRect();
+        const elementWidth = rect.width;
+        const elementHeight = rect.height;
+
+        for (let i = 0; i < 12; i++) {
+            const inkDrop = document.createElement('div');
+            inkDrop.className = 'ink-drop';
+            inkDrop.style.cssText = `
+                position: fixed;
+                width: ${8 + Math.random() * 12}px;
+                height: ${8 + Math.random() * 12}px;
+                background: #000;
+                border-radius: 50%;
+                opacity: 0;
+                pointer-events: none;
+                z-index: 9999;
+                box-shadow: 0 0 4px rgba(0, 0, 0, 0.5), 0 0 8px rgba(0, 0, 0, 0.3);
+                filter: blur(0.5px);
+            `;
+            document.body.appendChild(inkDrop);
+
+            let startX, startY;
+            const side = Math.floor(Math.random() * 4);
+            
+            switch(side) {
+                case 0:
+                    startX = rect.left + Math.random() * elementWidth;
+                    startY = rect.top;
+                    break;
+                case 1:
+                    startX = rect.right;
+                    startY = rect.top + Math.random() * elementHeight;
+                    break;
+                case 2:
+                    startX = rect.left + Math.random() * elementWidth;
+                    startY = rect.bottom;
+                    break;
+                case 3:
+                    startX = rect.left;
+                    startY = rect.top + Math.random() * elementHeight;
+                    break;
+            }
+            
+            const centerX = rect.left + elementWidth / 2;
+            const centerY = rect.top + elementHeight / 2;
+            const baseAngle = Math.atan2(startY - centerY, startX - centerX);
+            const randomAngle = baseAngle + (Math.random() - 0.5) * 1.0;
+            const distance = 80 + Math.random() * 120;
+            const finalX = Math.cos(randomAngle) * distance;
+            const finalY = Math.sin(randomAngle) * distance;
+
+            inkDrop.style.left = `${startX}px`;
+            inkDrop.style.top = `${startY}px`;
+            inkDrop.style.transform = 'translate(0, 0) scale(1)';
+            inkDrop.style.opacity = '1';
+
+            const delay = Math.random() * 150;
+            const rotation = (Math.random() - 0.5) * 360;
+            setTimeout(() => {
+                inkDrop.style.transition = 'all 0.8s ease-out';
+                inkDrop.style.transform = `translate(${finalX}px, ${finalY}px) scale(${0.3 + Math.random() * 0.7}) rotate(${rotation}deg)`;
+                inkDrop.style.opacity = '0';
+            }, delay);
+
+            setTimeout(() => {
+                if (inkDrop.parentNode) {
+                    inkDrop.parentNode.removeChild(inkDrop);
+                }
+            }, 800 + delay);
+        }
     }
 
     function togglePlayPause(){

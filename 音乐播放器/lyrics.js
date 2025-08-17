@@ -1,4 +1,4 @@
-// 歌词数据文件
+
 const LYRICS_DATA = {
 	"真夜中のドアStay With Me.txt": `
 [00:00.000]歌词制作：ZZZ

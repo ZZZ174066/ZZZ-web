@@ -31,7 +31,7 @@ html {
             margin-left: 0.5px;
         }
 
-        /* 左侧播放列表 */
+
         .playlist-section {
             flex: 0 0 300px;
             min-width: 200px;
@@ -57,7 +57,7 @@ html {
             margin-left: -10px;
         }
 
-        /* 搜索容器样式 */
+
         .title-search-container {
             position: relative;
             display: flex;
@@ -67,7 +67,7 @@ html {
             margin-top: 0;
         }
 
-        /* 搜索图标样式 */
+
         .search-icon {
             position: absolute;
             right: 15px;
@@ -93,7 +93,7 @@ html {
             transform: translateY(-50%) scale(1.1);
         }
 
-        /* 搜索框样式 */
+
         .search-input {
             position: absolute;
             left: 0.5%;
@@ -176,7 +176,7 @@ html {
             }
         }
 
-        /* 中间视频区域 */
+
         .video-section {
             flex: 1;
             min-width: 400px;
@@ -204,7 +204,7 @@ html {
             border: 4px solid #000;
             border-radius: 8px;
             background: #000;
-            /* 恢复鼠标交互以支持点击暂停 */
+
             pointer-events: auto;
             cursor: pointer;
             max-width: 100%;
@@ -212,7 +212,7 @@ html {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
-        /* 进度条样式 */
+
         .progress-container {
             margin-top: 15px;
             display: flex;
@@ -249,7 +249,7 @@ html {
             transform: translateX(0);
         }
 
-        /* 响应式调整：窗口缩小时减少间距和进度条长度 */
+
         @media (max-width: 1400px) {
             .volume-control, .speed-control {
                 gap: 2px;
@@ -297,7 +297,7 @@ html {
             text-align: center;
         }
 
-        /* 微调标签位置：音量左移，速度右移 */
+
         .volume-control .control-label {
             margin-left: 0;
             transform: translateX(-10px);
@@ -322,7 +322,7 @@ html {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
         }
 
-        /* 值在进度条正上方且居中，不影响布局 */
+
         .volume-bar .control-value,
         .speed-bar .control-value {
             position: absolute;
@@ -418,7 +418,7 @@ html {
             flex-shrink: 0;
         }
 
-        /* 播放控制按钮 */
+
         .control-buttons {
             margin-bottom: 20px;
         }
@@ -480,7 +480,7 @@ html {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
-/* 墨水飞溅特效 - 使用JavaScript实现 */
+
 .ink-drop {
     position: fixed;
     background: #000;
@@ -491,7 +491,7 @@ html {
     filter: blur(0.5px);
 }
 
-/* 为播放列表项添加墨水飞溅特效 */
+
 .playlist-item {
     padding: 10px;
     margin: 6px 0;
@@ -506,10 +506,10 @@ html {
     text-align: center;
 }
 
-/* 音频可视化器 */
 
 
-        /* 右侧歌词区域 */
+
+
         .lyrics-section {
             flex: 0 0 300px;
             min-width: 200px;
@@ -582,7 +582,7 @@ html {
     box-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 
-/* 为歌词行添加墨水飞溅特效 */
+
 
         .lyrics-tools {
             display: flex;
@@ -600,7 +600,7 @@ html {
             margin-top: 15px;
 }
 
-/* 响应式设计 */
+
 @media (max-width: 1200px) {
     .player-container {
         min-width: 800px;
@@ -639,7 +639,7 @@ html {
     }
 }
 
-/* 滚动条样式 */
+
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -658,7 +658,7 @@ html {
     background: #555;
 }
 
-/* 播放列表滚动条样式 */
+
 .playlist-container::-webkit-scrollbar {
     width: 6px;
 }
@@ -683,7 +683,7 @@ html {
     opacity: 1;
 }
 
-/* 歌词区域滚动条样式 */
+
 .lyrics-container::-webkit-scrollbar {
     width: 6px;
 }
@@ -706,4 +706,30 @@ html {
 
 .lyrics-container:hover::-webkit-scrollbar-thumb {
     opacity: 1;
+}
+
+/* 加载和错误消息样式 */
+.loading-message, .error-message {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    margin: 20px;
+    background: #f9f9f9;
+}
+
+.loading-message::before {
+    content: "🎵 ";
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.error-message::before {
+    content: "⚠️ ";
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
 } 
