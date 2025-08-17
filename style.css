@@ -706,30 +706,4 @@ html {
 
 .lyrics-container:hover::-webkit-scrollbar-thumb {
     opacity: 1;
-}
-
-/* 加载和错误消息样式 */
-.loading-message, .error-message {
-    padding: 20px;
-    text-align: center;
-    color: #666;
-    font-size: 16px;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    margin: 20px;
-    background: #f9f9f9;
-}
-
-.loading-message::before {
-    content: "🎵 ";
-    font-size: 24px;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.error-message::before {
-    content: "⚠️ ";
-    font-size: 24px;
-    display: block;
-    margin-bottom: 10px;
 } 

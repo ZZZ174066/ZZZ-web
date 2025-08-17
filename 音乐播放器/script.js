@@ -77,8 +77,7 @@ const LYRICS_TIME_OFFSET = {
 class VideoPlayer {
     constructor() {
         this.video = document.getElementById('videoPlayer');
-        this.playlist = []; // 现在是空数组，将通过动态扫描填充
-        this.musicFiles = []; // 存储扫描到的音乐文件信息
+        this.playlist = document.querySelectorAll('.playlist-item');
         this.currentIndex = 0;
         this.playMode = 'list';
         this.lyrics = [];
@@ -103,129 +102,34 @@ class VideoPlayer {
         this.lyricsCorrectBtn = document.getElementById('lyricsCorrectBtn');
         this.currentLyricsFile = null;
         
-        // 先扫描文件，然后初始化播放器
-        this.scanMusicFiles().then(() => {
-            this.initializePlayer();
-            this.bindEvents();
-            this.loadLyrics();
-            this.initInkSplashEffect();
-        }).catch(error => {
-            console.error('扫描音乐文件失败:', error);
-            this.showError('无法扫描音乐文件，请检查文件夹是否存在');
-        });
-    }
-
-    // 扫描音乐文件
-    async scanMusicFiles() {
-        try {
-            // 尝试使用PHP扫描文件
-            const response = await fetch('./scan_files.php');
-            const data = await response.json();
-            
-            if (data.success && data.files && data.files.length > 0) {
-                this.musicFiles = data.files;
-                this.generatePlaylist();
-                console.log(`成功扫描到 ${data.count} 个音乐文件`);
-            } else {
-                throw new Error(data.error || '未找到音乐文件');
-            }
-        } catch (error) {
-            console.warn('PHP扫描失败，尝试使用备用方案:', error);
-            // 如果PHP扫描失败，使用备用的静态文件列表
-            this.useFallbackPlaylist();
-        }
-    }
-
-    // 生成播放列表HTML
-    generatePlaylist() {
-        const playlistContainer = document.querySelector('.playlist-container');
-        playlistContainer.innerHTML = ''; // 清空现有内容
-        
-        this.musicFiles.forEach((fileInfo, index) => {
-            const playlistItem = document.createElement('div');
-            playlistItem.className = 'playlist-item';
-            if (index === 0) {
-                playlistItem.classList.add('active');
-            }
-            
-            playlistItem.dataset.video = fileInfo.file;
-            playlistItem.dataset.lyrics = fileInfo.lyricsFile || '';
-            
-            const songName = document.createElement('span');
-            songName.className = 'song-name';
-            songName.textContent = fileInfo.displayName;
-            
-            playlistItem.appendChild(songName);
-            playlistContainer.appendChild(playlistItem);
-        });
-        
-        // 更新playlist引用
-        this.playlist = document.querySelectorAll('.playlist-item');
-        
-        // 重新绑定播放列表事件
-        this.bindPlaylistEvents();
-        
-        // 为新生成的播放列表项添加墨水飞溅效果
-        this.playlist.forEach(item => {
-            this.addInkSplashToButton(item);
-        });
-    }
-
-    // 备用播放列表（如果动态扫描失败）
-    useFallbackPlaylist() {
-        console.log('使用备用播放列表');
-        
-        // 创建一个基本的文件列表作为备用
-        const fallbackFiles = [
-            { file: 'All My People.mp4', displayName: 'All My People', lyricsFile: 'All My People.txt' },
-            { file: 'Axel F.mp4', displayName: 'Axel F', lyricsFile: 'Axel F.txt' },
-            { file: 'Betty Boop.mp4', displayName: 'Betty Boop', lyricsFile: 'Betty Boop.txt' }
-        ];
-        
-        this.musicFiles = fallbackFiles;
-        this.generatePlaylist();
-    }
-
-    // 显示错误信息
-    showError(message) {
-        const playlistContainer = document.querySelector('.playlist-container');
-        playlistContainer.innerHTML = `
-            <div class="error-message" style="padding: 20px; text-align: center; color: #666;">
-                <p>${message}</p>
-                <button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; border: 2px solid #000; background: white; cursor: pointer;">重新加载</button>
-            </div>
-        `;
+        this.initializePlayer();
+        this.bindEvents();
+        this.loadLyrics();
+        this.initInkSplashEffect();
     }
 
     initializePlayer() {
-        // 确保有播放列表项
-        if (this.playlist.length > 0) {
-            this.video.src = `../音乐/${this.playlist[this.currentIndex].dataset.video}`;
-            this.updateActivePlaylistItem();
-        }
+
+                    this.video.src = `../音乐/${this.playlist[this.currentIndex].dataset.video}`;
+        this.updateActivePlaylistItem();
         
-        // 设置播放模式
+
         this.setPlayMode(this.playMode);
         
-        // 设置默认音量和播放速度
+
         this.video.volume = 0.5;
         this.video.playbackRate = 1.0;
         this.volumeFill.style.width = '50%';
         this.speedFill.style.width = '50%';
     }
 
-    // 为播放列表项绑定事件
-    bindPlaylistEvents() {
+    bindEvents() {
+
         this.playlist.forEach((item, index) => {
             item.addEventListener('click', () => {
                 this.playTrack(index);
             });
         });
-    }
-
-    bindEvents() {
-        // 为播放列表项绑定事件
-        this.bindPlaylistEvents();
 
 
         const searchIcon = document.getElementById('searchIcon');
@@ -469,62 +373,28 @@ class VideoPlayer {
     }
 
     loadLyrics(lyricsFile = null) {
-        if (!lyricsFile && this.playlist.length > 0) {
+        if (!lyricsFile) {
             lyricsFile = this.playlist[this.currentIndex].dataset.lyrics;
         }
         this.currentLyricsFile = lyricsFile;
         // 离开当前歌曲时重置矫正（不丢数据，仅清空标记）
         this.correctedLines = [];
         this.correctedSet = new Set();
-        
-        if (!lyricsFile) {
-            this.lyrics = [];
-            this.displayLyrics();
-            return;
-        }
-        
-        // 尝试动态加载歌词文件
-        this.loadLyricsFromFile(lyricsFile).then(lyricsText => {
-            if (lyricsText) {
-                this.lyrics = this.parseLyrics(lyricsText);
+        // 从内置歌词数据中获取歌词
+        const data = LYRICS_DATA[lyricsFile];
+        if (data) {
+            if (Array.isArray(data)) {
+                this.lyrics = data.slice().sort((a, b) => a.time - b.time);
+            } else if (typeof data === 'string') {
+                this.lyrics = this.parseLyrics(data);
             } else {
-                // 如果动态加载失败，尝试从内置歌词数据中获取
-                const data = LYRICS_DATA[lyricsFile];
-                if (data) {
-                    if (Array.isArray(data)) {
-                        this.lyrics = data.slice().sort((a, b) => a.time - b.time);
-                    } else if (typeof data === 'string') {
-                        this.lyrics = this.parseLyrics(data);
-                    } else {
-                        this.lyrics = [];
-                    }
-                } else {
-                    console.warn('未找到歌词文件:', lyricsFile);
-                    this.lyrics = [];
-                }
+                this.lyrics = [];
             }
             this.displayLyrics();
-        }).catch(error => {
-            console.error('加载歌词失败:', error);
+        } else {
+            console.error('未找到歌词文件:', lyricsFile);
             this.lyrics = [];
             this.displayLyrics();
-        });
-    }
-
-    // 动态加载歌词文件
-    async loadLyricsFromFile(lyricsFile) {
-        try {
-            const response = await fetch(`./歌词/${lyricsFile}`);
-            if (response.ok) {
-                const text = await response.text();
-                return text;
-            } else {
-                console.warn(`歌词文件不存在: ${lyricsFile}`);
-                return null;
-            }
-        } catch (error) {
-            console.warn(`加载歌词文件失败: ${lyricsFile}`, error);
-            return null;
         }
     }
 
