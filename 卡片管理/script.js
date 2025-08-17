@@ -539,16 +539,23 @@ class GameCardManager {
         }
         
         try {
-            // 检查浏览器是否支持文件系统访问API
-            if ('showDirectoryPicker' in window) {
+            // 检查浏览器是否支持文件系统访问API，并且在安全上下文中
+            if ('showDirectoryPicker' in window && window.isSecureContext) {
                 await this.exportWithDirectoryPicker();
             } else {
-                alert('您的浏览器不支持文件夹导出，请使用Chrome或Edge浏览器。');
+                // 使用降级方案：导出JSON文件
+                await this.exportAsJSON();
             }
         } catch (error) {
             console.error('导出失败:', error);
             if (error.name !== 'AbortError') {
-                alert('导出失败，请重试。');
+                // 如果Directory Picker失败，尝试降级方案
+                if (error.name === 'SecurityError') {
+                    console.log('文件夹选择器不可用，使用JSON导出方案');
+                    await this.exportAsJSON();
+                } else {
+                    alert('导出失败，请重试。');
+                }
             }
         }
     }
@@ -620,6 +627,48 @@ class GameCardManager {
                 // 用户取消了操作
                 return;
             }
+            throw error;
+        }
+    }
+
+    async exportAsJSON() {
+        try {
+            // 创建导出数据
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                version: '1.0',
+                games: this.games.map(game => ({
+                    name: game.name,
+                    originalPrice: game.originalPrice,
+                    purchasePrice: game.purchasePrice,
+                    playTime: game.playTime,
+                    achievementCurrent: game.achievementCurrent,
+                    achievementTotal: game.achievementTotal,
+                    tags: game.tags,
+                    hasImage: !!game.imageData
+                }))
+            };
+            
+            // 创建JSON文件内容
+            const jsonContent = JSON.stringify(exportData, null, 2);
+            
+            // 创建下载链接
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            // 创建下载链接并触发下载
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `游戏数据_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            // 清理URL对象
+            URL.revokeObjectURL(url);
+            
+            alert('导出完成！已下载JSON格式的游戏数据文件。\n注意：此格式不包含图片数据。');
+        } catch (error) {
             throw error;
         }
     }
