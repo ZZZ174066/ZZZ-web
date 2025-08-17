@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡片管理系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card-manager-container">
+        <!-- 左侧筛选区域 -->
+        <div class="filter-section">
+            <div class="filter-header">筛选标签</div>
+            <div class="filter-list" id="filterList">
+                <!-- 筛选标签将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 中间卡片显示区域 -->
+        <div class="cards-section">
+            <!-- 顶部工具栏 -->
+            <div class="toolbar">
+                <div class="card-type-selector">
+                    <select id="cardTypeSelect">
+                        <option value="game">游戏卡片</option>
+                        <option value="anime" disabled>动漫卡片</option>
+                        <option value="music" disabled>音乐卡片</option>
+                    </select>
+                </div>
+                <div class="sort-buttons">
+                    <button class="sort-btn active" data-sort="name">按名称排序</button>
+                    <button class="sort-btn" data-sort="time">按时长排序</button>
+                    <button class="sort-btn" data-sort="price">按价格排序</button>
+                    <button class="sort-btn" data-sort="achievement">按成就排序</button>
+                </div>
+                <div class="search-section">
+                    <input type="text" id="searchInput" placeholder="搜索游戏...">
+                    <button id="searchBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 卡片网格 -->
+            <div class="cards-grid" id="cardsGrid">
+                <!-- 卡片将通过JavaScript动态生成 -->
+            </div>
+
+            <!-- 底部操作按钮 -->
+            <div class="bottom-actions">
+                <button class="action-btn" id="importBtn">导入表单</button>
+                <button class="action-btn" id="exportBtn">导出表单</button>
+                <button class="action-btn" id="addGameBtn">添加游戏</button>
+            </div>
+        </div>
+
+        <!-- 右侧详细信息区域 -->
+        <div class="detail-section">
+            <div class="game-detail-box">
+                <div class="detail-header">游戏名称</div>
+                <div class="game-preview">
+                    <div class="preview-image" id="previewImage">
+                        图片预览
+                    </div>
+                    <div class="game-tags" id="gameTags">
+                        <span class="tag">标签</span>
+                        <span class="tag">标签</span>
+                        <span class="tag">标签</span>
+                    </div>
+                </div>
+                <div class="game-info">
+                    <div class="price-row">
+                        <div class="price-item">
+                            <div class="price-label">原价</div>
+                            <div class="price-value" id="originalPriceDisplay">--</div>
+                        </div>
+                        <div class="price-item">
+                            <div class="price-label">购入价</div>
+                            <div class="price-value" id="purchasePriceDisplay">--</div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">时长：</span>
+                        <span class="info-value" id="gameTime">游戏时长</span>
+                    </div>
+                    <div class="achievement-section">
+                        <div class="achievement-label">成就 (15/30)</div>
+                        <div class="achievement-bar">
+                            <div class="achievement-progress" id="achievementProgress" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-actions">
+                <button class="detail-btn" id="editBtn">修改</button>
+                <button class="detail-btn" id="deleteBtn">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加/编辑游戏模态框 -->
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">添加游戏</h3>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="gameForm">
+                    <div class="form-group">
+                        <label>游戏名称：</label>
+                        <input type="text" id="gameName" required>
+                    </div>
+                    <div class="form-group form-row">
+                        <div class="form-col">
+                            <label>原价：</label>
+                            <input type="number" id="originalPrice" step="0.01" required>
+                        </div>
+                        <div class="form-col">
+                            <label>购入价：</label>
+                            <input type="number" id="purchasePrice" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>游戏时长（小时）：</label>
+                        <input type="number" id="playTime" step="0.1" required>
+                    </div>
+                    <div class="form-group form-row">
+                        <div class="form-col">
+                            <label>已获得成就：</label>
+                            <input type="number" id="achievementCurrent" min="0" required>
+                        </div>
+                        <div class="form-col">
+                            <label>总成就数：</label>
+                            <input type="number" id="achievementTotal" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>标签（用空格分隔）：</label>
+                        <input type="text" id="gameTagsInput" placeholder="动作 冒险 RPG">
+                    </div>
+                    <div class="form-group">
+                        <label>预览图片：</label>
+                        <input type="file" id="gameImage" accept="image/*">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveGame">保存</button>
+                <button type="button" id="cancelGame">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文件输入（隐藏） -->
+    <input type="file" id="importInput" webkitdirectory directory style="display: none;">
+
+    <script src="script.js"></script>
+</body>
+</html>

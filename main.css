@@ -264,12 +264,27 @@ body {
     background: #fff;
     border-radius: 8px;
     overflow: hidden;
-    margin-left: 420px;
 }
 
 .zhihui-travel-container iframe {
     width: 100%;
     height: 100%;
+    border: none;
+    border-radius: 8px;
+}
+
+.card-manager-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.card-manager-container iframe {
+    width: 100%;
+    height: 75vh;
     border: none;
     border-radius: 8px;
 } 

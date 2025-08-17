@@ -1,0 +1,13 @@
+{
+  "name": "示例游戏1",
+  "originalPrice": 180,
+  "purchasePrice": 90,
+  "playTime": 180,
+  "achievementCurrent": 25,
+  "achievementTotal": 50,
+  "tags": [
+    "动作",
+    "冒险",
+    "RPG"
+  ]
+}

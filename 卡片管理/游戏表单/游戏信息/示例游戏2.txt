@@ -1,0 +1,12 @@
+{
+  "name": "示例游戏2",
+  "originalPrice": 120,
+  "purchasePrice": 60,
+  "playTime": 45.5,
+  "achievementCurrent": 30,
+  "achievementTotal": 40,
+  "tags": [
+    "策略",
+    "模拟"
+  ]
+}
