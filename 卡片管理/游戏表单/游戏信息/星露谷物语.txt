@@ -1,0 +1,12 @@
+{
+  "name": "星露谷物语",
+  "originalPrice": 48,
+  "purchasePrice": 24,
+  "playTime": 205.2,
+  "achievementCurrent": 49,
+  "achievementTotal": 49,
+  "tags": [
+    "建造",
+    "休闲"
+  ]
+}

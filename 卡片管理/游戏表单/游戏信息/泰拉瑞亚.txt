@@ -1,0 +1,13 @@
+{
+  "name": "泰拉瑞亚",
+  "originalPrice": 42,
+  "purchasePrice": 21,
+  "playTime": 170.9,
+  "achievementCurrent": 115,
+  "achievementTotal": 115,
+  "tags": [
+    "生存",
+    "建造",
+    "休闲"
+  ]
+}

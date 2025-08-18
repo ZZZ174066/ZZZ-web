@@ -1,0 +1,13 @@
+{
+  "name": "收获日2",
+  "originalPrice": 42,
+  "purchasePrice": 13.86,
+  "playTime": 163.6,
+  "achievementCurrent": 1328,
+  "achievementTotal": 1328,
+  "tags": [
+    "射击",
+    "动作",
+    "多人"
+  ]
+}

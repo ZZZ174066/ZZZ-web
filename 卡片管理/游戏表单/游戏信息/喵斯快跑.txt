@@ -1,0 +1,12 @@
+{
+  "name": "喵斯快跑",
+  "originalPrice": 18,
+  "purchasePrice": 18,
+  "playTime": 304.4,
+  "achievementCurrent": 39,
+  "achievementTotal": 39,
+  "tags": [
+    "节奏",
+    "闯关"
+  ]
+}

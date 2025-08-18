@@ -160,7 +160,8 @@ class GameCardManager {
         card.className = 'game-card';
         card.dataset.gameId = game.id;
         
-        const achievementPercent = Math.round((game.achievementCurrent / game.achievementTotal) * 100);
+        const achievementDisplay = game.achievementTotal === 0 ? '无成就' : `${Math.round((game.achievementCurrent / game.achievementTotal) * 100)}%`;
+        const priceDisplay = game.originalPrice === 0 ? '免费' : `${game.originalPrice.toFixed(2)}¥`;
         
         card.innerHTML = `
             <div class="card-name">${game.name}</div>
@@ -168,9 +169,9 @@ class GameCardManager {
                 ${game.imageData ? `<img src="${game.imageData}" alt="${game.name}">` : '预览图片'}
             </div>
             <div class="card-info">
-                <div>原价: ${game.originalPrice.toFixed(2)}¥</div>
+                <div>原价: ${priceDisplay}</div>
                 <div>时长: ${game.playTime}h</div>
-                <div>成就: ${achievementPercent}%</div>
+                <div>成就: ${achievementDisplay}</div>
             </div>
         `;
         
@@ -216,16 +217,20 @@ class GameCardManager {
         });
         
         // 更新价格和时长
-        this.originalPriceDisplay.textContent = `¥${game.originalPrice.toFixed(2)}`;
-        this.purchasePriceDisplay.textContent = `¥${game.purchasePrice.toFixed(2)}`;
+        this.originalPriceDisplay.textContent = game.originalPrice === 0 ? '免费' : `¥${game.originalPrice.toFixed(2)}`;
+        this.purchasePriceDisplay.textContent = game.purchasePrice === 0 ? '免费' : `¥${game.purchasePrice.toFixed(2)}`;
         this.gameTimeDisplay.textContent = `${game.playTime}小时`;
         
         // 更新成就进度
-        const achievementPercent = (game.achievementCurrent / game.achievementTotal) * 100;
-        this.achievementProgress.style.width = `${achievementPercent}%`;
-        
         const achievementLabel = document.querySelector('.achievement-label');
-        achievementLabel.textContent = `成就 (${game.achievementCurrent}/${game.achievementTotal})`;
+        if (game.achievementTotal === 0) {
+            this.achievementProgress.style.width = '0%';
+            achievementLabel.textContent = '无成就';
+        } else {
+            const achievementPercent = (game.achievementCurrent / game.achievementTotal) * 100;
+            this.achievementProgress.style.width = `${achievementPercent}%`;
+            achievementLabel.textContent = `成就 (${game.achievementCurrent}/${game.achievementTotal})`;
+        }
     }
 
     renderFilters() {

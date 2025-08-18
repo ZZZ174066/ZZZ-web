@@ -1,0 +1,13 @@
+{
+  "name": "米塔",
+  "originalPrice": 52,
+  "purchasePrice": 49.4,
+  "playTime": 167.9,
+  "achievementCurrent": 26,
+  "achievementTotal": 26,
+  "tags": [
+    "恐怖",
+    "剧情",
+    "解密"
+  ]
+}

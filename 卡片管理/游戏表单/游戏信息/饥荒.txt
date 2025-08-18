@@ -1,0 +1,13 @@
+{
+  "name": "饥荒",
+  "originalPrice": 24,
+  "purchasePrice": 6,
+  "playTime": 162.3,
+  "achievementCurrent": 0,
+  "achievementTotal": 1,
+  "tags": [
+    "生存",
+    "建造",
+    "冒险"
+  ]
+}
