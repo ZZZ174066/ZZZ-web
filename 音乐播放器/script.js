@@ -372,7 +372,7 @@ class VideoPlayer {
         });
     }
 
-    loadLyrics(lyricsFile = null) {
+    async loadLyrics(lyricsFile = null) {
         if (!lyricsFile) {
             lyricsFile = this.playlist[this.currentIndex].dataset.lyrics;
         }
@@ -380,19 +380,20 @@ class VideoPlayer {
         // 离开当前歌曲时重置矫正（不丢数据，仅清空标记）
         this.correctedLines = [];
         this.correctedSet = new Set();
-        // 从内置歌词数据中获取歌词
-        const data = LYRICS_DATA[lyricsFile];
-        if (data) {
-            if (Array.isArray(data)) {
-                this.lyrics = data.slice().sort((a, b) => a.time - b.time);
-            } else if (typeof data === 'string') {
-                this.lyrics = this.parseLyrics(data);
+        
+        try {
+            // 从歌词文件中动态加载歌词
+            const lyricsText = await getLyrics(lyricsFile);
+            if (lyricsText) {
+                this.lyrics = this.parseLyrics(lyricsText);
+                this.displayLyrics();
             } else {
+                console.error('未找到歌词文件:', lyricsFile);
                 this.lyrics = [];
+                this.displayLyrics();
             }
-            this.displayLyrics();
-        } else {
-            console.error('未找到歌词文件:', lyricsFile);
+        } catch (error) {
+            console.error('加载歌词失败:', error);
             this.lyrics = [];
             this.displayLyrics();
         }

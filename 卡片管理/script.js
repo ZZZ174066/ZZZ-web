@@ -160,7 +160,13 @@ class GameCardManager {
         card.className = 'game-card';
         card.dataset.gameId = game.id;
         
-        const achievementDisplay = game.achievementTotal === 0 ? '无成就' : `${Math.round((game.achievementCurrent / game.achievementTotal) * 100)}%`;
+        let achievementDisplay;
+        if (game.achievementTotal === 0) {
+            achievementDisplay = '无成就';
+        } else {
+            const achievementPercent = Math.round((game.achievementCurrent / game.achievementTotal) * 100);
+            achievementDisplay = `${achievementPercent}%`;
+        }
         const priceDisplay = game.originalPrice === 0 ? '免费' : `${game.originalPrice.toFixed(2)}¥`;
         
         card.innerHTML = `
@@ -529,7 +535,7 @@ class GameCardManager {
         gameData.purchasePrice = parseFloat(gameData.purchasePrice) || 0;
         gameData.playTime = parseFloat(gameData.playTime) || 0;
         gameData.achievementCurrent = parseInt(gameData.achievementCurrent) || 0;
-        gameData.achievementTotal = parseInt(gameData.achievementTotal) || 1;
+        gameData.achievementTotal = parseInt(gameData.achievementTotal) >= 0 ? parseInt(gameData.achievementTotal) : 0;
         gameData.tags = Array.isArray(gameData.tags) ? gameData.tags : [];
         
         this.games.push(gameData);
