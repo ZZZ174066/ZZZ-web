@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     openZhihuiTravelSystem();
                     break;
                 case '3D机器人':
-                    showPlaceholder('3D机器人');
+                    show3DRobotModal();
                     break;
                 case '跑酷小游戏':
                     showPlaceholder('跑酷小游戏');
@@ -747,82 +747,82 @@ document.head.appendChild(styleSheet);
 		el.style.display = visible ? 'block' : 'none';
 	}
 
-			function animateMeter(){
-			// 使用真实音频数据或保持当前状态
-			if (meterAnimId) {
-				meterAnimId = requestAnimationFrame(animateMeter);
-			}
+		function animateMeter(){
+		// 使用真实音频数据或保持当前状态
+		if (meterAnimId) {
+			meterAnimId = requestAnimationFrame(animateMeter);
 		}
+	}
 
-			function renderMeter(bars){
-			// 根据真实音频数据更新音律条高度
-			const len = Math.min(bars.length, meterBars.length);
-			for (let i = 0; i < len; i++) {
-				let v = Math.max(0, Math.min(1, bars[i]));
-				// 增强视觉效果：更大的动态范围
-				v = Math.pow(v, 0.4); // 提升低幅值
-				v = Math.max(0.03, v); // 确保最小高度
-				const heightPercent = Math.round(v * 90); // 0-90%
-				meterBars[i].style.height = heightPercent + '%';
-			}
+		function renderMeter(bars){
+		// 根据真实音频数据更新音律条高度
+		const len = Math.min(bars.length, meterBars.length);
+		for (let i = 0; i < len; i++) {
+			let v = Math.max(0, Math.min(1, bars[i]));
+			// 增强视觉效果：更大的动态范围
+			v = Math.pow(v, 0.4); // 提升低幅值
+			v = Math.max(0.03, v); // 确保最小高度
+			const heightPercent = Math.round(v * 90); // 0-90%
+			meterBars[i].style.height = heightPercent + '%';
 		}
+	}
 
-		function pauseMeter(){
-			// 音频暂停时缓慢衰减
-			for (const bar of meterBars) {
-				const h = parseInt(bar.style.height || '0');
-				const nh = Math.max(3, Math.floor(h * 0.85)); // 衰减到最小3%
-				bar.style.height = nh + '%';
-			}
+	function pauseMeter(){
+		// 音频暂停时缓慢衰减
+		for (const bar of meterBars) {
+			const h = parseInt(bar.style.height || '0');
+			const nh = Math.max(3, Math.floor(h * 0.85)); // 衰减到最小3%
+			bar.style.height = nh + '%';
 		}
+	}
 
-		function startMeter(){
-			if (!meterAnimId) meterAnimId = requestAnimationFrame(animateMeter);
-		}
-		function stopMeter(){
-			if (meterAnimId) cancelAnimationFrame(meterAnimId);
-			meterAnimId = 0;
-		}
+	function startMeter(){
+		if (!meterAnimId) meterAnimId = requestAnimationFrame(animateMeter);
+	}
+	function stopMeter(){
+		if (meterAnimId) cancelAnimationFrame(meterAnimId);
+		meterAnimId = 0;
+	}
 
-					window.addEventListener('message', function(e){
-			const data = e.data || {};
-			if (data.type === 'meterToggle') {
-				if (data.isActive) {
-					setMeterVisible(true);
-					startMeter();
-				} else {
-					stopMeter();
-					setMeterVisible(false);
-				}
-			} else if (data.type === 'meterData') {
-				// 接收真实音频数据并更新音律显示
-				if (data.bars && data.bars.length > 0) {
-					renderMeter(data.bars);
-				}
-			} else if (data.type === 'meterPause') {
-				// 音频暂停时的衰减效果
-				pauseMeter();
+				window.addEventListener('message', function(e){
+		const data = e.data || {};
+		if (data.type === 'meterToggle') {
+			if (data.isActive) {
+				setMeterVisible(true);
+				startMeter();
+			} else {
+				stopMeter();
+				setMeterVisible(false);
 			}
-		});
-		
-		// 确保音律显示框被创建
-		ensureMeterBox();
-		
-		// 暴露音律显示框给全局使用
-		window.meterBox = meterBox;
-		
-		// 暴露音律显示控制函数给全局使用
-		window.meterControl = {
-			hide: () => {
-				if (meterBox) {
-					meterBox.style.display = 'none';
-				}
-			},
-			isVisible: () => {
-				return meterBox && meterBox.style.display === 'block';
+		} else if (data.type === 'meterData') {
+			// 接收真实音频数据并更新音律显示
+			if (data.bars && data.bars.length > 0) {
+				renderMeter(data.bars);
 			}
-		};
-	})();
+		} else if (data.type === 'meterPause') {
+			// 音频暂停时的衰减效果
+			pauseMeter();
+		}
+	});
+	
+	// 确保音律显示框被创建
+	ensureMeterBox();
+	
+	// 暴露音律显示框给全局使用
+	window.meterBox = meterBox;
+	
+	// 暴露音律显示控制函数给全局使用
+	window.meterControl = {
+		hide: () => {
+			if (meterBox) {
+				meterBox.style.display = 'none';
+			}
+		},
+		isVisible: () => {
+			return meterBox && meterBox.style.display === 'block';
+		}
+	};
+})();
 
 // 界面歌词显示功能
 (function(){
@@ -1237,4 +1237,334 @@ function openTetrisGame() {
             document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
         }, 500);
     });
+}
+
+// 3D机器人弹窗功能
+function show3DRobotModal() {
+    if (document.body.classList.contains('mini-player-active')) {
+        // 在迷你播放器状态下，使用前景面板显示
+        const panel = ensureForegroundPanel();
+        panel.classList.add('active');
+        panel.innerHTML = create3DRobotModalContent();
+        
+        // 移除之前的事件监听器，避免重复绑定
+        panel.removeEventListener('click', panel._robotCloseHandler);
+        
+        // 创建新的事件处理函数并保存引用
+        panel._robotCloseHandler = function(e) {
+            if (e.target.classList.contains('close-button')) {
+                panel.classList.remove('active');
+                // 重置菜单项状态
+                if (activeMenuItem) {
+                    activeMenuItem.classList.remove('active');
+                    activeMenuItem.style.transform = 'none';
+                    activeMenuItem = null;
+                }
+                // 确保所有菜单项都重置状态
+                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+                allMenuItems.forEach(item => {
+                    item.classList.remove('active');
+                    item.style.transform = 'none';
+                });
+            }
+        };
+        
+        // 添加事件监听器
+        panel.addEventListener('click', panel._robotCloseHandler);
+        
+        // 初始化3D机器人弹窗功能
+        init3DRobotModal(panel);
+        return;
+    }
+    
+    // 非迷你播放器状态下，关闭界面歌词和音律显示
+    if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
+        window.interfaceLyrics.hide();
+    }
+    
+    if (window.meterControl && window.meterControl.isVisible()) {
+        window.meterControl.hide();
+    }
+    
+    const subInterface = document.getElementById('subInterface');
+    subInterface.classList.add('active');
+    
+    // 创建3D机器人弹窗内容
+    subInterface.innerHTML = create3DRobotModalContent();
+    
+    // 为3D机器人弹窗添加专门的关闭处理
+    document.getElementById('closeBtn').addEventListener('click', function() {
+        // 关闭3D机器人弹窗
+        subInterface.classList.remove('active');
+        if (activeMenuItem) {
+            activeMenuItem.classList.remove('active');
+            activeMenuItem.style.transform = 'none';
+            activeMenuItem = null;
+        }
+        
+        // 确保所有菜单项都重置状态
+        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+        allMenuItems.forEach(item => {
+            item.classList.remove('active');
+            item.style.transform = 'none';
+        });
+        
+        // 恢复占位符
+        setTimeout(() => {
+            subInterface.innerHTML = `
+                <div class="close-button" id="closeBtn">✕</div>
+                <div class="player-placeholder">
+                    <h2>音乐播放器</h2>
+                    <p>点击"音乐播放器"开始播放音乐</p>
+                </div>
+            `;
+            
+            // 添加关闭按钮事件监听
+            document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
+        }, 500);
+    });
+    
+    // 初始化3D机器人弹窗功能
+    init3DRobotModal(subInterface);
+}
+
+// 创建3D机器人弹窗内容
+function create3DRobotModalContent() {
+    return `
+        <div class="close-button" id="closeBtn">✕</div>
+        <div class="robot-modal-container">
+            <div class="robot-image-container">
+                <img id="robotImage" src="3D建模/1.png" alt="3D机器人" class="robot-image">
+                <div class="image-counter">
+                    <span id="currentImageIndex">1</span> / <span id="totalImages">16</span>
+                </div>
+            </div>
+            <div class="robot-controls">
+                <button class="robot-btn" id="prevBtn">◀ 上一张</button>
+                <button class="robot-btn" id="playPauseBtn">⏸ 暂停</button>
+                <button class="robot-btn" id="nextBtn">下一张 ▶</button>
+                <button class="robot-btn" id="downloadBtn">下载3D机器人程序</button>
+            </div>
+        </div>
+    `;
+}
+
+// 初始化3D机器人弹窗功能
+function init3DRobotModal(container) {
+    const images = [
+        '3D建模/1.png', '3D建模/2.png', '3D建模/3.png', '3D建模/4.png',
+        '3D建模/5.png', '3D建模/6.png', '3D建模/7.png', '3D建模/8.png',
+        '3D建模/9.png', '3D建模/10.png', '3D建模/11.png', '3D建模/12.png',
+        '3D建模/13.png', '3D建模/14.png', '3D建模/15.png', '3D建模/16.png'
+    ];
+    
+    let currentIndex = 0;
+    let isPlaying = true;
+    let slideInterval = null;
+    
+    const robotImage = container.querySelector('#robotImage');
+    const currentImageIndex = container.querySelector('#currentImageIndex');
+    const totalImages = container.querySelector('#totalImages');
+    const prevBtn = container.querySelector('#prevBtn');
+    const playPauseBtn = container.querySelector('#playPauseBtn');
+    const nextBtn = container.querySelector('#nextBtn');
+    const downloadBtn = container.querySelector('#downloadBtn');
+    
+    // 更新图片显示
+    function updateImage() {
+        robotImage.src = images[currentIndex];
+        currentImageIndex.textContent = currentIndex + 1;
+        
+        // 添加淡入效果
+        robotImage.style.opacity = '0';
+        setTimeout(() => {
+            robotImage.style.opacity = '1';
+        }, 100);
+    }
+    
+    // 下一张图片
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateImage();
+    }
+    
+    // 上一张图片
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateImage();
+    }
+    
+    // 开始自动播放
+    function startSlideShow() {
+        if (slideInterval) clearInterval(slideInterval);
+        slideInterval = setInterval(nextImage, 2000); // 每2秒切换一张
+        isPlaying = true;
+        playPauseBtn.innerHTML = '⏸ 暂停';
+    }
+    
+    // 停止自动播放
+    function stopSlideShow() {
+        if (slideInterval) {
+            clearInterval(slideInterval);
+            slideInterval = null;
+        }
+        isPlaying = false;
+        playPauseBtn.innerHTML = '▶ 播放';
+    }
+    
+    // 切换播放状态
+    function togglePlayPause() {
+        if (isPlaying) {
+            stopSlideShow();
+        } else {
+            startSlideShow();
+        }
+    }
+    
+    // 下载程序
+    function downloadProgram() {
+        // 创建下载链接
+        const link = document.createElement('a');
+        link.href = '3D建模/3D机器人.exe';
+        link.download = '3D机器人.exe';
+        
+        // 添加下载提示
+        const originalText = downloadBtn.innerHTML;
+        downloadBtn.innerHTML = '⏳ 准备下载...';
+        downloadBtn.disabled = true;
+        
+        // 触发下载
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // 恢复按钮状态
+        setTimeout(() => {
+            downloadBtn.innerHTML = '✅ 下载完成';
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.disabled = false;
+            }, 2000);
+        }, 500);
+    }
+    
+    // 绑定事件监听器
+    prevBtn.addEventListener('click', prevImage);
+    nextBtn.addEventListener('click', nextImage);
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    downloadBtn.addEventListener('click', downloadProgram);
+    
+    // 为按钮添加墨水飞溅效果
+    [prevBtn, playPauseBtn, nextBtn, downloadBtn].forEach(btn => {
+        btn.addEventListener('mousedown', function(e) {
+            createRobotInkSplash(e, this);
+        });
+    });
+    
+    // 键盘控制
+    function handleKeyPress(e) {
+        switch(e.key) {
+            case 'ArrowLeft':
+                e.preventDefault();
+                prevImage();
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                nextImage();
+                break;
+            case ' ':
+                e.preventDefault();
+                togglePlayPause();
+                break;
+        }
+    }
+    
+    // 添加键盘事件监听
+    document.addEventListener('keydown', handleKeyPress);
+    
+    // 当弹窗关闭时清理事件监听器
+    const closeBtn = container.querySelector('#closeBtn');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            document.removeEventListener('keydown', handleKeyPress);
+            stopSlideShow();
+        });
+    }
+    
+    // 初始化
+    totalImages.textContent = images.length;
+    updateImage();
+    startSlideShow();
+}
+
+// 3D机器人按钮墨水飞溅效果
+function createRobotInkSplash(event, element) {
+    const rect = element.getBoundingClientRect();
+    const elementWidth = rect.width;
+    const elementHeight = rect.height;
+
+    for (let i = 0; i < 8; i++) {
+        const inkDrop = document.createElement('div');
+        inkDrop.className = 'ink-drop';
+        inkDrop.style.cssText = `
+            position: fixed;
+            width: ${6 + Math.random() * 8}px;
+            height: ${6 + Math.random() * 8}px;
+            background: #000;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+        `;
+        document.body.appendChild(inkDrop);
+
+        let startX, startY;
+        const side = Math.floor(Math.random() * 4);
+        
+        switch(side) {
+            case 0:
+                startX = rect.left + Math.random() * elementWidth;
+                startY = rect.top;
+                break;
+            case 1:
+                startX = rect.right;
+                startY = rect.top + Math.random() * elementHeight;
+                break;
+            case 2:
+                startX = rect.left + Math.random() * elementWidth;
+                startY = rect.bottom;
+                break;
+            case 3:
+                startX = rect.left;
+                startY = rect.top + Math.random() * elementHeight;
+                break;
+        }
+        
+        const centerX = rect.left + elementWidth / 2;
+        const centerY = rect.top + elementHeight / 2;
+        const baseAngle = Math.atan2(startY - centerY, startX - centerX);
+        const randomAngle = baseAngle + (Math.random() - 0.5) * 0.8;
+        const distance = 60 + Math.random() * 80;
+        const finalX = Math.cos(randomAngle) * distance;
+        const finalY = Math.sin(randomAngle) * distance;
+
+        inkDrop.style.left = `${startX}px`;
+        inkDrop.style.top = `${startY}px`;
+        inkDrop.style.transform = 'translate(0, 0) scale(1)';
+        inkDrop.style.opacity = '1';
+
+        const delay = Math.random() * 100;
+        setTimeout(() => {
+            inkDrop.style.transition = 'all 0.6s ease-out';
+            inkDrop.style.transform = `translate(${finalX}px, ${finalY}px) scale(0.3)`;
+            inkDrop.style.opacity = '0';
+        }, delay);
+
+        setTimeout(() => {
+            if (inkDrop.parentNode) {
+                inkDrop.parentNode.removeChild(inkDrop);
+            }
+        }, 600 + delay);
+    }
 }
