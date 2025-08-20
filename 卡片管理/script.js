@@ -27,6 +27,7 @@ class GameCardManager {
         this.importBtn = document.getElementById('importBtn');
         this.exportBtn = document.getElementById('exportBtn');
         this.addGameBtn = document.getElementById('addGameBtn');
+        this.statsBtn = document.getElementById('statsBtn');
         this.editBtn = document.getElementById('editBtn');
         this.deleteBtn = document.getElementById('deleteBtn');
         
@@ -40,6 +41,13 @@ class GameCardManager {
         this.closeModal = document.getElementById('closeModal');
         this.saveGame = document.getElementById('saveGame');
         this.cancelGame = document.getElementById('cancelGame');
+        
+        // 统计模态框元素
+        this.statsModal = document.getElementById('statsModal');
+        this.closeStatsModal = document.getElementById('closeStatsModal');
+        this.totalGamesCount = document.getElementById('totalGamesCount');
+        this.totalOriginalPrice = document.getElementById('totalOriginalPrice');
+        this.totalPurchasePrice = document.getElementById('totalPurchasePrice');
         
         // 表单输入元素
         this.gameNameInput = document.getElementById('gameName');
@@ -80,6 +88,7 @@ class GameCardManager {
         this.importBtn.addEventListener('click', () => this.handleImport());
         this.exportBtn.addEventListener('click', () => this.handleExport());
         this.addGameBtn.addEventListener('click', () => this.showAddGameModal());
+        this.statsBtn.addEventListener('click', () => this.showStatsModal());
         this.editBtn.addEventListener('click', () => this.showEditGameModal());
         this.deleteBtn.addEventListener('click', () => this.handleDelete());
         
@@ -91,6 +100,12 @@ class GameCardManager {
         // 点击模态框外部关闭
         this.gameModal.addEventListener('click', (e) => {
             if (e.target === this.gameModal) this.hideModal();
+        });
+        
+        // 统计模态框事件
+        this.closeStatsModal.addEventListener('click', () => this.hideStatsModal());
+        this.statsModal.addEventListener('click', (e) => {
+            if (e.target === this.statsModal) this.hideStatsModal();
         });
         
         // 文件导入
@@ -347,6 +362,31 @@ class GameCardManager {
         this.gameForm.reset();
     }
 
+    showStatsModal() {
+        this.updateGameStats();
+        this.statsModal.style.display = 'block';
+    }
+
+    hideStatsModal() {
+        this.statsModal.style.display = 'none';
+    }
+
+    updateGameStats() {
+        const totalGames = this.games.length;
+        let totalOriginalPrice = 0;
+        let totalPurchasePrice = 0;
+
+        this.games.forEach(game => {
+            totalOriginalPrice += game.originalPrice || 0;
+            totalPurchasePrice += game.purchasePrice || 0;
+        });
+
+        // 更新统计显示
+        this.totalGamesCount.textContent = totalGames;
+        this.totalOriginalPrice.textContent = totalOriginalPrice === 0 ? '免费' : `¥${totalOriginalPrice.toFixed(2)}`;
+        this.totalPurchasePrice.textContent = totalPurchasePrice === 0 ? '免费' : `¥${totalPurchasePrice.toFixed(2)}`;
+    }
+
     handleSaveGame() {
         // 验证表单
         if (!this.gameForm.checkValidity()) {
@@ -399,6 +439,11 @@ class GameCardManager {
         this.renderCards();
         this.renderFilters();
         
+        // 如果统计窗口开着，更新统计数据
+        if (this.statsModal.style.display === 'block') {
+            this.updateGameStats();
+        }
+        
         if (this.isEditing) {
             this.updateGameDetails(gameData);
         }
@@ -417,6 +462,11 @@ class GameCardManager {
                 this.selectedGame = null;
                 this.renderCards();
                 this.renderFilters();
+                
+                // 如果统计窗口开着，更新统计数据
+                if (this.statsModal.style.display === 'block') {
+                    this.updateGameStats();
+                }
                 
                 // 清空详细信息
                 this.detailHeader.textContent = '游戏名称';
@@ -541,6 +591,11 @@ class GameCardManager {
         this.games.push(gameData);
         this.renderCards();
         this.renderFilters();
+        
+        // 如果统计窗口开着，更新统计数据
+        if (this.statsModal.style.display === 'block') {
+            this.updateGameStats();
+        }
     }
 
     async handleExport() {

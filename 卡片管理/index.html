@@ -53,6 +53,7 @@
                 <button class="action-btn" id="importBtn">导入表单</button>
                 <button class="action-btn" id="exportBtn">导出表单</button>
                 <button class="action-btn" id="addGameBtn">添加游戏</button>
+                <button class="action-btn" id="statsBtn">游戏统计</button>
             </div>
         </div>
 
@@ -150,6 +151,35 @@
             <div class="modal-footer">
                 <button type="button" id="saveGame">保存</button>
                 <button type="button" id="cancelGame">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏统计模态框 -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="statsModalTitle">游戏统计</h3>
+                <span class="close" id="closeStatsModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-label">游戏总数</div>
+                        <div class="stat-value" id="totalGamesCount">0</div>
+                        <div class="stat-unit">款</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">游戏总价</div>
+                        <div class="stat-value" id="totalOriginalPrice">¥0.00</div>
+                        <div class="stat-unit"></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">购入总价</div>
+                        <div class="stat-value" id="totalPurchasePrice">¥0.00</div>
+                        <div class="stat-unit"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
