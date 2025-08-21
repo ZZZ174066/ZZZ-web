@@ -1,7 +1,9 @@
-class GameCardManager {
+class CardManager {
     constructor() {
+        this.currentCardType = 'game'; // 当前卡片类型
         this.games = [];
-        this.selectedGame = null;
+        this.animes = [];
+        this.selectedItem = null;
         this.currentSort = 'name';
         this.currentFilter = 'all';
         this.isEditing = false;
@@ -9,10 +11,8 @@ class GameCardManager {
         
         this.initializeElements();
         this.bindEvents();
-        this.loadSampleData();
-        this.renderCards();
-        this.renderFilters();
         this.setupInkSplashEffect();
+        this.switchCardType('game'); // 初始化为游戏卡片
     }
 
     initializeElements() {
@@ -22,11 +22,12 @@ class GameCardManager {
         this.searchInput = document.getElementById('searchInput');
         this.searchBtn = document.getElementById('searchBtn');
         this.cardTypeSelect = document.getElementById('cardTypeSelect');
+        this.sortButtons = document.getElementById('sortButtons');
         
         // 按钮元素
         this.importBtn = document.getElementById('importBtn');
         this.exportBtn = document.getElementById('exportBtn');
-        this.addGameBtn = document.getElementById('addGameBtn');
+        this.addBtn = document.getElementById('addBtn');
         this.statsBtn = document.getElementById('statsBtn');
         this.editBtn = document.getElementById('editBtn');
         this.deleteBtn = document.getElementById('deleteBtn');
@@ -35,71 +36,80 @@ class GameCardManager {
         this.sortBtns = document.querySelectorAll('.sort-btn');
         
         // 模态框元素
-        this.gameModal = document.getElementById('gameModal');
-        this.gameForm = document.getElementById('gameForm');
+        this.contentModal = document.getElementById('contentModal');
+        this.contentForm = document.getElementById('contentForm');
         this.modalTitle = document.getElementById('modalTitle');
         this.closeModal = document.getElementById('closeModal');
-        this.saveGame = document.getElementById('saveGame');
-        this.cancelGame = document.getElementById('cancelGame');
+        this.saveContent = document.getElementById('saveContent');
+        this.cancelContent = document.getElementById('cancelContent');
         
         // 统计模态框元素
         this.statsModal = document.getElementById('statsModal');
         this.closeStatsModal = document.getElementById('closeStatsModal');
-        this.totalGamesCount = document.getElementById('totalGamesCount');
-        this.totalOriginalPrice = document.getElementById('totalOriginalPrice');
-        this.totalPurchasePrice = document.getElementById('totalPurchasePrice');
+        this.statsContainer = document.getElementById('statsContainer');
         
         // 表单输入元素
-        this.gameNameInput = document.getElementById('gameName');
+        this.nameLabel = document.getElementById('nameLabel');
+        this.contentName = document.getElementById('contentName');
+        this.gameFields = document.querySelector('.game-fields');
+        this.animeFields = document.querySelector('.anime-fields');
+        
+        // 游戏字段
         this.originalPriceInput = document.getElementById('originalPrice');
         this.purchasePriceInput = document.getElementById('purchasePrice');
         this.playTimeInput = document.getElementById('playTime');
         this.achievementCurrentInput = document.getElementById('achievementCurrent');
         this.achievementTotalInput = document.getElementById('achievementTotal');
-        this.gameTagsInput = document.getElementById('gameTagsInput');
-        this.gameImageInput = document.getElementById('gameImage');
+        
+        // 动漫字段
+        this.animeYearInput = document.getElementById('animeYear');
+        this.animeCountryInput = document.getElementById('animeCountry');
+        this.animeRatingInput = document.getElementById('animeRating');
+        
+        this.contentTagsInput = document.getElementById('contentTagsInput');
+        this.contentImageInput = document.getElementById('contentImage');
         
         // 详细信息元素
-        this.detailHeader = document.querySelector('.detail-header');
+        this.detailHeader = document.getElementById('detailHeader');
         this.previewImage = document.getElementById('previewImage');
-        this.gameTagsDisplay = document.getElementById('gameTags');
-        this.originalPriceDisplay = document.getElementById('originalPriceDisplay');
-        this.purchasePriceDisplay = document.getElementById('purchasePriceDisplay');
-        this.gameTimeDisplay = document.getElementById('gameTime');
-        this.achievementProgress = document.getElementById('achievementProgress');
+        this.contentTags = document.getElementById('contentTags');
+        this.detailInfo = document.getElementById('detailInfo');
+        this.yearDisplay = document.getElementById('yearDisplay');
+        this.countryDisplay = document.getElementById('countryDisplay');
+        this.ratingProgress = document.getElementById('ratingProgress');
         
         // 文件输入
         this.importInput = document.getElementById('importInput');
     }
 
     bindEvents() {
+        // 卡片类型切换
+        this.cardTypeSelect.addEventListener('change', (e) => {
+            this.switchCardType(e.target.value);
+        });
+        
         // 搜索功能
         this.searchBtn.addEventListener('click', () => this.handleSearch());
         this.searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleSearch();
         });
         
-        // 排序按钮
-        this.sortBtns.forEach(btn => {
-            btn.addEventListener('click', () => this.handleSort(btn.dataset.sort));
-        });
-        
         // 操作按钮
         this.importBtn.addEventListener('click', () => this.handleImport());
         this.exportBtn.addEventListener('click', () => this.handleExport());
-        this.addGameBtn.addEventListener('click', () => this.showAddGameModal());
+        this.addBtn.addEventListener('click', () => this.showAddModal());
         this.statsBtn.addEventListener('click', () => this.showStatsModal());
-        this.editBtn.addEventListener('click', () => this.showEditGameModal());
+        this.editBtn.addEventListener('click', () => this.showEditModal());
         this.deleteBtn.addEventListener('click', () => this.handleDelete());
         
         // 模态框事件
         this.closeModal.addEventListener('click', () => this.hideModal());
-        this.cancelGame.addEventListener('click', () => this.hideModal());
-        this.saveGame.addEventListener('click', () => this.handleSaveGame());
+        this.cancelContent.addEventListener('click', () => this.hideModal());
+        this.saveContent.addEventListener('click', () => this.handleSave());
         
         // 点击模态框外部关闭
-        this.gameModal.addEventListener('click', (e) => {
-            if (e.target === this.gameModal) this.hideModal();
+        this.contentModal.addEventListener('click', (e) => {
+            if (e.target === this.contentModal) this.hideModal();
         });
         
         // 统计模态框事件
@@ -112,46 +122,180 @@ class GameCardManager {
         this.importInput.addEventListener('change', (e) => this.handleFileImport(e));
         
         // 图片预览
-        this.gameImageInput.addEventListener('change', (e) => this.handleImagePreview(e));
+        this.contentImageInput.addEventListener('change', (e) => this.handleImagePreview(e));
     }
 
-    loadSampleData() {
-        // 加载示例数据
-        this.games = [];
+    switchCardType(type) {
+        this.currentCardType = type;
+        this.selectedItem = null;
+        
+        // 更新界面元素
+        this.updateSortButtons();
+        this.updateSearchPlaceholder();
+        this.updateCardsGridClass();
+        this.updatePreviewImageClass();
+        this.resetDetailView();
+        
+        // 重新渲染
+        this.renderCards();
+        this.renderFilters();
+    }
+
+    updateCardsGridClass() {
+        if (this.currentCardType === 'anime') {
+            this.cardsGrid.classList.add('anime-mode');
+        } else {
+            this.cardsGrid.classList.remove('anime-mode');
+        }
+    }
+
+    updatePreviewImageClass() {
+        if (this.currentCardType === 'anime') {
+            this.previewImage.classList.add('anime-preview');
+        } else {
+            this.previewImage.classList.remove('anime-preview');
+        }
+    }
+
+    updateSortButtons() {
+        if (this.currentCardType === 'game') {
+            this.sortButtons.innerHTML = `
+                <button class="sort-btn active" data-sort="name">按名称排序</button>
+                <button class="sort-btn" data-sort="time">按时长排序</button>
+                <button class="sort-btn" data-sort="price">按价格排序</button>
+                <button class="sort-btn" data-sort="achievement">按成就排序</button>
+            `;
+        } else if (this.currentCardType === 'anime') {
+            this.sortButtons.innerHTML = `
+                <button class="sort-btn active" data-sort="name">按名称排序</button>
+                <button class="sort-btn" data-sort="year">按年份排序</button>
+                <button class="sort-btn" data-sort="rating">按评分排序</button>
+                <button class="sort-btn" data-sort="country">按国家排序</button>
+            `;
+        }
+        
+        // 重新绑定排序按钮事件
+        this.sortBtns = document.querySelectorAll('.sort-btn');
+        this.sortBtns.forEach(btn => {
+            btn.addEventListener('click', () => this.handleSort(btn.dataset.sort));
+        });
+        
+        this.currentSort = 'name';
+    }
+
+    updateSearchPlaceholder() {
+        if (this.currentCardType === 'game') {
+            this.searchInput.placeholder = '搜索游戏...';
+        } else if (this.currentCardType === 'anime') {
+            this.searchInput.placeholder = '搜索动漫...';
+        }
+        this.searchInput.value = '';
+    }
+
+    resetDetailView() {
+        if (this.currentCardType === 'game') {
+            this.detailHeader.textContent = '游戏名称';
+            this.detailInfo.innerHTML = `
+                <div class="price-row">
+                    <div class="price-item">
+                        <div class="price-label">原价</div>
+                        <div class="price-value" id="originalPriceDisplay">--</div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-label">购入价</div>
+                        <div class="price-value" id="purchasePriceDisplay">--</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">时长：</span>
+                    <span class="info-value" id="gameTime">游戏时长</span>
+                </div>
+                <div class="achievement-section">
+                    <div class="achievement-label">成就 (0/0)</div>
+                    <div class="achievement-bar">
+                        <div class="achievement-progress" id="achievementProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            `;
+        } else if (this.currentCardType === 'anime') {
+            this.detailHeader.textContent = '动漫名称';
+            this.detailInfo.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">年份：</span>
+                    <span class="info-value" id="yearDisplay">2025</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">国家：</span>
+                    <span class="info-value" id="countryDisplay">日本</span>
+                </div>
+                <div class="achievement-section">
+                    <div class="achievement-label">评分：5.0</div>
+                    <div class="achievement-bar">
+                        <div class="achievement-progress" id="ratingProgress" style="width: 50%"></div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        this.previewImage.innerHTML = '图片预览';
+        this.contentTags.innerHTML = `
+            <span class="tag">标签</span>
+            <span class="tag">标签</span>
+            <span class="tag">标签</span>
+        `;
+    }
+
+    getCurrentData() {
+        return this.currentCardType === 'game' ? this.games : this.animes;
+    }
+
+    setCurrentData(data) {
+        if (this.currentCardType === 'game') {
+            this.games = data;
+        } else {
+            this.animes = data;
+        }
     }
 
     renderCards() {
-        let filteredGames = [...this.games];
+        const currentData = this.getCurrentData();
+        let filteredData = [...currentData];
         
         // 应用搜索过滤
         const searchTerm = this.searchInput.value.toLowerCase();
         if (searchTerm) {
-            filteredGames = filteredGames.filter(game => 
-                game.name.toLowerCase().includes(searchTerm) ||
-                game.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            filteredData = filteredData.filter(item => 
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.tags.some(tag => tag.toLowerCase().includes(searchTerm))
             );
         }
         
         // 应用标签过滤
         if (this.currentFilter !== 'all') {
-            filteredGames = filteredGames.filter(game => 
-                game.tags.includes(this.currentFilter)
+            filteredData = filteredData.filter(item => 
+                item.tags.includes(this.currentFilter)
             );
         }
         
         // 应用排序
-        filteredGames.sort((a, b) => {
+        filteredData.sort((a, b) => {
             switch (this.currentSort) {
                 case 'name':
                     return a.name.localeCompare(b.name);
                 case 'time':
-                    return b.playTime - a.playTime;
+                    return (b.playTime || 0) - (a.playTime || 0);
                 case 'price':
-                    return b.originalPrice - a.originalPrice;
+                    return (b.originalPrice || 0) - (a.originalPrice || 0);
                 case 'achievement':
-                    const aPercent = a.achievementCurrent / a.achievementTotal;
-                    const bPercent = b.achievementCurrent / b.achievementTotal;
+                    const aPercent = (a.achievementCurrent || 0) / (a.achievementTotal || 1);
+                    const bPercent = (b.achievementCurrent || 0) / (b.achievementTotal || 1);
                     return bPercent - aPercent;
+                case 'year':
+                    return (b.year || 0) - (a.year || 0);
+                case 'rating':
+                    return (b.rating || 0) - (a.rating || 0);
+                case 'country':
+                    return (a.country || '').localeCompare(b.country || '');
                 default:
                     return 0;
             }
@@ -159,106 +303,170 @@ class GameCardManager {
         
         // 渲染卡片
         this.cardsGrid.innerHTML = '';
-        filteredGames.forEach((game, index) => {
-            const cardElement = this.createGameCard(game, index);
+        filteredData.forEach((item, index) => {
+            const cardElement = this.createCard(item, index);
             this.cardsGrid.appendChild(cardElement);
         });
         
-        // 如果有选中的游戏，更新详细信息
-        if (this.selectedGame) {
-            this.updateGameDetails(this.selectedGame);
+        // 如果有选中的项目，更新详细信息
+        if (this.selectedItem) {
+            this.updateDetails(this.selectedItem);
         }
     }
 
-    createGameCard(game, index) {
+    createCard(item, index) {
         const card = document.createElement('div');
         card.className = 'game-card';
-        card.dataset.gameId = game.id;
+        card.dataset.itemId = item.id;
         
-        let achievementDisplay;
-        if (game.achievementTotal === 0) {
-            achievementDisplay = '无成就';
+        if (this.currentCardType === 'anime') {
+            card.classList.add('anime-card');
+            
+            // 创建动漫卡片的结构
+            const tagsHtml = item.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('');
+            const ratingWidth = (item.rating / 10) * 100;
+            
+            card.innerHTML = `
+                <div class="card-content">
+                    <div class="card-left">
+                        <div class="card-preview">
+                            ${item.imageData ? `<img src="${item.imageData}" alt="${item.name}">` : '预览图片'}
+                        </div>
+                    </div>
+                    <div class="card-right">
+                        <div class="card-name">${item.name}</div>
+                        <div class="card-tags">
+                            ${tagsHtml}
+                        </div>
+                        <div class="card-info-section">
+                            <div class="card-basic-info">
+                                年份：${item.year}　　国家：${item.country}
+                            </div>
+                            <div class="card-rating">
+                                <div class="rating-label">评分：${item.rating}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         } else {
-            const achievementPercent = Math.round((game.achievementCurrent / game.achievementTotal) * 100);
-            achievementDisplay = `${achievementPercent}%`;
-        }
-        const priceDisplay = game.originalPrice === 0 ? '免费' : `${game.originalPrice.toFixed(2)}¥`;
+            // 游戏卡片的原始结构
+            const achievementDisplay = (item.achievementTotal === 0) ? '无成就' : 
+                `${Math.round((item.achievementCurrent / item.achievementTotal) * 100)}%`;
+            const priceDisplay = (item.originalPrice === 0) ? '免费' : `${item.originalPrice.toFixed(2)}¥`;
         
         card.innerHTML = `
-            <div class="card-name">${game.name}</div>
+                <div class="card-name">${item.name}</div>
             <div class="card-preview">
-                ${game.imageData ? `<img src="${game.imageData}" alt="${game.name}">` : '预览图片'}
+                    ${item.imageData ? `<img src="${item.imageData}" alt="${item.name}">` : '预览图片'}
             </div>
             <div class="card-info">
                 <div>原价: ${priceDisplay}</div>
-                <div>时长: ${game.playTime}h</div>
+                    <div>时长: ${item.playTime}h</div>
                 <div>成就: ${achievementDisplay}</div>
             </div>
         `;
+        }
         
-        card.addEventListener('click', () => this.selectGame(game));
+        card.addEventListener('click', () => this.selectItem(item));
         
         return card;
     }
 
-    selectGame(game) {
-        this.selectedGame = game;
+    selectItem(item) {
+        this.selectedItem = item;
         
         // 更新卡片选中状态
         document.querySelectorAll('.game-card').forEach(card => {
             card.classList.remove('selected');
         });
         
-        const selectedCard = document.querySelector(`[data-game-id="${game.id}"]`);
+        const selectedCard = document.querySelector(`[data-item-id="${item.id}"]`);
         if (selectedCard) {
             selectedCard.classList.add('selected');
         }
         
         // 更新详细信息
-        this.updateGameDetails(game);
+        this.updateDetails(item);
     }
 
-    updateGameDetails(game) {
-        this.detailHeader.textContent = game.name;
+    updateDetails(item) {
+        this.detailHeader.textContent = item.name;
         
         // 更新预览图片
-        if (game.imageData) {
-            this.previewImage.innerHTML = `<img src="${game.imageData}" alt="${game.name}">`;
+        if (item.imageData) {
+            this.previewImage.innerHTML = `<img src="${item.imageData}" alt="${item.name}">`;
         } else {
             this.previewImage.innerHTML = '图片预览';
         }
         
         // 更新标签
-        this.gameTagsDisplay.innerHTML = '';
-        game.tags.forEach(tag => {
+        this.contentTags.innerHTML = '';
+        item.tags.forEach(tag => {
             const tagElement = document.createElement('span');
             tagElement.className = 'tag';
             tagElement.textContent = tag;
-            this.gameTagsDisplay.appendChild(tagElement);
+            this.contentTags.appendChild(tagElement);
         });
         
-        // 更新价格和时长
-        this.originalPriceDisplay.textContent = game.originalPrice === 0 ? '免费' : `¥${game.originalPrice.toFixed(2)}`;
-        this.purchasePriceDisplay.textContent = game.purchasePrice === 0 ? '免费' : `¥${game.purchasePrice.toFixed(2)}`;
-        this.gameTimeDisplay.textContent = `${game.playTime}小时`;
-        
-        // 更新成就进度
-        const achievementLabel = document.querySelector('.achievement-label');
-        if (game.achievementTotal === 0) {
-            this.achievementProgress.style.width = '0%';
-            achievementLabel.textContent = '无成就';
-        } else {
-            const achievementPercent = (game.achievementCurrent / game.achievementTotal) * 100;
-            this.achievementProgress.style.width = `${achievementPercent}%`;
-            achievementLabel.textContent = `成就 (${game.achievementCurrent}/${game.achievementTotal})`;
+        // 根据卡片类型更新详细信息
+        if (this.currentCardType === 'game') {
+            this.updateGameDetails(item);
+        } else if (this.currentCardType === 'anime') {
+            this.updateAnimeDetails(item);
         }
+    }
+
+    updateGameDetails(game) {
+        this.detailInfo.innerHTML = `
+            <div class="price-row">
+                <div class="price-item">
+                    <div class="price-label">原价</div>
+                    <div class="price-value">${game.originalPrice === 0 ? '免费' : `¥${game.originalPrice.toFixed(2)}`}</div>
+                </div>
+                <div class="price-item">
+                    <div class="price-label">购入价</div>
+                    <div class="price-value">${game.purchasePrice === 0 ? '免费' : `¥${game.purchasePrice.toFixed(2)}`}</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="info-label">时长：</span>
+                <span class="info-value">${game.playTime}小时</span>
+            </div>
+            <div class="achievement-section">
+                <div class="achievement-label">${game.achievementTotal === 0 ? '无成就' : `成就 (${game.achievementCurrent}/${game.achievementTotal})`}</div>
+                <div class="achievement-bar">
+                    <div class="achievement-progress" style="width: ${game.achievementTotal === 0 ? 0 : (game.achievementCurrent / game.achievementTotal) * 100}%"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    updateAnimeDetails(anime) {
+        this.detailInfo.innerHTML = `
+            <div class="info-item">
+                <span class="info-label">年份：</span>
+                <span class="info-value">${anime.year}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">国家：</span>
+                <span class="info-value">${anime.country}</span>
+            </div>
+            <div class="achievement-section">
+                <div class="achievement-label">评分：${anime.rating}</div>
+                <div class="achievement-bar">
+                    <div class="achievement-progress" style="width: ${(anime.rating / 10) * 100}%"></div>
+                </div>
+            </div>
+        `;
     }
 
     renderFilters() {
         // 收集所有标签
+        const currentData = this.getCurrentData();
         const allTags = new Set();
-        this.games.forEach(game => {
-            game.tags.forEach(tag => allTags.add(tag));
+        currentData.forEach(item => {
+            item.tags.forEach(tag => allTags.add(tag));
         });
         
         // 渲染筛选标签
@@ -314,56 +522,156 @@ class GameCardManager {
         this.renderCards();
     }
 
-    showAddGameModal() {
+    showAddModal() {
         this.isEditing = false;
-        this.modalTitle.textContent = '添加游戏';
-        this.gameForm.reset();
-        this.gameModal.style.display = 'block';
+        this.modalTitle.textContent = this.currentCardType === 'game' ? '添加游戏' : '添加动漫';
+        this.nameLabel.textContent = this.currentCardType === 'game' ? '游戏名称：' : '动漫名称：';
+        this.updateModalFields();
+        this.contentForm.reset();
+        this.contentModal.style.display = 'block';
     }
 
-    showEditGameModal() {
-        if (!this.selectedGame) {
-            alert('请先选择一个游戏');
+    showEditModal() {
+        if (!this.selectedItem) {
+            alert('请先选择一个项目');
             return;
         }
         
         this.isEditing = true;
-        this.editingIndex = this.games.findIndex(game => game.id === this.selectedGame.id);
-        this.modalTitle.textContent = '编辑游戏';
+        const currentData = this.getCurrentData();
+        this.editingIndex = currentData.findIndex(item => item.id === this.selectedItem.id);
+        this.modalTitle.textContent = this.currentCardType === 'game' ? '编辑游戏' : '编辑动漫';
+        this.nameLabel.textContent = this.currentCardType === 'game' ? '游戏名称：' : '动漫名称：';
         
-        // 调试信息
-        console.log('正在编辑的游戏:', this.selectedGame);
-        console.log('原价输入框元素:', this.originalPriceInput);
-        console.log('购入价输入框元素:', this.purchasePriceInput);
+        this.updateModalFields();
+        this.fillFormData(this.selectedItem);
+        this.contentModal.style.display = 'block';
+    }
+
+    updateModalFields() {
+        if (this.currentCardType === 'game') {
+            this.gameFields.style.display = 'block';
+            this.animeFields.style.display = 'none';
+        } else if (this.currentCardType === 'anime') {
+            this.gameFields.style.display = 'none';
+            this.animeFields.style.display = 'block';
+        }
+    }
+
+    fillFormData(item) {
+        this.contentName.value = item.name;
         
-        // 填充表单数据
-        this.gameNameInput.value = this.selectedGame.name;
-        this.originalPriceInput.value = this.selectedGame.originalPrice || '';
-        this.purchasePriceInput.value = this.selectedGame.purchasePrice || '';
-        this.playTimeInput.value = this.selectedGame.playTime || '';
-        this.achievementCurrentInput.value = this.selectedGame.achievementCurrent || '';
-        this.achievementTotalInput.value = this.selectedGame.achievementTotal || '';
-        this.gameTagsInput.value = this.selectedGame.tags.join(' ');
-        
-        // 调试：检查值是否正确设置
-        console.log('设置后的原价值:', this.originalPriceInput.value);
-        console.log('设置后的购入价值:', this.purchasePriceInput.value);
-        
-        // 注意：文件输入框无法预设值，但可以在界面上提示用户当前有图片
-        if (this.selectedGame.imageData) {
-            console.log('当前游戏有图片，编辑时可重新选择图片或保留原图');
+        if (this.currentCardType === 'game') {
+            this.originalPriceInput.value = item.originalPrice || '';
+            this.purchasePriceInput.value = item.purchasePrice || '';
+            this.playTimeInput.value = item.playTime || '';
+            this.achievementCurrentInput.value = item.achievementCurrent || '';
+            this.achievementTotalInput.value = item.achievementTotal || '';
+        } else if (this.currentCardType === 'anime') {
+            this.animeYearInput.value = item.year || '';
+            this.animeCountryInput.value = item.country || '';
+            this.animeRatingInput.value = item.rating || '';
         }
         
-        this.gameModal.style.display = 'block';
+        this.contentTagsInput.value = item.tags.join(' ');
     }
 
     hideModal() {
-        this.gameModal.style.display = 'none';
-        this.gameForm.reset();
+        this.contentModal.style.display = 'none';
+        this.contentForm.reset();
+    }
+
+    handleSave() {
+        // 验证表单
+        if (!this.contentForm.checkValidity()) {
+            this.contentForm.reportValidity();
+            return;
+        }
+        
+        // 收集表单数据
+        const itemData = {
+            name: this.contentName.value,
+            tags: this.contentTagsInput.value.split(' ').map(tag => tag.trim()).filter(tag => tag),
+            imageData: null
+        };
+        
+        // 根据卡片类型添加特定字段
+        if (this.currentCardType === 'game') {
+            itemData.originalPrice = parseFloat(this.originalPriceInput.value) || 0;
+            itemData.purchasePrice = parseFloat(this.purchasePriceInput.value) || 0;
+            itemData.playTime = parseFloat(this.playTimeInput.value) || 0;
+            itemData.achievementCurrent = parseInt(this.achievementCurrentInput.value) || 0;
+            itemData.achievementTotal = parseInt(this.achievementTotalInput.value) || 0;
+        } else if (this.currentCardType === 'anime') {
+            itemData.year = parseInt(this.animeYearInput.value) || 2025;
+            itemData.country = this.animeCountryInput.value || '日本';
+            itemData.rating = parseFloat(this.animeRatingInput.value) || 5.0;
+        }
+        
+        // 处理图片
+        if (this.contentImageInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                itemData.imageData = e.target.result;
+                this.saveItemData(itemData);
+            };
+            reader.readAsDataURL(this.contentImageInput.files[0]);
+        } else {
+            // 如果是编辑模式且没有选择新图片，保留原图片
+            if (this.isEditing && this.selectedItem.imageData) {
+                itemData.imageData = this.selectedItem.imageData;
+            }
+            this.saveItemData(itemData);
+        }
+    }
+
+    saveItemData(itemData) {
+        const currentData = this.getCurrentData();
+        
+        if (this.isEditing) {
+            // 更新现有项目
+            itemData.id = this.selectedItem.id;
+            currentData[this.editingIndex] = itemData;
+            this.selectedItem = itemData;
+        } else {
+            // 添加新项目
+            itemData.id = Date.now(); // 简单的ID生成
+            currentData.push(itemData);
+        }
+        
+        this.setCurrentData(currentData);
+        this.hideModal();
+        this.renderCards();
+        this.renderFilters();
+        
+        if (this.isEditing) {
+            this.updateDetails(itemData);
+        }
+    }
+
+    handleDelete() {
+        if (!this.selectedItem) {
+            alert('请先选择一个项目');
+            return;
+        }
+        
+        const typeName = this.currentCardType === 'game' ? '游戏' : '动漫';
+        if (confirm(`确定要删除${typeName}"${this.selectedItem.name}"吗？`)) {
+            const currentData = this.getCurrentData();
+            const index = currentData.findIndex(item => item.id === this.selectedItem.id);
+            if (index !== -1) {
+                currentData.splice(index, 1);
+                this.setCurrentData(currentData);
+                this.selectedItem = null;
+                this.renderCards();
+                this.renderFilters();
+                this.resetDetailView();
+            }
+        }
     }
 
     showStatsModal() {
-        this.updateGameStats();
+        this.updateStats();
         this.statsModal.style.display = 'block';
     }
 
@@ -371,112 +679,80 @@ class GameCardManager {
         this.statsModal.style.display = 'none';
     }
 
-    updateGameStats() {
-        const totalGames = this.games.length;
-        let totalOriginalPrice = 0;
-        let totalPurchasePrice = 0;
+    updateStats() {
+        const currentData = this.getCurrentData();
+        this.statsContainer.innerHTML = '';
+        
+        if (this.currentCardType === 'game') {
+            const totalGames = currentData.length;
+            let totalOriginalPrice = 0;
+            let totalPurchasePrice = 0;
+            let totalPlayTime = 0;
 
-        this.games.forEach(game => {
-            totalOriginalPrice += game.originalPrice || 0;
-            totalPurchasePrice += game.purchasePrice || 0;
-        });
+            currentData.forEach(game => {
+                totalOriginalPrice += game.originalPrice || 0;
+                totalPurchasePrice += game.purchasePrice || 0;
+                totalPlayTime += game.playTime || 0;
+            });
 
-        // 更新统计显示
-        this.totalGamesCount.textContent = totalGames;
-        this.totalOriginalPrice.textContent = totalOriginalPrice === 0 ? '免费' : `¥${totalOriginalPrice.toFixed(2)}`;
-        this.totalPurchasePrice.textContent = totalPurchasePrice === 0 ? '免费' : `¥${totalPurchasePrice.toFixed(2)}`;
-    }
+            this.statsContainer.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-label">游戏总数</div>
+                    <div class="stat-value">${totalGames}</div>
+                    <div class="stat-unit">款</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">游戏总价</div>
+                    <div class="stat-value">${totalOriginalPrice === 0 ? '免费' : `¥${totalOriginalPrice.toFixed(2)}`}</div>
+                    <div class="stat-unit"></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">购入总价</div>
+                    <div class="stat-value">${totalPurchasePrice === 0 ? '免费' : `¥${totalPurchasePrice.toFixed(2)}`}</div>
+                    <div class="stat-unit"></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">总游戏时长</div>
+                    <div class="stat-value">${totalPlayTime.toFixed(1)}</div>
+                    <div class="stat-unit">小时</div>
+                </div>
+            `;
+        } else if (this.currentCardType === 'anime') {
+            const totalAnimes = currentData.length;
+            const countries = {};
+            let totalRating = 0;
+            let ratingCount = 0;
 
-    handleSaveGame() {
-        // 验证表单
-        if (!this.gameForm.checkValidity()) {
-            this.gameForm.reportValidity();
-            return;
-        }
-        
-        // 收集表单数据
-        const gameData = {
-            name: this.gameNameInput.value,
-            originalPrice: parseFloat(this.originalPriceInput.value),
-            purchasePrice: parseFloat(this.purchasePriceInput.value),
-            playTime: parseFloat(this.playTimeInput.value),
-            achievementCurrent: parseInt(this.achievementCurrentInput.value),
-            achievementTotal: parseInt(this.achievementTotalInput.value),
-            tags: this.gameTagsInput.value.split(' ').map(tag => tag.trim()).filter(tag => tag),
-            imageData: null
-        };
-        
-        // 处理图片
-        if (this.gameImageInput.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                gameData.imageData = e.target.result;
-                this.saveGameData(gameData);
-            };
-            reader.readAsDataURL(this.gameImageInput.files[0]);
-        } else {
-            // 如果是编辑模式且没有选择新图片，保留原图片
-            if (this.isEditing && this.selectedGame.imageData) {
-                gameData.imageData = this.selectedGame.imageData;
-            }
-            this.saveGameData(gameData);
-        }
-    }
-
-    saveGameData(gameData) {
-        if (this.isEditing) {
-            // 更新现有游戏
-            gameData.id = this.selectedGame.id;
-            this.games[this.editingIndex] = gameData;
-            this.selectedGame = gameData;
-        } else {
-            // 添加新游戏
-            gameData.id = Date.now(); // 简单的ID生成
-            this.games.push(gameData);
-        }
-        
-        this.hideModal();
-        this.renderCards();
-        this.renderFilters();
-        
-        // 如果统计窗口开着，更新统计数据
-        if (this.statsModal.style.display === 'block') {
-            this.updateGameStats();
-        }
-        
-        if (this.isEditing) {
-            this.updateGameDetails(gameData);
-        }
-    }
-
-    handleDelete() {
-        if (!this.selectedGame) {
-            alert('请先选择一个游戏');
-            return;
-        }
-        
-        if (confirm(`确定要删除游戏"${this.selectedGame.name}"吗？`)) {
-            const index = this.games.findIndex(game => game.id === this.selectedGame.id);
-            if (index !== -1) {
-                this.games.splice(index, 1);
-                this.selectedGame = null;
-                this.renderCards();
-                this.renderFilters();
-                
-                // 如果统计窗口开着，更新统计数据
-                if (this.statsModal.style.display === 'block') {
-                    this.updateGameStats();
+            currentData.forEach(anime => {
+                if (anime.country) {
+                    countries[anime.country] = (countries[anime.country] || 0) + 1;
                 }
-                
-                // 清空详细信息
-                this.detailHeader.textContent = '游戏名称';
-                this.previewImage.innerHTML = '图片预览';
-                this.gameTagsDisplay.innerHTML = '<span class="tag">标签</span><span class="tag">标签</span><span class="tag">标签</span>';
-                this.originalPriceDisplay.textContent = '--';
-                this.purchasePriceDisplay.textContent = '--';
-                this.gameTimeDisplay.textContent = '游戏时长';
-                this.achievementProgress.style.width = '50%';
-            }
+                if (anime.rating > 0) {
+                    totalRating += anime.rating;
+                    ratingCount++;
+                }
+            });
+
+            const avgRating = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : '0.0';
+            const topCountry = Object.keys(countries).reduce((a, b) => countries[a] > countries[b] ? a : b, '无');
+
+            this.statsContainer.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-label">动漫总数</div>
+                    <div class="stat-value">${totalAnimes}</div>
+                    <div class="stat-unit">部</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">平均评分</div>
+                    <div class="stat-value">${avgRating}</div>
+                    <div class="stat-unit">分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">主要国家</div>
+                    <div class="stat-value">${topCountry}</div>
+                    <div class="stat-unit"></div>
+                </div>
+            `;
         }
     }
 
@@ -489,29 +765,31 @@ class GameCardManager {
         if (files.length === 0) return;
         
         // 先询问用户是否要清除现有数据
-        if (this.games.length > 0) {
+        const currentData = this.getCurrentData();
+        if (currentData.length > 0) {
             if (!confirm('导入会清除当前数据，确定继续吗？')) {
-                event.target.value = ''; // 清空文件输入
+                event.target.value = '';
                 return;
             }
         }
         
-        // 清除现有游戏数据
-        this.games = [];
-        this.selectedGame = null;
+        // 清除现有数据
+        this.setCurrentData([]);
+        this.selectedItem = null;
         
-        // 查找txt文件和图片文件
+        // 查找对应的文件夹
+        const folderName = this.currentCardType === 'game' ? '游戏表单' : '动漫表单';
         const txtFiles = files.filter(file => 
             file.name.endsWith('.txt') && 
-            (file.webkitRelativePath.includes('游戏信息/') || !file.webkitRelativePath.includes('/'))
+            (file.webkitRelativePath.includes(`${folderName}/`) || !file.webkitRelativePath.includes('/'))
         );
         const imageFiles = files.filter(file => 
             file.name.match(/\.(jpg|jpeg|png|gif)$/i) &&
-            (file.webkitRelativePath.includes('游戏图片/') || !file.webkitRelativePath.includes('/'))
+            (file.webkitRelativePath.includes(`${folderName}/`) || !file.webkitRelativePath.includes('/'))
         );
         
         if (txtFiles.length === 0) {
-            alert('未找到游戏信息文件，请选择正确的文件夹');
+            alert(`未找到${folderName}文件夹中的信息文件，请选择正确的文件夹`);
             return;
         }
         
@@ -523,31 +801,31 @@ class GameCardManager {
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const gameData = JSON.parse(e.target.result);
+                    const itemData = JSON.parse(e.target.result);
                     
                     // 查找对应的图片文件
-                    const gameName = txtFile.name.replace('.txt', '');
+                    const itemName = txtFile.name.replace('.txt', '');
                     const imageFile = imageFiles.find(img => {
                         const imgName = img.name.replace(/\.(jpg|jpeg|png|gif)$/i, '');
-                        return imgName.toLowerCase() === gameName.toLowerCase();
+                        return imgName.toLowerCase() === itemName.toLowerCase();
                     });
                     
                     if (imageFile) {
                         const imageReader = new FileReader();
                         imageReader.onload = (imgEvent) => {
-                            gameData.imageData = imgEvent.target.result;
-                            this.importGameData(gameData);
+                            itemData.imageData = imgEvent.target.result;
+                            this.importItemData(itemData);
                             processedCount++;
                             this.checkImportComplete(processedCount, totalCount);
                         };
                         imageReader.readAsDataURL(imageFile);
                     } else {
-                        this.importGameData(gameData);
+                        this.importItemData(itemData);
                         processedCount++;
                         this.checkImportComplete(processedCount, totalCount);
                     }
                 } catch (error) {
-                    console.error('解析游戏数据失败:', error);
+                    console.error('解析数据失败:', error);
                     alert(`文件 ${txtFile.name} 解析失败`);
                     processedCount++;
                     this.checkImportComplete(processedCount, totalCount);
@@ -556,7 +834,6 @@ class GameCardManager {
             reader.readAsText(txtFile);
         });
         
-        // 清空文件输入，允许重复选择同一文件夹
         event.target.value = '';
     }
     
@@ -564,48 +841,41 @@ class GameCardManager {
         if (processed === total) {
             this.renderCards();
             this.renderFilters();
-            
-            // 清空详细信息显示
-            this.detailHeader.textContent = '游戏名称';
-            this.previewImage.innerHTML = '图片预览';
-            this.gameTagsDisplay.innerHTML = '<span class="tag">标签</span><span class="tag">标签</span><span class="tag">标签</span>';
-            this.originalPriceDisplay.textContent = '--';
-            this.purchasePriceDisplay.textContent = '--';
-            this.gameTimeDisplay.textContent = '游戏时长';
-            this.achievementProgress.style.width = '50%';
-            
+            this.resetDetailView();
             alert(`导入完成！`);
         }
     }
 
-    importGameData(gameData) {
+    importItemData(itemData) {
         // 确保数据格式正确
-        gameData.id = Date.now() + Math.random(); // 生成唯一ID
-        gameData.originalPrice = parseFloat(gameData.originalPrice) || 0;
-        gameData.purchasePrice = parseFloat(gameData.purchasePrice) || 0;
-        gameData.playTime = parseFloat(gameData.playTime) || 0;
-        gameData.achievementCurrent = parseInt(gameData.achievementCurrent) || 0;
-        gameData.achievementTotal = parseInt(gameData.achievementTotal) >= 0 ? parseInt(gameData.achievementTotal) : 0;
-        gameData.tags = Array.isArray(gameData.tags) ? gameData.tags : [];
+        itemData.id = Date.now() + Math.random();
+        itemData.tags = Array.isArray(itemData.tags) ? itemData.tags : [];
         
-        this.games.push(gameData);
-        this.renderCards();
-        this.renderFilters();
-        
-        // 如果统计窗口开着，更新统计数据
-        if (this.statsModal.style.display === 'block') {
-            this.updateGameStats();
+        if (this.currentCardType === 'game') {
+            itemData.originalPrice = parseFloat(itemData.originalPrice) || 0;
+            itemData.purchasePrice = parseFloat(itemData.purchasePrice) || 0;
+            itemData.playTime = parseFloat(itemData.playTime) || 0;
+            itemData.achievementCurrent = parseInt(itemData.achievementCurrent) || 0;
+            itemData.achievementTotal = parseInt(itemData.achievementTotal) || 0;
+        } else if (this.currentCardType === 'anime') {
+            itemData.year = parseInt(itemData.year) || 2025;
+            itemData.country = itemData.country || '日本';
+            itemData.rating = parseFloat(itemData.rating) || 5.0;
         }
+        
+        const currentData = this.getCurrentData();
+        currentData.push(itemData);
+        this.setCurrentData(currentData);
     }
 
     async handleExport() {
-        if (this.games.length === 0) {
-            alert('没有游戏数据可导出');
+        const currentData = this.getCurrentData();
+        if (currentData.length === 0) {
+            alert('没有数据可导出');
             return;
         }
         
         try {
-            // 检查浏览器是否支持文件系统访问API
             if ('showDirectoryPicker' in window) {
                 await this.exportWithDirectoryPicker();
             } else {
@@ -621,40 +891,52 @@ class GameCardManager {
     
     async exportWithDirectoryPicker() {
         try {
-            // 让用户选择保存位置
             const dirHandle = await window.showDirectoryPicker({
                 mode: 'readwrite',
                 startIn: 'downloads'
             });
             
-            // 创建游戏表单文件夹
-            const gameFormDir = await dirHandle.getDirectoryHandle('游戏表单', {
+            // 创建对应的文件夹
+            const folderName = this.currentCardType === 'game' ? '游戏表单' : '动漫表单';
+            const mainDir = await dirHandle.getDirectoryHandle(folderName, {
                 create: true
             });
             
             // 创建子文件夹
-            const gameInfoDir = await gameFormDir.getDirectoryHandle('游戏信息', {
+            const infoFolderName = this.currentCardType === 'game' ? '游戏信息' : '动漫信息';
+            const imageFolderName = this.currentCardType === 'game' ? '游戏图片' : '动漫图片';
+            
+            const infoDir = await mainDir.getDirectoryHandle(infoFolderName, {
                 create: true
             });
-            const gameImageDir = await gameFormDir.getDirectoryHandle('游戏图片', {
+            const imageDir = await mainDir.getDirectoryHandle(imageFolderName, {
                 create: true
             });
             
-            // 导出每个游戏的数据
-            for (const game of this.games) {
-                // 创建游戏信息txt文件
-                const gameInfo = {
-                    name: game.name,
-                    originalPrice: game.originalPrice,
-                    purchasePrice: game.purchasePrice,
-                    playTime: game.playTime,
-                    achievementCurrent: game.achievementCurrent,
-                    achievementTotal: game.achievementTotal,
-                    tags: game.tags
+            const currentData = this.getCurrentData();
+            
+            // 导出每个项目的数据
+            for (const item of currentData) {
+                // 创建信息txt文件
+                const itemInfo = {
+                    name: item.name,
+                    tags: item.tags
                 };
                 
-                const txtContent = JSON.stringify(gameInfo, null, 2);
-                const txtFileHandle = await gameInfoDir.getFileHandle(`${game.name}.txt`, {
+                if (this.currentCardType === 'game') {
+                    itemInfo.originalPrice = item.originalPrice;
+                    itemInfo.purchasePrice = item.purchasePrice;
+                    itemInfo.playTime = item.playTime;
+                    itemInfo.achievementCurrent = item.achievementCurrent;
+                    itemInfo.achievementTotal = item.achievementTotal;
+                } else if (this.currentCardType === 'anime') {
+                    itemInfo.year = item.year;
+                    itemInfo.country = item.country;
+                    itemInfo.rating = item.rating;
+                }
+                
+                const txtContent = JSON.stringify(itemInfo, null, 2);
+                const txtFileHandle = await infoDir.getFileHandle(`${item.name}.txt`, {
                     create: true
                 });
                 const txtWritable = await txtFileHandle.createWritable();
@@ -662,8 +944,8 @@ class GameCardManager {
                 await txtWritable.close();
                 
                 // 如果有图片数据，导出图片文件
-                if (game.imageData) {
-                    const base64Data = game.imageData.split(',')[1];
+                if (item.imageData) {
+                    const base64Data = item.imageData.split(',')[1];
                     const byteCharacters = atob(base64Data);
                     const byteNumbers = new Array(byteCharacters.length);
                     for (let i = 0; i < byteCharacters.length; i++) {
@@ -671,7 +953,7 @@ class GameCardManager {
                     }
                     const byteArray = new Uint8Array(byteNumbers);
                     
-                    const imgFileHandle = await gameImageDir.getFileHandle(`${game.name}.jpg`, {
+                    const imgFileHandle = await imageDir.getFileHandle(`${item.name}.jpg`, {
                         create: true
                     });
                     const imgWritable = await imgFileHandle.createWritable();
@@ -680,24 +962,20 @@ class GameCardManager {
                 }
             }
             
-            alert(`导出完成！已创建"游戏表单"文件夹。`);
+            alert(`导出完成！已创建"${folderName}"文件夹。`);
         } catch (error) {
             if (error.name === 'AbortError') {
-                // 用户取消了操作
                 return;
             }
             throw error;
         }
     }
-    
-
 
     handleImagePreview(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                // 可以在这里添加图片预览功能
                 console.log('图片已选择:', file.name);
             };
             reader.readAsDataURL(file);
@@ -706,7 +984,6 @@ class GameCardManager {
 
     // 墨水飞溅特效
     setupInkSplashEffect() {
-        // 为所有可点击元素添加墨水飞溅效果
         const clickableElements = document.querySelectorAll(
             '.action-btn, .detail-btn, .sort-btn, .filter-item, .search-section button, .modal-footer button'
         );
@@ -794,5 +1071,5 @@ class GameCardManager {
 
 // 页面加载完成后初始化卡片管理器
 document.addEventListener('DOMContentLoaded', () => {
-    new GameCardManager();
+    new CardManager();
 });

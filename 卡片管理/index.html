@@ -8,33 +8,27 @@
 </head>
 <body>
     <div class="card-manager-container">
-        <!-- 左侧筛选区域 -->
         <div class="filter-section">
             <div class="filter-header">筛选标签</div>
-            <div class="filter-list" id="filterList">
-                <!-- 筛选标签将通过JavaScript动态生成 -->
-            </div>
+            <div class="filter-list" id="filterList"></div>
         </div>
-
-        <!-- 中间卡片显示区域 -->
         <div class="cards-section">
-            <!-- 顶部工具栏 -->
             <div class="toolbar">
                 <div class="card-type-selector">
                     <select id="cardTypeSelect">
                         <option value="game">游戏卡片</option>
-                        <option value="anime" disabled>动漫卡片</option>
+                        <option value="anime">动漫卡片</option>
                         <option value="music" disabled>音乐卡片</option>
                     </select>
                 </div>
-                <div class="sort-buttons">
+                <div class="sort-buttons" id="sortButtons">
                     <button class="sort-btn active" data-sort="name">按名称排序</button>
-                    <button class="sort-btn" data-sort="time">按时长排序</button>
-                    <button class="sort-btn" data-sort="price">按价格排序</button>
-                    <button class="sort-btn" data-sort="achievement">按成就排序</button>
+                    <button class="sort-btn" data-sort="year">按年份排序</button>
+                    <button class="sort-btn" data-sort="rating">按评分排序</button>
+                    <button class="sort-btn" data-sort="country">按国家排序</button>
                 </div>
                 <div class="search-section">
-                    <input type="text" id="searchInput" placeholder="搜索游戏...">
+                    <input type="text" id="searchInput" placeholder="搜索内容...">
                     <button id="searchBtn">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -43,53 +37,44 @@
                 </div>
             </div>
 
-            <!-- 卡片网格 -->
-            <div class="cards-grid" id="cardsGrid">
-                <!-- 卡片将通过JavaScript动态生成 -->
-            </div>
+            <div class="cards-grid" id="cardsGrid"></div>
 
             <!-- 底部操作按钮 -->
-            <div class="bottom-actions">
+            <div class="bottom-actions" id="bottomActions">
                 <button class="action-btn" id="importBtn">导入表单</button>
                 <button class="action-btn" id="exportBtn">导出表单</button>
-                <button class="action-btn" id="addGameBtn">添加游戏</button>
-                <button class="action-btn" id="statsBtn">游戏统计</button>
+                <button class="action-btn" id="addBtn">添加内容</button>
+                <button class="action-btn" id="statsBtn">统计信息</button>
             </div>
         </div>
 
         <!-- 右侧详细信息区域 -->
         <div class="detail-section">
-            <div class="game-detail-box">
-                <div class="detail-header">游戏名称</div>
+            <div class="game-detail-box" id="detailBox">
+                <div class="detail-header" id="detailHeader">内容名称</div>
                 <div class="game-preview">
                     <div class="preview-image" id="previewImage">
                         图片预览
                     </div>
-                    <div class="game-tags" id="gameTags">
+                    <div class="game-tags" id="contentTags">
                         <span class="tag">标签</span>
                         <span class="tag">标签</span>
                         <span class="tag">标签</span>
                     </div>
                 </div>
-                <div class="game-info">
-                    <div class="price-row">
-                        <div class="price-item">
-                            <div class="price-label">原价</div>
-                            <div class="price-value" id="originalPriceDisplay">--</div>
-                        </div>
-                        <div class="price-item">
-                            <div class="price-label">购入价</div>
-                            <div class="price-value" id="purchasePriceDisplay">--</div>
-                        </div>
+                <div class="game-info" id="detailInfo">
+                    <div class="info-item">
+                        <span class="info-label">年份：</span>
+                        <span class="info-value" id="yearDisplay">2025</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">时长：</span>
-                        <span class="info-value" id="gameTime">游戏时长</span>
+                        <span class="info-label">国家：</span>
+                        <span class="info-value" id="countryDisplay">日本</span>
                     </div>
                     <div class="achievement-section">
-                        <div class="achievement-label">成就 (15/30)</div>
+                        <div class="achievement-label">评分：5.0</div>
                         <div class="achievement-bar">
-                            <div class="achievement-progress" id="achievementProgress" style="width: 50%"></div>
+                            <div class="achievement-progress" id="ratingProgress" style="width: 50%"></div>
                         </div>
                     </div>
                 </div>
@@ -101,84 +86,93 @@
         </div>
     </div>
 
-    <!-- 添加/编辑游戏模态框 -->
-    <div class="modal" id="gameModal">
+    <!-- 添加/编辑内容模态框 -->
+    <div class="modal" id="contentModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle">添加游戏</h3>
+                <h3 id="modalTitle">添加内容</h3>
                 <span class="close" id="closeModal">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="gameForm">
+                <form id="contentForm">
                     <div class="form-group">
-                        <label>游戏名称：</label>
-                        <input type="text" id="gameName" required>
+                        <label id="nameLabel">名称：</label>
+                        <input type="text" id="contentName" required>
                     </div>
-                    <div class="form-group form-row">
-                        <div class="form-col">
-                            <label>原价：</label>
-                            <input type="number" id="originalPrice" step="0.01" min="0" required>
+                    
+                    <!-- 游戏卡片特有字段 -->
+                    <div class="game-fields">
+                        <div class="form-group form-row">
+                            <div class="form-col">
+                                <label>原价：</label>
+                                <input type="number" id="originalPrice" step="0.01" min="0">
+                            </div>
+                            <div class="form-col">
+                                <label>购入价：</label>
+                                <input type="number" id="purchasePrice" step="0.01" min="0">
+                            </div>
                         </div>
-                        <div class="form-col">
-                            <label>购入价：</label>
-                            <input type="number" id="purchasePrice" step="0.01" min="0" required>
+                        <div class="form-group">
+                            <label>游戏时长（小时）：</label>
+                            <input type="number" id="playTime" step="0.1">
+                        </div>
+                        <div class="form-group form-row">
+                            <div class="form-col">
+                                <label>已获得成就：</label>
+                                <input type="number" id="achievementCurrent" min="0">
+                            </div>
+                            <div class="form-col">
+                                <label>总成就数：</label>
+                                <input type="number" id="achievementTotal" min="0">
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>游戏时长（小时）：</label>
-                        <input type="number" id="playTime" step="0.1" required>
-                    </div>
-                    <div class="form-group form-row">
-                        <div class="form-col">
-                            <label>已获得成就：</label>
-                            <input type="number" id="achievementCurrent" min="0" required>
+                    
+                    <!-- 动漫卡片特有字段 -->
+                    <div class="anime-fields" style="display: none;">
+                        <div class="form-group form-row">
+                            <div class="form-col">
+                                <label>年份：</label>
+                                <input type="number" id="animeYear" min="1900" max="2030">
+                            </div>
+                            <div class="form-col">
+                                <label>国家：</label>
+                                <input type="text" id="animeCountry" placeholder="日本">
+                            </div>
                         </div>
-                        <div class="form-col">
-                            <label>总成就数：</label>
-                            <input type="number" id="achievementTotal" min="0" required>
+                        <div class="form-group">
+                            <label>评分（1-10）：</label>
+                            <input type="number" id="animeRating" step="0.1" min="1" max="10">
                         </div>
                     </div>
+                    
                     <div class="form-group">
                         <label>标签（用空格分隔）：</label>
-                        <input type="text" id="gameTagsInput" placeholder="动作 冒险 RPG">
+                        <input type="text" id="contentTagsInput" placeholder="标签1 标签2 标签3">
                     </div>
                     <div class="form-group">
                         <label>预览图片：</label>
-                        <input type="file" id="gameImage" accept="image/*">
+                        <input type="file" id="contentImage" accept="image/*">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="saveGame">保存</button>
-                <button type="button" id="cancelGame">取消</button>
+                <button type="button" id="saveContent">保存</button>
+                <button type="button" id="cancelContent">取消</button>
             </div>
         </div>
     </div>
 
-    <!-- 游戏统计模态框 -->
+    <!-- 统计信息模态框 -->
     <div class="modal" id="statsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="statsModalTitle">游戏统计</h3>
+                <h3 id="statsModalTitle">统计信息</h3>
                 <span class="close" id="closeStatsModal">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="stats-container">
-                    <div class="stat-item">
-                        <div class="stat-label">游戏总数</div>
-                        <div class="stat-value" id="totalGamesCount">0</div>
-                        <div class="stat-unit">款</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">游戏总价</div>
-                        <div class="stat-value" id="totalOriginalPrice">¥0.00</div>
-                        <div class="stat-unit"></div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">购入总价</div>
-                        <div class="stat-value" id="totalPurchasePrice">¥0.00</div>
-                        <div class="stat-unit"></div>
-                    </div>
+                <div class="stats-container" id="statsContainer">
+                    <!-- 统计内容将动态生成 -->
                 </div>
             </div>
         </div>
