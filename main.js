@@ -1,3 +1,4 @@
+'use strict';
 let activeMenuItem = null;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -31,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 case '奇怪的东西':
                     showPlaceholder('奇怪的东西');
                     break;
-                case '游戏卡片管理':
-                    openGameCardManager();
+                case '卡片管理':
+                    openCardManager();
                     break;
                 case '智汇出行系统':
                     openZhihuiTravelSystem();
@@ -40,23 +41,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 case '3D机器人':
                     show3DRobotModal();
                     break;
-                case '跑酷小游戏':
-                    showPlaceholder('跑酷小游戏');
-                    break;
+
                 case '俄罗斯方块':
                     openTetrisGame();
                     break;
                 case '2048':
-                    showPlaceholder('2048');
-                    break;
-                case '赛车游戏':
-                    showPlaceholder('赛车游戏');
+                    open2048Game();
                     break;
                 case '贪吃蛇':
-                    showPlaceholder('贪吃蛇');
-                    break;
-                case '坦克大战':
-                    showPlaceholder('坦克大战');
+                    openSnakeGame();
                     break;
                 default:
                     showPlaceholder('功能开发中...');
@@ -195,30 +188,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
+        if (window.interfaceLyrics?.isActive()) {
             window.interfaceLyrics.hide();
-            const iframe = document.querySelector('.sub-interface iframe');
-            if (iframe && iframe.contentWindow) {
-                try {
-                    iframe.contentWindow.postMessage({
-                        type: 'interfaceLyricsToggle',
-                        isActive: false
-                    }, '*');
-                } catch (err) {}
-            }
+            postToIframe({ type: 'interfaceLyricsToggle', isActive: false });
         }
         
-        if (window.meterControl && window.meterControl.isVisible()) {
+        if (window.meterControl?.isVisible()) {
             window.meterControl.hide();
-            const iframe = document.querySelector('.sub-interface iframe');
-            if (iframe && iframe.contentWindow) {
-                try {
-                    iframe.contentWindow.postMessage({
-                        type: 'meterToggle',
-                        isActive: false
-                    }, '*');
-                } catch (err) {}
-            }
+            postToIframe({ type: 'meterToggle', isActive: false });
         }
         
         const subInterface = document.getElementById('subInterface');
@@ -237,53 +214,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
     function closeSubInterface() {
-        if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
+        if (window.interfaceLyrics?.isActive()) {
             window.interfaceLyrics.reset();
-            const iframe = document.querySelector('.sub-interface iframe');
-            if (iframe && iframe.contentWindow) {
-                try {
-                    iframe.contentWindow.postMessage({
-                        type: 'interfaceLyricsToggle',
-                        isActive: false
-                    }, '*');
-                } catch (err) {}
-            }
+            postToIframe({ type: 'interfaceLyricsToggle', isActive: false });
         }
         
-        if (window.meterControl && window.meterControl.isVisible()) {
+        if (window.meterControl?.isVisible()) {
             window.meterControl.hide();
-            const iframe = document.querySelector('.sub-interface iframe');
-            if (iframe && iframe.contentWindow) {
-                try {
-                    iframe.contentWindow.postMessage({
-                        type: 'meterToggle',
-                        isActive: false
-                    }, '*');
-                } catch (err) {}
-            }
+            postToIframe({ type: 'meterToggle', isActive: false });
         }
         
         subInterface.classList.remove('active');
         
-        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-        allMenuItems.forEach(item => {
-            item.classList.remove('active', 'pinned-active');
-            item.style.transform = 'none';
-        });
+        resetMenuItems(true);
         
         activeMenuItem = null;
         
-        setTimeout(() => {
-            subInterface.innerHTML = `
-                <div class="close-button" id="closeBtn">✕</div>
-                <div class="player-placeholder">
-                    <h2>音乐播放器</h2>
-                    <p>点击"音乐播放器"开始播放音乐</p>
-                </div>
-            `;
-            
-            document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
-        }, 500);
+        setTimeout(() => setDefaultPlaceholder(subInterface), 500);
     }
     
     
@@ -383,10 +330,39 @@ const additionalStyles = `
 
 `;
 
-// 将样式添加到页面
 const styleSheet = document.createElement('style');
 styleSheet.textContent = additionalStyles;
 document.head.appendChild(styleSheet); 
+
+// helpers
+function resetMenuItems(includePinned){
+    const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+    allMenuItems.forEach(item => {
+        item.classList.remove('active');
+        if (includePinned) item.classList.remove('pinned-active');
+        item.style.transform = 'none';
+    });
+}
+
+function setDefaultPlaceholder(container){
+    if (!container) return;
+    container.innerHTML = `
+        <div class="close-button" id="closeBtn">✕</div>
+        <div class="player-placeholder">
+            <h2>音乐播放器</h2>
+            <p>点击"音乐播放器"开始播放音乐</p>
+        </div>
+    `;
+    const btn = document.getElementById('closeBtn');
+    if (btn) btn.addEventListener('click', closeSubInterface);
+}
+
+function postToIframe(message){
+    const iframe = document.querySelector('.sub-interface iframe');
+    if (iframe?.contentWindow) {
+        try { iframe.contentWindow.postMessage(message, '*'); } catch(_){}
+    }
+}
 
 // 迷你后台播放器 UI
 (function(){
@@ -522,12 +498,7 @@ document.head.appendChild(styleSheet);
 
 
 
-    function postToIframe(message){
-        const iframe = document.querySelector('.sub-interface iframe');
-        if (iframe && iframe.contentWindow) {
-            try { iframe.contentWindow.postMessage(message, '*'); } catch(_){}
-        }
-    }
+
 
     function enterBackground(){
         if (isBackground) return;
@@ -540,47 +511,35 @@ document.head.appendChild(styleSheet);
         const sub = document.getElementById('subInterface');
         if (sub) sub.classList.add('player-hidden');
 
-        // 固定高亮左侧"音乐播放器"按键
-        const menuItems = document.querySelectorAll('.left-menu .menu-item');
-        menuItems.forEach(mi => {
-            const text = mi.querySelector('span') ? mi.querySelector('span').textContent.trim() : '';
-            if (text === '音乐播放器') {
-                mi.classList.add('pinned-active');
-            }
-        });
+        document.querySelectorAll('.left-menu .menu-item')
+            .forEach(mi => {
+                const text = mi.querySelector('span')?.textContent.trim() || '';
+                if (text === '音乐播放器') mi.classList.add('pinned-active');
+            });
     }
 
     function restoreFromBackground(){
         if (!isBackground) return;
 
-        // 显示播放器容器（不重建 iframe，避免打断）
         const sub = document.getElementById('subInterface');
         if (sub) {
             sub.classList.remove('player-hidden');
             sub.classList.add('active');
         }
 
-        // 关闭并清空前景面板（其它界面）
         const panel = document.getElementById('foreground-panel');
         if (panel) {
             panel.classList.remove('active');
             panel.innerHTML = '';
         }
-
-        // 更新左侧菜单：仅高亮"音乐播放器"
         const allMenu = document.querySelectorAll('.left-menu .menu-item');
         allMenu.forEach(mi => mi.classList.remove('active', 'pinned-active'));
-        let musicMenuItem = null;
-        allMenu.forEach(mi => {
-            const text = mi.querySelector('span') ? mi.querySelector('span').textContent.trim() : '';
-            if (text === '音乐播放器') musicMenuItem = mi;
-        });
+        let musicMenuItem = Array.from(allMenu).find(mi => (mi.querySelector('span')?.textContent.trim() || '') === '音乐播放器');
         if (musicMenuItem) {
             musicMenuItem.classList.add('active');
             try { activeMenuItem = musicMenuItem; } catch (_) {}
         }
 
-        // 确保播放器内容存在：若没有 iframe，则载入（有则不动，避免重置播放）
         if (sub && !sub.querySelector('iframe')) {
             sub.innerHTML = `
                 <div class="close-button" id="closeBtn">✕</div>
@@ -588,8 +547,7 @@ document.head.appendChild(styleSheet);
                     <iframe src="player-sub.html" width="100%" height="100%" frameborder="0"></iframe>
                 </div>
             `;
-            const closeBtn = document.getElementById('closeBtn');
-            if (closeBtn) closeBtn.addEventListener('click', closeSubInterface);
+            document.getElementById('closeBtn')?.addEventListener('click', closeSubInterface);
         }
 
         document.body.classList.remove('mini-player-active');
@@ -597,7 +555,6 @@ document.head.appendChild(styleSheet);
         isBackground = false;
     }
 
-    // 监听来自播放器的播放状态变化
     window.addEventListener('message', function(e){
         const data = e.data || {};
         if (data.type === 'requestBackgroundPlay') {
@@ -609,7 +566,6 @@ document.head.appendChild(styleSheet);
     });
 })();
 
-// 注入迷你播放器样式
 (function(){
     const css = `
     .mini-player {
@@ -644,10 +600,7 @@ document.head.appendChild(styleSheet);
     }
     .mini-btn:hover { background: #000; color: #fff; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
     
-    /* 隐藏但不移除播放器容器，确保播放不断 */
     .sub-interface.player-hidden { opacity: 0; pointer-events: none; }
-    
-    /* 前景面板内容样式 */
     #foreground-panel .placeholder-content {
         display: flex;
         flex-direction: column;
@@ -675,7 +628,6 @@ document.head.appendChild(styleSheet);
     document.head.appendChild(style);
 })();
 
-// 覆盖迷你播放器按钮尺寸以匹配原播放器
 (function(){
 	const style = document.createElement('style');
 	style.textContent = `
@@ -693,8 +645,6 @@ document.head.appendChild(styleSheet);
 		transition: all .2s ease;
 	}
 	.mini-btn:hover { background: #000; color: #fff; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
-	
-	/* 界面歌词按钮选中状态样式 */
 	.control-btn.active {
 		background: #000 !important;
 		color: white !important;
@@ -704,7 +654,6 @@ document.head.appendChild(styleSheet);
 	document.head.appendChild(style);
 })();
 
-// 模拟音律显示（与真实音频无关）
 (function(){
 	let meterBox = null;
 	let meterBars = [];
@@ -717,7 +666,7 @@ document.head.appendChild(styleSheet);
 		meterBox.id = 'simulated-meter-box';
 		meterBox.style.cssText = `
 			position: fixed;
-			top: 100px; /* 界面歌词和迷你播放器下方，下移10px */
+			top: 100px;
 			right: 12px;
 			width: 628px;
 			height: 56px;
@@ -726,7 +675,7 @@ document.head.appendChild(styleSheet);
 			border-radius: 8px;
 			padding: 6px 10px;
 			box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-			z-index: 2000; /* 在迷你播放器下方一层 */
+			z-index: 2000;
 			display: none;
 		`;
 		const inner = document.createElement('div');
@@ -747,31 +696,25 @@ document.head.appendChild(styleSheet);
 		el.style.display = visible ? 'block' : 'none';
 	}
 
-		function animateMeter(){
-		// 使用真实音频数据或保持当前状态
-		if (meterAnimId) {
-			meterAnimId = requestAnimationFrame(animateMeter);
-		}
+	function animateMeter(){
+		if (meterAnimId) meterAnimId = requestAnimationFrame(animateMeter);
 	}
 
-		function renderMeter(bars){
-		// 根据真实音频数据更新音律条高度
+	function renderMeter(bars){
 		const len = Math.min(bars.length, meterBars.length);
 		for (let i = 0; i < len; i++) {
 			let v = Math.max(0, Math.min(1, bars[i]));
-			// 增强视觉效果：更大的动态范围
-			v = Math.pow(v, 0.4); // 提升低幅值
-			v = Math.max(0.03, v); // 确保最小高度
-			const heightPercent = Math.round(v * 90); // 0-90%
+			v = Math.pow(v, 0.4);
+			v = Math.max(0.03, v);
+			const heightPercent = Math.round(v * 90);
 			meterBars[i].style.height = heightPercent + '%';
 		}
 	}
 
 	function pauseMeter(){
-		// 音频暂停时缓慢衰减
 		for (const bar of meterBars) {
 			const h = parseInt(bar.style.height || '0');
-			const nh = Math.max(3, Math.floor(h * 0.85)); // 衰减到最小3%
+			const nh = Math.max(3, Math.floor(h * 0.85));
 			bar.style.height = nh + '%';
 		}
 	}
@@ -794,24 +737,17 @@ document.head.appendChild(styleSheet);
 				stopMeter();
 				setMeterVisible(false);
 			}
-		} else if (data.type === 'meterData') {
-			// 接收真实音频数据并更新音律显示
-			if (data.bars && data.bars.length > 0) {
-				renderMeter(data.bars);
+					} else if (data.type === 'meterData') {
+				if (data.bars && data.bars.length > 0) {
+					renderMeter(data.bars);
+				}
+			} else if (data.type === 'meterPause') {
+				pauseMeter();
 			}
-		} else if (data.type === 'meterPause') {
-			// 音频暂停时的衰减效果
-			pauseMeter();
-		}
 	});
 	
-	// 确保音律显示框被创建
 	ensureMeterBox();
-	
-	// 暴露音律显示框给全局使用
 	window.meterBox = meterBox;
-	
-	// 暴露音律显示控制函数给全局使用
 	window.meterControl = {
 		hide: () => {
 			if (meterBox) {
@@ -824,7 +760,6 @@ document.head.appendChild(styleSheet);
 	};
 })();
 
-// 界面歌词显示功能
 (function(){
     let interfaceLyrics = null;
     let isInterfaceLyricsActive = false;
@@ -870,16 +805,13 @@ document.head.appendChild(styleSheet);
     function toggleInterfaceLyrics(){
         isInterfaceLyricsActive = !isInterfaceLyricsActive;
         if (isInterfaceLyricsActive) {
-            // 显示界面歌词
             showInterfaceLyrics('正在加载歌词...');
         } else {
-            // 隐藏界面歌词
             hideInterfaceLyrics();
         }
         return isInterfaceLyricsActive;
     }
 
-    // 监听来自播放器的消息
     window.addEventListener('message', function(e){
         const data = e.data || {};
         if (data.type === 'interfaceLyricsToggle') {
@@ -894,7 +826,6 @@ document.head.appendChild(styleSheet);
         }
     });
 
-    // 暴露给全局使用
     window.interfaceLyrics = {
         show: showInterfaceLyrics,
         hide: hideInterfaceLyrics,
@@ -907,14 +838,12 @@ document.head.appendChild(styleSheet);
     };
 })();
 
-// 前景容器管理
 (function(){
     window.ensureForegroundPanel = function ensureForegroundPanel(){
         let panel = document.getElementById('foreground-panel');
         if (!panel) {
             panel = document.createElement('div');
             panel.id = 'foreground-panel';
-            // 放置在中央内容区域中，与sub-interface同级
             const centerContent = document.querySelector('.center-content');
             if (centerContent) {
                 centerContent.appendChild(panel);
@@ -924,10 +853,8 @@ document.head.appendChild(styleSheet);
     }
 })(); 
 
-// 智汇出行系统功能
 function openZhihuiTravelSystem() {
     if (document.body.classList.contains('mini-player-active')) {
-        // 在迷你播放器状态下，使用前景面板显示
         const panel = ensureForegroundPanel();
         panel.classList.add('active');
         panel.innerHTML = `
@@ -940,46 +867,30 @@ function openZhihuiTravelSystem() {
             </div>
         `;
         
-        // 移除之前的事件监听器，避免重复绑定
         panel.removeEventListener('click', panel._zhihuiCloseHandler);
         
-        // 创建新的事件处理函数并保存引用
         panel._zhihuiCloseHandler = function(e) {
             if (e.target.classList.contains('close-button')) {
                 panel.classList.remove('active');
-                // 重置菜单项状态
+
                 if (activeMenuItem) {
                     activeMenuItem.classList.remove('active');
                     activeMenuItem.style.transform = 'none';
                     activeMenuItem = null;
                 }
-                // 确保所有菜单项都重置状态
-                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-                allMenuItems.forEach(item => {
-                    item.classList.remove('active');
-                    item.style.transform = 'none';
-                });
+                resetMenuItems();
             }
         };
         
-        // 添加事件监听器
         panel.addEventListener('click', panel._zhihuiCloseHandler);
         return;
     }
-    
-    // 非迷你播放器状态下，关闭界面歌词和音律显示
-    if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
-        window.interfaceLyrics.hide();
-    }
-    
-    if (window.meterControl && window.meterControl.isVisible()) {
-        window.meterControl.hide();
-    }
+    if (window.interfaceLyrics?.isActive()) window.interfaceLyrics.hide();
+    if (window.meterControl?.isVisible()) window.meterControl.hide();
     
     const subInterface = document.getElementById('subInterface');
     subInterface.classList.add('active');
     
-    // 创建iframe来加载智汇出行系统
     subInterface.innerHTML = `
         <div class="close-button" id="closeBtn">✕</div>
         <div class="zhihui-travel-container">
@@ -990,43 +901,23 @@ function openZhihuiTravelSystem() {
         </div>
     `;
     
-    // 为智汇出行系统添加专门的关闭处理
     document.getElementById('closeBtn').addEventListener('click', function() {
-        // 关闭智汇出行系统
         subInterface.classList.remove('active');
         if (activeMenuItem) {
             activeMenuItem.classList.remove('active');
             activeMenuItem.style.transform = 'none';
             activeMenuItem = null;
         }
+        resetMenuItems();
         
-        // 确保所有菜单项都重置状态
-        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-        allMenuItems.forEach(item => {
-            item.classList.remove('active');
-            item.style.transform = 'none';
-        });
-        
-        // 恢复占位符
-        setTimeout(() => {
-            subInterface.innerHTML = `
-                <div class="close-button" id="closeBtn">✕</div>
-                <div class="player-placeholder">
-                    <h2>音乐播放器</h2>
-                    <p>点击"音乐播放器"开始播放音乐</p>
-                </div>
-            `;
-            
-            // 添加关闭按钮事件监听
-            document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
-        }, 500);
+
+        setTimeout(() => setDefaultPlaceholder(subInterface), 500);
     });
 } 
 
-// 游戏卡片管理功能
-function openGameCardManager() {
+function openCardManager() {
     if (document.body.classList.contains('mini-player-active')) {
-        // 在迷你播放器状态下，使用前景面板显示
+
         const panel = ensureForegroundPanel();
         panel.classList.add('active');
         panel.innerHTML = `
@@ -1046,18 +937,13 @@ function openGameCardManager() {
         panel._cardManagerCloseHandler = function(e) {
             if (e.target.classList.contains('close-button')) {
                 panel.classList.remove('active');
-                // 重置菜单项状态
+
                 if (activeMenuItem) {
                     activeMenuItem.classList.remove('active');
                     activeMenuItem.style.transform = 'none';
                     activeMenuItem = null;
                 }
-                // 确保所有菜单项都重置状态
-                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-                allMenuItems.forEach(item => {
-                    item.classList.remove('active');
-                    item.style.transform = 'none';
-                });
+                resetMenuItems();
             }
         };
         
@@ -1067,13 +953,8 @@ function openGameCardManager() {
     }
     
     // 非迷你播放器状态下，关闭界面歌词和音律显示
-    if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
-        window.interfaceLyrics.hide();
-    }
-    
-    if (window.meterControl && window.meterControl.isVisible()) {
-        window.meterControl.hide();
-    }
+    if (window.interfaceLyrics?.isActive()) window.interfaceLyrics.hide();
+    if (window.meterControl?.isVisible()) window.meterControl.hide();
     
     const subInterface = document.getElementById('subInterface');
     subInterface.classList.add('active');
@@ -1098,34 +979,17 @@ function openGameCardManager() {
             activeMenuItem.style.transform = 'none';
             activeMenuItem = null;
         }
+        resetMenuItems();
         
-        // 确保所有菜单项都重置状态
-        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-        allMenuItems.forEach(item => {
-            item.classList.remove('active');
-            item.style.transform = 'none';
-        });
-        
-        // 恢复占位符
-        setTimeout(() => {
-            subInterface.innerHTML = `
-                <div class="close-button" id="closeBtn">✕</div>
-                <div class="player-placeholder">
-                    <h2>音乐播放器</h2>
-                    <p>点击"音乐播放器"开始播放音乐</p>
-                </div>
-            `;
-            
-            // 添加关闭按钮事件监听
-            document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
-        }, 500);
+
+        setTimeout(() => setDefaultPlaceholder(subInterface), 500);
     });
 }
 
 // 俄罗斯方块游戏功能
 function openTetrisGame() {
     if (document.body.classList.contains('mini-player-active')) {
-        // 在迷你播放器状态下，使用前景面板显示
+
         const panel = ensureForegroundPanel();
         panel.classList.add('active');
         panel.innerHTML = `
@@ -1145,23 +1009,17 @@ function openTetrisGame() {
         panel._tetrisCloseHandler = function(e) {
             if (e.target.classList.contains('close-button')) {
                 panel.classList.remove('active');
-                // 重置菜单项状态
+
                 if (activeMenuItem) {
                     activeMenuItem.classList.remove('active');
                     activeMenuItem.style.transform = 'none';
                     activeMenuItem = null;
                 }
-                // 确保所有菜单项都重置状态
-                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-                allMenuItems.forEach(item => {
-                    item.classList.remove('active');
-                    item.style.transform = 'none';
-                });
+                resetMenuItems();
                 
                 // 特别确保俄罗斯方块菜单项被重置
-                const tetrisMenuItem = Array.from(allMenuItems).find(item => 
-                    item.querySelector('span').textContent.trim() === '俄罗斯方块'
-                );
+                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+                const tetrisMenuItem = Array.from(allMenuItems).find(item => item.querySelector('span').textContent.trim() === '俄罗斯方块');
                 if (tetrisMenuItem) {
                     tetrisMenuItem.classList.remove('active');
                     tetrisMenuItem.style.transform = 'none';
@@ -1175,13 +1033,8 @@ function openTetrisGame() {
     }
     
     // 非迷你播放器状态下，关闭界面歌词和音律显示
-    if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
-        window.interfaceLyrics.hide();
-    }
-    
-    if (window.meterControl && window.meterControl.isVisible()) {
-        window.meterControl.hide();
-    }
+    if (window.interfaceLyrics?.isActive()) window.interfaceLyrics.hide();
+    if (window.meterControl?.isVisible()) window.meterControl.hide();
     
     const subInterface = document.getElementById('subInterface');
     subInterface.classList.add('active');
@@ -1208,22 +1061,17 @@ function openTetrisGame() {
         }
         
         // 确保所有菜单项都重置状态
-        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-        allMenuItems.forEach(item => {
-            item.classList.remove('active');
-            item.style.transform = 'none';
-        });
+        resetMenuItems();
         
         // 特别确保俄罗斯方块菜单项被重置
-        const tetrisMenuItem = Array.from(allMenuItems).find(item => 
-            item.querySelector('span').textContent.trim() === '俄罗斯方块'
-        );
+        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+        const tetrisMenuItem = Array.from(allMenuItems).find(item => item.querySelector('span').textContent.trim() === '俄罗斯方块');
         if (tetrisMenuItem) {
             tetrisMenuItem.classList.remove('active');
             tetrisMenuItem.style.transform = 'none';
         }
         
-        // 恢复占位符
+
         setTimeout(() => {
             subInterface.innerHTML = `
                 <div class="close-button" id="closeBtn">✕</div>
@@ -1239,10 +1087,132 @@ function openTetrisGame() {
     });
 }
 
+// 2048游戏功能
+function open2048Game() {
+    if (document.body.classList.contains('mini-player-active')) {
+        const panel = ensureForegroundPanel();
+        panel.classList.add('active');
+        panel.innerHTML = `
+            <div class="close-button" id="closeBtn">✕</div>
+            <div class="game-container">
+                <iframe src="2048/2048-embed.html" 
+                        frameborder="0" 
+                        style="width: 100%; height: 100vh; border: none; display: block;">
+                </iframe>
+            </div>
+        `;
+        
+        panel.removeEventListener('click', panel._2048CloseHandler);
+        panel._2048CloseHandler = function(e) {
+            if (e.target.classList.contains('close-button')) {
+                panel.classList.remove('active');
+                if (activeMenuItem) {
+                    activeMenuItem.classList.remove('active');
+                    activeMenuItem.style.transform = 'none';
+                    activeMenuItem = null;
+                }
+                resetMenuItems();
+                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+                const gameMenuItem = Array.from(allMenuItems).find(item => item.querySelector('span').textContent.trim() === '2048');
+                if (gameMenuItem) {
+                    gameMenuItem.classList.remove('active');
+                    gameMenuItem.style.transform = 'none';
+                }
+            }
+        };
+        
+        panel.addEventListener('click', panel._2048CloseHandler);
+        return;
+    }
+    
+    if (window.interfaceLyrics?.isActive()) window.interfaceLyrics.hide();
+    if (window.meterControl?.isVisible()) window.meterControl.hide();
+    
+    const subInterface = document.getElementById('subInterface');
+    subInterface.classList.add('active');
+    
+    subInterface.innerHTML = `
+        <div class="close-button" id="closeBtn">✕</div>
+        <div class="game-container">
+            <iframe src="2048/2048-embed.html" 
+                    frameborder="0" 
+                    style="width: 100%; height: 100vh; border: none; display: block;">
+            </iframe>
+        </div>
+    `;
+    
+    document.getElementById('closeBtn').addEventListener('click', function() {
+        subInterface.classList.remove('active');
+        resetMenuItems();
+        setTimeout(() => setDefaultPlaceholder(subInterface), 500);
+    });
+}
+
+// 贪吃蛇游戏功能
+function openSnakeGame() {
+    if (document.body.classList.contains('mini-player-active')) {
+        const panel = ensureForegroundPanel();
+        panel.classList.add('active');
+        panel.innerHTML = `
+            <div class="close-button" id="closeBtn">✕</div>
+            <div class="game-container">
+                <iframe src="贪吃蛇/snake-embed.html" 
+                        frameborder="0" 
+                        style="width: 100%; height: 100vh; border: none; display: block;">
+                </iframe>
+            </div>
+        `;
+        
+        panel.removeEventListener('click', panel._snakeCloseHandler);
+        panel._snakeCloseHandler = function(e) {
+            if (e.target.classList.contains('close-button')) {
+                panel.classList.remove('active');
+                if (activeMenuItem) {
+                    activeMenuItem.classList.remove('active');
+                    activeMenuItem.style.transform = 'none';
+                    activeMenuItem = null;
+                }
+                resetMenuItems();
+                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
+                const gameMenuItem = Array.from(allMenuItems).find(item => item.querySelector('span').textContent.trim() === '贪吃蛇');
+                if (gameMenuItem) {
+                    gameMenuItem.classList.remove('active');
+                    gameMenuItem.style.transform = 'none';
+                }
+            }
+        };
+        
+        panel.addEventListener('click', panel._snakeCloseHandler);
+        return;
+    }
+    
+    if (window.interfaceLyrics?.isActive()) window.interfaceLyrics.hide();
+    if (window.meterControl?.isVisible()) window.meterControl.hide();
+    
+    const subInterface = document.getElementById('subInterface');
+    subInterface.classList.add('active');
+    
+    subInterface.innerHTML = `
+        <div class="close-button" id="closeBtn">✕</div>
+        <div class="game-container">
+            <iframe src="贪吃蛇/snake-embed.html" 
+                    frameborder="0" 
+                    style="width: 100%; height: 100vh; border: none; display: block;">
+            </iframe>
+        </div>
+    `;
+    
+    document.getElementById('closeBtn').addEventListener('click', function() {
+        subInterface.classList.remove('active');
+        resetMenuItems();
+        setTimeout(() => setDefaultPlaceholder(subInterface), 500);
+    });
+}
+
 // 3D机器人弹窗功能
 function show3DRobotModal() {
     if (document.body.classList.contains('mini-player-active')) {
-        // 在迷你播放器状态下，使用前景面板显示
+
         const panel = ensureForegroundPanel();
         panel.classList.add('active');
         panel.innerHTML = create3DRobotModalContent();
@@ -1254,18 +1224,13 @@ function show3DRobotModal() {
         panel._robotCloseHandler = function(e) {
             if (e.target.classList.contains('close-button')) {
                 panel.classList.remove('active');
-                // 重置菜单项状态
+
                 if (activeMenuItem) {
                     activeMenuItem.classList.remove('active');
                     activeMenuItem.style.transform = 'none';
                     activeMenuItem = null;
                 }
-                // 确保所有菜单项都重置状态
-                const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-                allMenuItems.forEach(item => {
-                    item.classList.remove('active');
-                    item.style.transform = 'none';
-                });
+                resetMenuItems();
             }
         };
         
@@ -1278,13 +1243,8 @@ function show3DRobotModal() {
     }
     
     // 非迷你播放器状态下，关闭界面歌词和音律显示
-    if (window.interfaceLyrics && window.interfaceLyrics.isActive()) {
-        window.interfaceLyrics.hide();
-    }
-    
-    if (window.meterControl && window.meterControl.isVisible()) {
-        window.meterControl.hide();
-    }
+    if (window.interfaceLyrics?.isActive()) window.interfaceLyrics.hide();
+    if (window.meterControl?.isVisible()) window.meterControl.hide();
     
     const subInterface = document.getElementById('subInterface');
     subInterface.classList.add('active');
@@ -1301,27 +1261,10 @@ function show3DRobotModal() {
             activeMenuItem.style.transform = 'none';
             activeMenuItem = null;
         }
+        resetMenuItems();
         
-        // 确保所有菜单项都重置状态
-        const allMenuItems = document.querySelectorAll('.left-menu .menu-item');
-        allMenuItems.forEach(item => {
-            item.classList.remove('active');
-            item.style.transform = 'none';
-        });
-        
-        // 恢复占位符
-        setTimeout(() => {
-            subInterface.innerHTML = `
-                <div class="close-button" id="closeBtn">✕</div>
-                <div class="player-placeholder">
-                    <h2>音乐播放器</h2>
-                    <p>点击"音乐播放器"开始播放音乐</p>
-                </div>
-            `;
-            
-            // 添加关闭按钮事件监听
-            document.getElementById('closeBtn').addEventListener('click', closeSubInterface);
-        }, 500);
+
+        setTimeout(() => setDefaultPlaceholder(subInterface), 500);
     });
     
     // 初始化3D机器人弹窗功能
@@ -1455,11 +1398,9 @@ function init3DRobotModal(container) {
     downloadBtn.addEventListener('click', downloadProgram);
     
     // 为按钮添加墨水飞溅效果
-    [prevBtn, playPauseBtn, nextBtn, downloadBtn].forEach(btn => {
-        btn.addEventListener('mousedown', function(e) {
-            createRobotInkSplash(e, this);
-        });
-    });
+    [prevBtn, playPauseBtn, nextBtn, downloadBtn].forEach(btn =>
+        btn.addEventListener('mousedown', e => createRobotInkSplash(e, btn))
+    );
     
     // 键盘控制
     function handleKeyPress(e) {
