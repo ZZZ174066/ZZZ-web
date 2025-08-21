@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐播放器</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body { margin: 0; padding: 0; background: transparent; }
+        .player-container { width: 100%; height: 100vh; background: rgba(255,255,255,.95); border-radius: 8px; overflow: hidden; }
+        .player-container .player-container { width: 100%; height: 100%; border: none; box-shadow: none; border-radius: 0; }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <div class="player-container">
+            <div class="playlist-section">
+                <div class="title-search-container">
+                    <h2 class="section-title">播放列表</h2>
+                    <div class="search-icon" id="searchIcon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5 C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <input type="text" class="search-input" id="searchInput" placeholder="" style="display: none;">
+                </div>
+                <div class="playlist-container">
+                    <div class="playlist-item active" data-video="39music!.mp4" data-lyrics="39music!.txt">
+                        <span class="song-name">39music!</span>
+                    </div>
+                    <div class="playlist-item" data-video="5.20AM.mp4" data-lyrics="5.20AM.txt">
+                        <span class="song-name">5.20AM</span>
+                    </div>
+                    <div class="playlist-item" data-video="All My People.mp4" data-lyrics="All My People.txt">
+                        <span class="song-name">All My People</span>
+                    </div>
+                    <div class="playlist-item" data-video="Are You Lost.mp4" data-lyrics="Are You Lost.txt">
+                        <span class="song-name">Are You Lost</span>
+                    </div>
+                    <div class="playlist-item" data-video="Axel F.mp4" data-lyrics="Axel F.txt">
+                        <span class="song-name">Axel F</span>
+                    </div>
+                    <div class="playlist-item" data-video="Bad Apple!!.mp4" data-lyrics="Bad Apple!!.txt">
+                        <span class="song-name">Bad Apple!!</span>
+                    </div>
+                    <div class="playlist-item" data-video="Betty Boop.mp4" data-lyrics="Betty Boop.txt">
+                        <span class="song-name">Betty Boop</span>
+                    </div>
+                    <div class="playlist-item" data-video="Big Words.mp4" data-lyrics="Big Words.txt">
+                        <span class="song-name">Big Words</span>
+                    </div>
+                    <div class="playlist-item" data-video="Biri-Biri.mp4" data-lyrics="Biri-Biri.txt">
+                        <span class="song-name">Biri-Biri</span>
+                    </div>
+                    <div class="playlist-item" data-video="Black River.mp4" data-lyrics="Black River.txt">
+                        <span class="song-name">Black River</span>
+                    </div>
+                    <div class="playlist-item" data-video="BODY SHAMING.mp4" data-lyrics="BODY SHAMING.txt">
+                        <span class="song-name">BODY SHAMING</span>
+                    </div>
+                    <div class="playlist-item" data-video="Booty Music.mp4" data-lyrics="Booty Music.txt">
+                        <span class="song-name">Booty Music</span>
+                    </div>
+                    <div class="playlist-item" data-video="Brain Power.mp4" data-lyrics="Brain Power.txt">
+                        <span class="song-name">Brain Power</span>
+                    </div>
+                    <div class="playlist-item" data-video="Burn It All Down.mp4" data-lyrics="Burn It All Down.txt">
+                        <span class="song-name">Burn It All Down</span>
+                    </div>
+                    <div class="playlist-item" data-video="Confession.mp4" data-lyrics="Confession.txt">
+                        <span class="song-name">Confession</span>
+                    </div>
+                    <div class="playlist-item" data-video="Cotton Eye Joe.mp4" data-lyrics="Cotton Eye Joe.txt">
+                        <span class="song-name">Cotton Eye Joe</span>
+                    </div>
+                    <div class="playlist-item" data-video="Crucified.mp4" data-lyrics="Crucified.txt">
+                        <span class="song-name">Crucified</span>
+                    </div>
+                    <div class="playlist-item" data-video="Cure For Me.mp4" data-lyrics="Cure For Me.txt">
+                        <span class="song-name">Cure For Me</span>
+                    </div>
+                    <div class="playlist-item" data-video="Cyberangel.mp4" data-lyrics="Cyberangel.txt">
+                        <span class="song-name">Cyberangel</span>
+                    </div>
+                    <div class="playlist-item" data-video="Cyka Blyat.mp4" data-lyrics="Cyka Blyat.txt">
+                        <span class="song-name">Cyka Blyat</span>
+                    </div>
+                    <div class="playlist-item" data-video="Da Capo.mp4" data-lyrics="Da Capo.txt">
+                        <span class="song-name">Da Capo</span>
+                    </div>
+                    <div class="playlist-item" data-video="DADDY.mp4" data-lyrics="DADDY.txt">
+                        <span class="song-name">DADDY</span>
+                    </div>
+                    <div class="playlist-item" data-video="DEEP BREATH.mp4" data-lyrics="DEEP BREATH.txt">
+                        <span class="song-name">DEEP BREATH</span>
+                    </div>
+                    <div class="playlist-item" data-video="Dehors.mp4" data-lyrics="Dehors.txt">
+                        <span class="song-name">Dehors</span>
+                    </div>
+                    <div class="playlist-item" data-video="DISCO NIGHT.mp4" data-lyrics="DISCO NIGHT.txt">
+                        <span class="song-name">DISCO NIGHT</span>
+                    </div>
+                    <div class="playlist-item" data-video="Disco Panzer.mp4" data-lyrics="Disco Panzer.txt">
+                        <span class="song-name">Disco Panzer</span>
+                    </div>
+                    <div class="playlist-item" data-video="Do Better&Neon Rainbow.mp4" data-lyrics="Do Better&Neon Rainbow.txt">
+                        <span class="song-name">Do Better&Neon Rainbow</span>
+                    </div>
+                    <div class="playlist-item" data-video="Dreamy Day.mp4" data-lyrics="Dreamy Day.txt">
+                        <span class="song-name">Dreamy Day</span>
+                    </div>
+                    <div class="playlist-item" data-video="Everywhere We Go.mp4" data-lyrics="Everywhere We Go.txt">
+                        <span class="song-name">Everywhere We Go</span>
+                    </div>
+                    <div class="playlist-item" data-video="EZ4ENCE.mp4" data-lyrics="EZ4ENCE.txt">
+                        <span class="song-name">EZ4ENCE</span>
+                    </div>
+                    <div class="playlist-item" data-video="Flamingo.mp4" data-lyrics="Flamingo.txt">
+                        <span class="song-name">Flamingo</span>
+                    </div>
+                    <div class="playlist-item" data-video="Flashbang dance.mp4" data-lyrics="Flashbang dance.txt">
+                        <span class="song-name">Flashbang dance</span>
+                    </div>
+                    <div class="playlist-item" data-video="Gentle Man.mp4" data-lyrics="Gentle Man.txt">
+                        <span class="song-name">Gentle Man</span>
+                    </div>
+                    <div class="playlist-item" data-video="Gimme More x step on up.mp4" data-lyrics="Gimme More x step on up.txt">
+                        <span class="song-name">Gimme More x step on up</span>
+                    </div>
+                    <div class="playlist-item" data-video="GoneBad.mp4" data-lyrics="GoneBad.txt">
+                        <span class="song-name">GoneBad</span>
+                    </div>
+                    <div class="playlist-item" data-video="GOTCHA！.mp4" data-lyrics="GOTCHA！.txt">
+                        <span class="song-name">GOTCHA！</span>
+                    </div>
+                    <div class="playlist-item" data-video="Green Screen.mp4" data-lyrics="Green Screen.txt">
+                        <span class="song-name">Green Screen</span>
+                    </div>
+                    <div class="playlist-item" data-video="Higher Fighter.mp4" data-lyrics="Higher Fighter.txt">
+                        <span class="song-name">Higher Fighter</span>
+                    </div>
+                    <div class="playlist-item" data-video="HIT ME UP.mp4" data-lyrics="HIT ME UP.txt">
+                        <span class="song-name">HIT ME UP</span>
+                    </div>
+                    <div class="playlist-item" data-video="Hush.mp4" data-lyrics="Hush.txt">
+                        <span class="song-name">Hush</span>
+                    </div>
+                    <div class="playlist-item" data-video="I Miss You.mp4" data-lyrics="I Miss You.txt">
+                        <span class="song-name">I Miss You</span>
+                    </div>
+                    <div class="playlist-item" data-video="If We Never Broke Up.mp4" data-lyrics="If We Never Broke Up.txt">
+                        <span class="song-name">If We Never Broke Up</span>
+                    </div>
+                    <div class="playlist-item" data-video="infinity.mp4" data-lyrics="infinity.txt">
+                        <span class="song-name">infinity</span>
+                    </div>
+                    <div class="playlist-item" data-video="Insomnia.mp4" data-lyrics="Insomnia.txt">
+                        <span class="song-name">Insomnia</span>
+                    </div>
+                    <div class="playlist-item" data-video="Intergalactic Bound.mp4" data-lyrics="Intergalactic Bound.txt">
+                        <span class="song-name">Intergalactic Bound</span>
+                    </div>
+                    <div class="playlist-item" data-video="INTERNET OVERDOSE.mp4" data-lyrics="INTERNET OVERDOSE.txt">
+                        <span class="song-name">INTERNET OVERDOSE</span>
+                    </div>
+                    <div class="playlist-item" data-video="Just Friends.mp4" data-lyrics="Just Friends.txt">
+                        <span class="song-name">Just Friends</span>
+                    </div>
+                    <div class="playlist-item" data-video="Kẻ Cắp Gặp Bà Già.mp4" data-lyrics="Kẻ Cắp Gặp Bà Già.txt">
+                        <span class="song-name">Kẻ Cắp Gặp Bà Già</span>
+                    </div>
+                    <div class="playlist-item" data-video="KRUSHDAFIGHT.mp4" data-lyrics="KRUSHDAFIGHT.txt">
+                        <span class="song-name">KRUSHDAFIGHT</span>
+                    </div>
+                    <div class="playlist-item" data-video="L.I.F.E.mp4" data-lyrics="L.I.F.E.txt">
+                        <span class="song-name">L.I.F.E</span>
+                    </div>
+                    <div class="playlist-item" data-video="La La La.mp4" data-lyrics="La La La.txt">
+                        <span class="song-name">La La La</span>
+                    </div>
+                    <div class="playlist-item" data-video="Latitude.mp4" data-lyrics="Latitude.txt">
+                        <span class="song-name">Latitude</span>
+                    </div>
+                    <div class="playlist-item" data-video="level5 judgelight.mp4" data-lyrics="level5 judgelight.txt">
+                        <span class="song-name">level5 judgelight</span>
+                    </div>
+                    <div class="playlist-item" data-video="Lightning moment.mp4" data-lyrics="Lightning moment.txt">
+                        <span class="song-name">Lightning moment</span>
+                    </div>
+                    <div class="playlist-item" data-video="Lose Control.mp4" data-lyrics="Lose Control.txt">
+                        <span class="song-name">Lose Control</span>
+                    </div>
+                    <div class="playlist-item" data-video="ManiFesto.mp4" data-lyrics="ManiFesto.txt">
+                        <span class="song-name">ManiFesto</span>
+                    </div>
+                    <div class="playlist-item" data-video="mede：mede.mp4" data-lyrics="mede：mede.txt">
+                        <span class="song-name">mede：mede</span>
+                    </div>
+                    <div class="playlist-item" data-video="Melody.mp4" data-lyrics="Melody.txt">
+                        <span class="song-name">Melody</span>
+                    </div>
+                    <div class="playlist-item" data-video="Messages from the Stars.mp4" data-lyrics="Messages from the Stars.txt">
+                        <span class="song-name">Messages from the Stars</span>
+                    </div>
+                    <div class="playlist-item" data-video="Middle Of The Night.mp4" data-lyrics="Middle Of The Night.txt">
+                        <span class="song-name">Middle Of The Night</span>
+                    </div>
+                    <div class="playlist-item" data-video="miku miku oo ee oo.mp4" data-lyrics="miku miku oo ee oo.txt">
+                        <span class="song-name">miku miku oo ee oo</span>
+                    </div>
+                    <div class="playlist-item" data-video="Monody.mp4" data-lyrics="Monody.txt">
+                        <span class="song-name">Monody</span>
+                    </div>
+                    <div class="playlist-item" data-video="MONTAGEM CORAL.mp4" data-lyrics="MONTAGEM CORAL.txt">
+                        <span class="song-name">MONTAGEM CORAL</span>
+                    </div>
+                    <div class="playlist-item" data-video="Moon Halo.mp4" data-lyrics="Moon Halo.txt">
+                        <span class="song-name">Moon Halo</span>
+                    </div>
+                    <div class="playlist-item" data-video="MORE.mp4" data-lyrics="MORE.txt">
+                        <span class="song-name">MORE</span>
+                    </div>
+                    <div class="playlist-item" data-video="Moves Like Jagger.mp4" data-lyrics="Moves Like Jagger.txt">
+                        <span class="song-name">Moves Like Jagger</span>
+                    </div>
+                    <div class="playlist-item" data-video="M八七.mp4" data-lyrics="M八七.txt">
+                        <span class="song-name">M八七</span>
+                    </div>
+                    <div class="playlist-item" data-video="Never Gonna Give You Up.mp4" data-lyrics="Never Gonna Give You Up.txt">
+                        <span class="song-name">Never Gonna Give You Up</span>
+                    </div>
+                    <div class="playlist-item" data-video="New Face.mp4" data-lyrics="New Face.txt">
+                        <span class="song-name">New Face</span>
+                    </div>
+                    <div class="playlist-item" data-video="New Rules(Remix).mp4" data-lyrics="New Rules(Remix).txt">
+                        <span class="song-name">New Rules(Remix)</span>
+                    </div>
+                    <div class="playlist-item" data-video="NO CAP.mp4" data-lyrics="NO CAP.txt">
+                        <span class="song-name">NO CAP</span>
+                    </div>
+                    <div class="playlist-item" data-video="Normal No More.mp4" data-lyrics="Normal No More.txt">
+                        <span class="song-name">Normal No More</span>
+                    </div>
+                    <div class="playlist-item" data-video="NOX LUX.mp4" data-lyrics="NOX LUX.txt">
+                        <span class="song-name">NOX LUX</span>
+                    </div>
+                    <div class="playlist-item" data-video="nuits d'été.mp4" data-lyrics="nuits d'été.txt">
+                        <span class="song-name">nuits d'été</span>
+                    </div>
+                    <div class="playlist-item" data-video="Nyan Cat.mp4" data-lyrics="Nyan Cat.txt">
+                        <span class="song-name">Nyan Cat</span>
+                    </div>
+                    <div class="playlist-item" data-video="Once Upon a Time.mp4" data-lyrics="Once Upon a Time.txt">
+                        <span class="song-name">Once Upon a Time</span>
+                    </div>
+                    <div class="playlist-item" data-video="one spot.mp4" data-lyrics="one spot.txt">
+                        <span class="song-name">one spot</span>
+                    </div>
+                    <div class="playlist-item" data-video="Only My Railgun.mp4" data-lyrics="Only My Railgun.txt">
+                        <span class="song-name">Only My Railgun</span>
+                    </div>
+                    <div class="playlist-item" data-video="OTTAMA GAZER.mp4" data-lyrics="OTTAMA GAZER.txt">
+                        <span class="song-name">OTTAMA GAZER</span>
+                    </div>
+                    <div class="playlist-item" data-video="POP STARS.mp4" data-lyrics="POP STARS.txt">
+                        <span class="song-name">POP STARS</span>
+                    </div>
+                    <div class="playlist-item" data-video="Reburn.mp4" data-lyrics="Reburn.txt">
+                        <span class="song-name">Reburn</span>
+                    </div>
+                    <div class="playlist-item" data-video="Regression.mp4" data-lyrics="Regression.txt">
+                        <span class="song-name">Regression</span>
+                    </div>
+                    <div class="playlist-item" data-video="Repeat.mp4" data-lyrics="Repeat.txt">
+                        <span class="song-name">Repeat</span>
+                    </div>
+                    <div class="playlist-item" data-video="Revolution.mp4" data-lyrics="Revolution.txt">
+                        <span class="song-name">Revolution</span>
+                    </div>
+                    <div class="playlist-item" data-video="Rubia.mp4" data-lyrics="Rubia.txt">
+                        <span class="song-name">Rubia</span>
+                    </div>
+                    <div class="playlist-item" data-video="Sakura.mp4" data-lyrics="Sakura.txt">
+                        <span class="song-name">Sakura</span>
+                    </div>
+                    <div class="playlist-item" data-video="Say!ファンファーレ!.mp4" data-lyrics="Say!ファンファーレ!.txt">
+                        <span class="song-name">Say!ファンファーレ!</span>
+                    </div>
+                    <div class="playlist-item" data-video="See Tình.mp4" data-lyrics="See Tình.txt">
+                        <span class="song-name">See Tình</span>
+                    </div>
+                    <div class="playlist-item" data-video="Shake And Sway.mp4" data-lyrics="Shake And Sway.txt">
+                        <span class="song-name">Shake And Sway</span>
+                    </div>
+                    <div class="playlist-item" data-video="Shivers.mp4" data-lyrics="Shivers.txt">
+                        <span class="song-name">Shivers</span>
+                    </div>
+                    <div class="playlist-item" data-video="Shut up My Moms Calling.mp4" data-lyrics="Shut up My Moms Calling.txt">
+                        <span class="song-name">Shut up My Moms Calling</span>
+                    </div>
+                    <div class="playlist-item" data-video="Sofia.mp4" data-lyrics="Sofia.txt">
+                        <span class="song-name">Sofia</span>
+                    </div>
+                    <div class="playlist-item" data-video="SOS.mp4" data-lyrics="SOS.txt">
+                        <span class="song-name">SOS</span>
+                    </div>
+                    <div class="playlist-item" data-video="SPECIALZ.mp4" data-lyrics="SPECIALZ.txt">
+                        <span class="song-name">SPECIALZ</span>
+                    </div>
+                    <div class="playlist-item" data-video="SPEED OF LIGHT.mp4" data-lyrics="SPEED OF LIGHT.txt">
+                        <span class="song-name">SPEED OF LIGHT</span>
+                    </div>
+                    <div class="playlist-item" data-video="Spirit.mp4" data-lyrics="Spirit.txt">
+                        <span class="song-name">Spirit</span>
+                    </div>
+                    <div class="playlist-item" data-video="Stan.mp4" data-lyrics="Stan.txt">
+                        <span class="song-name">Stan</span>
+                    </div>
+                    <div class="playlist-item" data-video="Starfall.mp4" data-lyrics="Starfall.txt">
+                        <span class="song-name">Starfall</span>
+                    </div>
+                    <div class="playlist-item" data-video="Sunshine Girl.mp4" data-lyrics="Sunshine Girl.txt">
+                        <span class="song-name">Sunshine Girl</span>
+                    </div>
+                    <div class="playlist-item" data-video="TAKE ME HIGHER.mp4" data-lyrics="TAKE ME HIGHER.txt">
+                        <span class="song-name">TAKE ME HIGHER</span>
+                    </div>
+                    <div class="playlist-item" data-video="Take On Me.mp4" data-lyrics="Take On Me.txt">
+                        <span class="song-name">Take On Me</span>
+                    </div>
+                    <div class="playlist-item" data-video="The Ocean.mp4" data-lyrics="The Ocean.txt">
+                        <span class="song-name">The Ocean</span>
+                    </div>
+                    <div class="playlist-item" data-video="Thrift Shop.mp4" data-lyrics="Thrift Shop.txt">
+                        <span class="song-name">Thrift Shop</span>
+                    </div>
+                    <div class="playlist-item" data-video="Throw It All Away.mp4" data-lyrics="Throw It All Away.txt">
+                        <span class="song-name">Throw It All Away</span>
+                    </div>
+                    <div class="playlist-item" data-video="Toxic.mp4" data-lyrics="Toxic.txt">
+                        <span class="song-name">Toxic</span>
+                    </div>
+                    <div class="playlist-item" data-video="True Fighter.mp4" data-lyrics="True Fighter.txt">
+                        <span class="song-name">True Fighter</span>
+                    </div>
+                    <div class="playlist-item" data-video="TruE.mp4" data-lyrics="TruE.txt">
+                        <span class="song-name">TruE</span>
+                    </div>
+                    <div class="playlist-item" data-video="UNO.mp4" data-lyrics="UNO.txt">
+                        <span class="song-name">UNO</span>
+                    </div>
+                    <div class="playlist-item" data-video="Untitled world.mp4" data-lyrics="Untitled world.txt">
+                        <span class="song-name">Untitled world</span>
+                    </div>
+                    <div class="playlist-item" data-video="Unwelcome school.mp4" data-lyrics="Unwelcome school.txt">
+                        <span class="song-name">Unwelcome school</span>
+                    </div>
+                    <div class="playlist-item" data-video="Verbatim.mp4" data-lyrics="Verbatim.txt">
+                        <span class="song-name">Verbatim</span>
+                    </div>
+                    <div class="playlist-item" data-video="VOODOO KINGDOM.mp4" data-lyrics="VOODOO KINGDOM.txt">
+                        <span class="song-name">VOODOO KINGDOM</span>
+                    </div>
+                    <div class="playlist-item" data-video="Waiting for Love.mp4" data-lyrics="Waiting for Love.txt">
+                        <span class="song-name">Waiting for Love</span>
+                    </div>
+                    <div class="playlist-item" data-video="Where Is Your Love.mp4" data-lyrics="Where Is Your Love.txt">
+                        <span class="song-name">Where Is Your Love</span>
+                    </div>
+                    <div class="playlist-item" data-video="Wild.mp4" data-lyrics="Wild.txt">
+                        <span class="song-name">Wild</span>
+                    </div>
+                    <div class="playlist-item" data-video="Wrap Me In Plastic.mp4" data-lyrics="Wrap Me In Plastic.txt">
+                        <span class="song-name">Wrap Me In Plastic</span>
+                    </div>
+                    <div class="playlist-item" data-video="Xin Đừng Nhấc Máy（Remix）.mp4" data-lyrics="Xin Đừng Nhấc Máy（Remix）.txt">
+                        <span class="song-name">Xin Đừng Nhấc Máy（Remix）</span>
+                    </div>
+                    <div class="playlist-item" data-video="Зая.mp4" data-lyrics="Зая.txt">
+                        <span class="song-name">Зая</span>
+                    </div>
+                    <div class="playlist-item" data-video="Мой мармеладный.mp4" data-lyrics="Мой мармеладный.txt">
+                        <span class="song-name">Мой мармеладный</span>
+                    </div>
+                    <div class="playlist-item" data-video="Мокрые губы.mp4" data-lyrics="Мокрые губы.txt">
+                        <span class="song-name">Мокрые губы</span>
+                    </div>
+                    <div class="playlist-item" data-video="ПOд ЛyHOЙ.mp4" data-lyrics="ПOд ЛyHOЙ.txt">
+                        <span class="song-name">ПOд ЛyHOЙ</span>
+                    </div>
+                    <div class="playlist-item" data-video="Просто.mp4" data-lyrics="Просто.txt">
+                        <span class="song-name">Просто</span>
+                    </div>
+                    <div class="playlist-item" data-video="アイドル.mp4" data-lyrics="アイドル.txt">
+                        <span class="song-name">アイドル</span>
+                    </div>
+                    <div class="playlist-item" data-video="さくら ~あなたに出会えてよかった~.mp4" data-lyrics="さくら ~あなたに出会えてよかった~.txt">
+                        <span class="song-name">さくら ~あなたに出会えてよかった~</span>
+                    </div>
+                    <div class="playlist-item" data-video="ねぇねぇねぇ.mp4" data-lyrics="ねぇねぇねぇ.txt">
+                        <span class="song-name">ねぇねぇねぇ</span>
+                    </div>
+                    <div class="playlist-item" data-video="ヒミツ.mp4" data-lyrics="ヒミツ.txt">
+                        <span class="song-name">ヒミツ</span>
+                    </div>
+                    <div class="playlist-item" data-video="ヤキモチ.mp4" data-lyrics="ヤキモチ.txt">
+                        <span class="song-name">ヤキモチ</span>
+                    </div>
+                    <div class="playlist-item" data-video="白鸽乌鸦相爱的戏码.mp4" data-lyrics="白鸽乌鸦相爱的戏码.txt">
+                        <span class="song-name">白鸽乌鸦相爱的戏码</span>
+                    </div>
+                    <div class="playlist-item" data-video="本草纲目.mp4" data-lyrics="本草纲目.txt">
+                        <span class="song-name">本草纲目</span>
+                    </div>
+                    <div class="playlist-item" data-video="不乱不破.mp4" data-lyrics="不乱不破.txt">
+                        <span class="song-name">不乱不破</span>
+                    </div>
+                    <div class="playlist-item" data-video="草蛇惊一.mp4" data-lyrics="草蛇惊一.txt">
+                        <span class="song-name">草蛇惊一</span>
+                    </div>
+                    <div class="playlist-item" data-video="春娇与志明.mp4" data-lyrics="春娇与志明.txt">
+                        <span class="song-name">春娇与志明</span>
+                    </div>
+                    <div class="playlist-item" data-video="此去半生.mp4" data-lyrics="此去半生.txt">
+                        <span class="song-name">此去半生</span>
+                    </div>
+                    <div class="playlist-item" data-video="凑热闹.mp4" data-lyrics="凑热闹.txt">
+                        <span class="song-name">凑热闹</span>
+                    </div>
+                    <div class="playlist-item" data-video="单向地铁.mp4" data-lyrics="单向地铁.txt">
+                        <span class="song-name">单向地铁</span>
+                    </div>
+                    <div class="playlist-item" data-video="帝皇再临.mp4" data-lyrics="帝皇再临.txt">
+                        <span class="song-name">帝皇再临</span>
+                    </div>
+                    <div class="playlist-item" data-video="诶嘿.mp4" data-lyrics="诶嘿.txt">
+                        <span class="song-name">诶嘿</span>
+                    </div>
+                    <div class="playlist-item" data-video="烦恼游戏.mp4" data-lyrics="烦恼游戏.txt">
+                        <span class="song-name">烦恼游戏</span>
+                    </div>
+                    <div class="playlist-item" data-video="非人类.mp4" data-lyrics="非人类.txt">
+                        <span class="song-name">非人类</span>
+                    </div>
+                    <div class="playlist-item" data-video="粉骨碎身大赌场.mp4" data-lyrics="粉骨碎身大赌场.txt">
+                        <span class="song-name">粉骨碎身大赌场</span>
+                    </div>
+                    <div class="playlist-item" data-video="疯狂果宝.mp4" data-lyrics="疯狂果宝.txt">
+                        <span class="song-name">疯狂果宝</span>
+                    </div>
+                    <div class="playlist-item" data-video="改革春风吹满地.mp4" data-lyrics="改革春风吹满地.txt">
+                        <span class="song-name">改革春风吹满地</span>
+                    </div>
+                    <div class="playlist-item" data-video="孤勇者.mp4" data-lyrics="孤勇者.txt">
+                        <span class="song-name">孤勇者</span>
+                    </div>
+                    <div class="playlist-item" data-video="怪物.mp4" data-lyrics="怪物.txt">
+                        <span class="song-name">怪物</span>
+                    </div>
+                    <div class="playlist-item" data-video="怪物之歌.mp4" data-lyrics="怪物之歌.txt">
+                        <span class="song-name">怪物之歌</span>
+                    </div>
+                    <div class="playlist-item" data-video="黑色高级车.mp4" data-lyrics="黑色高级车.txt">
+                        <span class="song-name">黑色高级车</span>
+                    </div>
+                    <div class="playlist-item" data-video="花(feat.花谱).mp4" data-lyrics="花(feat.花谱).txt">
+                        <span class="song-name">花(feat.花谱)</span>
+                    </div>
+                    <div class="playlist-item" data-video="花束.mp4" data-lyrics="花束.txt">
+                        <span class="song-name">花束</span>
+                    </div>
+                    <div class="playlist-item" data-video="花妖.mp4" data-lyrics="花妖.txt">
+                        <span class="song-name">花妖</span>
+                    </div>
+                    <div class="playlist-item" data-video="黄金庭院.mp4" data-lyrics="黄金庭院.txt">
+                        <span class="song-name">黄金庭院</span>
+                    </div>
+                    <div class="playlist-item" data-video="火炎.mp4" data-lyrics="火炎.txt">
+                        <span class="song-name">火炎</span>
+                    </div>
+                    <div class="playlist-item" data-video="飢えた鳥たち.mp4" data-lyrics="飢えた鳥たち.txt">
+                        <span class="song-name">飢えた鳥たち</span>
+                    </div>
+                    <div class="playlist-item" data-video="江南Style.mp4" data-lyrics="江南Style.txt">
+                        <span class="song-name">江南Style</span>
+                    </div>
+                    <div class="playlist-item" data-video="尽管小蓝鸟已经死翘翘.mp4" data-lyrics="尽管小蓝鸟已经死翘翘.txt">
+                        <span class="song-name">尽管小蓝鸟已经死翘翘</span>
+                    </div>
+                    <div class="playlist-item" data-video="诀别书.mp4" data-lyrics="诀别书.txt">
+                        <span class="song-name">诀别书</span>
+                    </div>
+                    <div class="playlist-item" data-video="铠旋.mp4" data-lyrics="铠旋.txt">
+                        <span class="song-name">铠旋</span>
+                    </div>
+                    <div class="playlist-item" data-video="快乐崇拜.mp4" data-lyrics="快乐崇拜.txt">
+                        <span class="song-name">快乐崇拜</span>
+                    </div>
+                    <div class="playlist-item" data-video="老人与海.mp4" data-lyrics="老人与海.txt">
+                        <span class="song-name">老人与海</span>
+                    </div>
+                    <div class="playlist-item" data-video="乐意效劳.mp4" data-lyrics="乐意效劳.txt">
+                        <span class="song-name">乐意效劳</span>
+                    </div>
+                    <div class="playlist-item" data-video="恋爱语音导航.mp4" data-lyrics="恋爱语音导航.txt">
+                        <span class="song-name">恋爱语音导航</span>
+                    </div>
+                    <div class="playlist-item" data-video="铃芽.mp4" data-lyrics="铃芽.txt">
+                        <span class="song-name">铃芽</span>
+                    </div>
+                    <div class="playlist-item" data-video="流星车手.mp4" data-lyrics="流星车手.txt">
+                        <span class="song-name">流星车手</span>
+                    </div>
+                    <div class="playlist-item" data-video="乱世巨星.mp4" data-lyrics="乱世巨星.txt">
+                        <span class="song-name">乱世巨星</span>
+                    </div>
+                    <div class="playlist-item" data-video="梦的光点.mp4" data-lyrics="梦的光点.txt">
+                        <span class="song-name">梦的光点</span>
+                    </div>
+                    <div class="playlist-item" data-video="命运战士.mp4" data-lyrics="命运战士.txt">
+                        <span class="song-name">命运战士</span>
+                    </div>
+                    <div class="playlist-item" data-video="魔咒.mp4" data-lyrics="魔咒.txt">
+                        <span class="song-name">魔咒</span>
+                    </div>
+                    <div class="playlist-item" data-video="内向都是作曲家.mp4" data-lyrics="内向都是作曲家.txt">
+                        <span class="song-name">内向都是作曲家</span>
+                    </div>
+                    <div class="playlist-item" data-video="欧布的祈愿.mp4" data-lyrics="欧布的祈愿.txt">
+                        <span class="song-name">欧布的祈愿</span>
+                    </div>
+                    <div class="playlist-item" data-video="凭着一颗心.mp4" data-lyrics="凭着一颗心.txt">
+                        <span class="song-name">凭着一颗心</span>
+                    </div>
+                    <div class="playlist-item" data-video="普通DISCO.mp4" data-lyrics="普通DISCO.txt">
+                        <span class="song-name">普通DISCO</span>
+                    </div>
+                    <div class="playlist-item" data-video="琪露诺的完美算术教室.mp4" data-lyrics="琪露诺的完美算术教室.txt">
+                        <span class="song-name">琪露诺的完美算术教室</span>
+                    </div>
+                    <div class="playlist-item" data-video="千层套路.mp4" data-lyrics="千层套路.txt">
+                        <span class="song-name">千层套路</span>
+                    </div>
+                    <div class="playlist-item" data-video="强风大背头.mp4" data-lyrics="强风大背头.txt">
+                        <span class="song-name">强风大背头</span>
+                    </div>
+                    <div class="playlist-item" data-video="青涩果实.mp4" data-lyrics="青涩果实.txt">
+                        <span class="song-name">青涩果实</span>
+                    </div>
+                    <div class="playlist-item" data-video="清纯正直的卡布达.mp4" data-lyrics="清纯正直的卡布达.txt">
+                        <span class="song-name">清纯正直的卡布达</span>
+                    </div>
+                    <div class="playlist-item" data-video="群青.mp4" data-lyrics="群青.txt">
+                        <span class="song-name">群青</span>
+                    </div>
+                    <div class="playlist-item" data-video="让其响彻.mp4" data-lyrics="让其响彻.txt">
+                        <span class="song-name">让其响彻</span>
+                    </div>
+                    <div class="playlist-item" data-video="若生命等候.mp4" data-lyrics="若生命等候.txt">
+                        <span class="song-name">若生命等候</span>
+                    </div>
+                    <div class="playlist-item" data-video="赛博朋克：边缘行者.mp4" data-lyrics="赛博朋克：边缘行者.txt">
+                        <span class="song-name">赛博朋克：边缘行者</span>
+                    </div>
+                    <div class="playlist-item" data-video="散落飘零.mp4" data-lyrics="散落飘零.txt">
+                        <span class="song-name">散落飘零</span>
+                    </div>
+                    <div class="playlist-item" data-video="砂之行星.mp4" data-lyrics="砂之行星.txt">
+                        <span class="song-name">砂之行星</span>
+                    </div>
+                    <div class="playlist-item" data-video="深蓝与夜的呼吸.mp4" data-lyrics="深蓝与夜的呼吸.txt">
+                        <span class="song-name">深蓝与夜的呼吸</span>
+                    </div>
+                    <div class="playlist-item" data-video="声嘶力竭.mp4" data-lyrics="声嘶力竭.txt">
+                        <span class="song-name">声嘶力竭</span>
+                    </div>
+                    <div class="playlist-item" data-video="圣诞星.mp4" data-lyrics="圣诞星.txt">
+                        <span class="song-name">圣诞星</span>
+                    </div>
+                    <div class="playlist-item" data-video="使一颗心免于哀伤.mp4" data-lyrics="使一颗心免于哀伤.txt">
+                        <span class="song-name">使一颗心免于哀伤</span>
+                    </div>
+                    <div class="playlist-item" data-video="视奸.mp4" data-lyrics="视奸.txt">
+                        <span class="song-name">视奸</span>
+                    </div>
+                    <div class="playlist-item" data-video="死一样的痛过.mp4" data-lyrics="死一样的痛过.txt">
+                        <span class="song-name">死一样的痛过</span>
+                    </div>
+                    <div class="playlist-item" data-video="溯.mp4" data-lyrics="溯.txt">
+                        <span class="song-name">溯</span>
+                    </div>
+                    <div class="playlist-item" data-video="藤原千花角色曲.mp4" data-lyrics="藤原千花角色曲.txt">
+                        <span class="song-name">藤原千花角色曲</span>
+                    </div>
+                    <div class="playlist-item" data-video="天灵灵地灵灵.mp4" data-lyrics="天灵灵地灵灵.txt">
+                        <span class="song-name">天灵灵地灵灵</span>
+                    </div>
+                    <div class="playlist-item" data-video="兔子洞.mp4" data-lyrics="兔子洞.txt">
+                        <span class="song-name">兔子洞</span>
+                    </div>
+                    <div class="playlist-item" data-video="万众瞩目.mp4" data-lyrics="万众瞩目.txt">
+                        <span class="song-name">万众瞩目</span>
+                    </div>
+                    <div class="playlist-item" data-video="妄想哀歌.mp4" data-lyrics="妄想哀歌.txt">
+                        <span class="song-name">妄想哀歌</span>
+                    </div>
+                    <div class="playlist-item" data-video="我的战争.mp4" data-lyrics="我的战争.txt">
+                        <span class="song-name">我的战争</span>
+                    </div>
+                    <div class="playlist-item" data-video="希望有羽毛和翅膀.mp4" data-lyrics="希望有羽毛和翅膀.txt">
+                        <span class="song-name">希望有羽毛和翅膀</span>
+                    </div>
+                    <div class="playlist-item" data-video="心层麻醉.mp4" data-lyrics="心层麻醉.txt">
+                        <span class="song-name">心层麻醉</span>
+                    </div>
+                    <div class="playlist-item" data-video="星间旅行（英文版）.mp4" data-lyrics="星间旅行（英文版）.txt">
+                        <span class="song-name">星间旅行（英文版）</span>
+                    </div>
+                    <div class="playlist-item" data-video="星间旅行（中文版）.mp4" data-lyrics="星间旅行（中文版）.txt">
+                        <span class="song-name">星间旅行（中文版）</span>
+                    </div>
+                    <div class="playlist-item" data-video="星星与我们.mp4" data-lyrics="星星与我们.txt">
+                        <span class="song-name">星星与我们</span>
+                    </div>
+                    <div class="playlist-item" data-video="雪之泪 雨之音.mp4" data-lyrics="雪之泪 雨之音.txt">
+                        <span class="song-name">雪之泪 雨之音</span>
+                    </div>
+                    <div class="playlist-item" data-video="血色警察24时巡逻.mp4" data-lyrics="血色警察24时巡逻.txt">
+                        <span class="song-name">血色警察24时巡逻</span>
+                    </div>
+                    <div class="playlist-item" data-video="胭脂.mp4" data-lyrics="胭脂.txt">
+                        <span class="song-name">胭脂</span>
+                    </div>
+                    <div class="playlist-item" data-video="阳光开朗大男孩.mp4" data-lyrics="阳光开朗大男孩.txt">
+                        <span class="song-name">阳光开朗大男孩</span>
+                    </div>
+                    <div class="playlist-item" data-video="夜に駆ける.mp4" data-lyrics="夜に駆ける.txt">
+                        <span class="song-name">夜に駆ける</span>
+                    </div>
+                    <div class="playlist-item" data-video="一点.mp4" data-lyrics="一点.txt">
+                        <span class="song-name">一点</span>
+                    </div>
+                    <div class="playlist-item" data-video="依然一无所知.mp4" data-lyrics="依然一无所知.txt">
+                        <span class="song-name">依然一无所知</span>
+                    </div>
+                    <div class="playlist-item" data-video="以恋结缘.mp4" data-lyrics="以恋结缘.txt">
+                        <span class="song-name">以恋结缘</span>
+                    </div>
+                    <div class="playlist-item" data-video="印尼宽带.mp4" data-lyrics="印尼宽带.txt">
+                        <span class="song-name">印尼宽带</span>
+                    </div>
+                    <div class="playlist-item" data-video="英雄.mp4" data-lyrics="英雄.txt">
+                        <span class="song-name">英雄</span>
+                    </div>
+                    <div class="playlist-item" data-video="有机酸.mp4" data-lyrics="有机酸.txt">
+                        <span class="song-name">有机酸</span>
+                    </div>
+                    <div class="playlist-item" data-video="又活了一天.mp4" data-lyrics="又活了一天.txt">
+                        <span class="song-name">又活了一天</span>
+                    </div>
+                    <div class="playlist-item" data-video="雑踏、僕らの街.mp4" data-lyrics="雑踏、僕らの街.txt">
+                        <span class="song-name">雑踏、僕らの街</span>
+                    </div>
+                    <div class="playlist-item" data-video="在银河中孤独摇摆.mp4" data-lyrics="在银河中孤独摇摆.txt">
+                        <span class="song-name">在银河中孤独摇摆</span>
+                    </div>
+                    <div class="playlist-item" data-video="战无不胜.mp4" data-lyrics="战无不胜.txt">
+                        <span class="song-name">战无不胜</span>
+                    </div>
+                    <div class="playlist-item" data-video="真夜中のドアStay With Me.mp4" data-lyrics="真夜中のドアStay With Me.txt">
+                        <span class="song-name">真夜中のドアStay With Me</span>
+                    </div>
+                    <div class="playlist-item" data-video="只想守护你.mp4" data-lyrics="只想守护你.txt">
+                        <span class="song-name">只想守护你</span>
+                    </div>
+                    <div class="playlist-item" data-video="只想说一声.mp4" data-lyrics="只想说一声.txt">
+                        <span class="song-name">只想说一声</span>
+                    </div>
+                    <div class="playlist-item" data-video="准备出发！.mp4" data-lyrics="准备出发！.txt">
+                        <span class="song-name">准备出发！</span>
+                    </div>
+                    <div class="playlist-item" data-video="最伟大的作品.mp4" data-lyrics="最伟大的作品.txt">
+                        <span class="song-name">最伟大的作品</span>
+                    </div>
+                </div>
+                <div class="playlist-tools">
+                </div>
+            </div>
+            <div class="video-section">
+                <div class="video-container">
+                    <video id="videoPlayer">
+                        <source src="../音乐/深蓝与夜的呼吸.mp4" type="video/mp4">
+                        您的浏览器不支持视频播放。
+                    </video>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill">
+                                <div class="progress-thumb"></div>
+                            </div>
+                        </div>
+                        <div class="time-display">
+                            <span id="currentTime">00:00</span>
+                            <span>/</span>
+                            <span id="totalTime">00:00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-buttons">
+                    <div class="control-row">
+                        <div class="volume-control">
+                            <span class="control-label">音量</span>
+                            <div class="volume-bar">
+                                <div class="volume-fill" id="volumeFill">
+                                    <div class="volume-thumb"></div>
+                                </div>
+                                <div class="control-value" id="volumeValue">50</div>
+                            </div>
+                        </div>
+                        <button class="control-btn icon-btn" id="prevBtn">⏮</button>
+                        <button class="control-btn icon-btn" id="playPauseBtn">⏸</button>
+                        <button class="control-btn icon-btn" id="nextBtn">⏭</button>
+                        <div class="speed-control">
+                            <div class="speed-bar">
+                                <div class="speed-fill" id="speedFill">
+                                    <div class="speed-thumb"></div>
+                                </div>
+                                <div class="control-value" id="speedValue">1.0x</div>
+                            </div>
+                            <span class="control-label">速度</span>
+                        </div>
+                    </div>
+                    <div class="control-row">
+                        <button class="control-btn" id="randomStartBtn">随机开始</button>
+                        <button class="control-btn" id="playModeBtn">列表循环</button>
+                        <button class="control-btn" id="meterToggleBtn">音律显示</button>
+                        <button class="control-btn" id="interfaceLyricsBtn">界面歌词</button>
+                        <button class="control-btn" id="backgroundPlayBtn">后台播放</button>
+                        <button class="control-btn" id="lyricsCorrectBtn">歌词矫正</button>
+                    </div>
+                </div>
+            </div>
+            <div class="lyrics-section">
+                <h2 class="section-title">歌词区域</h2>
+                <div class="lyrics-container" id="lyricsContainer">
+                </div>
+                <div class="lyrics-tools">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="lyrics.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
