@@ -6,39 +6,14 @@
     <title>音乐播放器</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        /* 子界面适配样式 */
-        body {
-            margin: 0;
-            padding: 0;
-            background: transparent;
-        }
-        
-        .player-container {
-            width: 100%;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        /* 调整播放器尺寸以适应子界面 */
-        .player-container .player-container {
-            width: 100%;
-            height: 100%;
-            border-radius: 0;
-        }
-        
-        /* 隐藏原始播放器的边框 */
-        .player-container .player-container {
-            border: none;
-            box-shadow: none;
-        }
+        body { margin: 0; padding: 0; background: transparent; }
+        .player-container { width: 100%; height: 100vh; background: rgba(255,255,255,.95); border-radius: 8px; overflow: hidden; }
+        .player-container .player-container { width: 100%; height: 100%; border: none; box-shadow: none; border-radius: 0; }
     </style>
 </head>
 <body>
     <div class="player-container">
         <div class="player-container">
-
             <div class="playlist-section">
                 <div class="title-search-container">
                     <h2 class="section-title">播放列表</h2>
@@ -283,18 +258,14 @@
                     </div>
                 </div>
                 <div class="playlist-tools">
-
                 </div>
             </div>
-
-
             <div class="video-section">
                 <div class="video-container">
                     <video id="videoPlayer">
                         <source src="../音乐/深蓝与夜的呼吸.mp4" type="video/mp4">
                         您的浏览器不支持视频播放。
                     </video>
-
                     <div class="progress-container">
                         <div class="progress-bar">
                             <div class="progress-fill" id="progressFill">
@@ -308,8 +279,6 @@
                         </div>
                     </div>
                 </div>
-                
-
                 <div class="control-buttons">
                     <div class="control-row">
                         <div class="volume-control">
@@ -344,20 +313,15 @@
                     </div>
                 </div>
             </div>
-
-
             <div class="lyrics-section">
                 <h2 class="section-title">歌词区域</h2>
                 <div class="lyrics-container" id="lyricsContainer">
-
                 </div>
                 <div class="lyrics-tools">
-
                 </div>
             </div>
         </div>
     </div>
-
     <script src="lyrics.js"></script>
     <script src="script.js"></script>
 </body>

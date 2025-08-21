@@ -4,35 +4,24 @@ class LyricsManager {
         this.lyricsCache = new Map();
         this.basePath = '歌词/';
     }
-
-    // 异步加载歌词文件
     async loadLyrics(fileName) {
-        // 如果已缓存，直接返回
         if (this.lyricsCache.has(fileName)) {
             return this.lyricsCache.get(fileName);
         }
-
         try {
             const response = await fetch(`${this.basePath}${fileName}`);
             if (!response.ok) {
                 throw new Error(`无法加载歌词文件: ${fileName}`);
             }
-            
             const lyricsText = await response.text();
-            
-            // 缓存歌词
             this.lyricsCache.set(fileName, lyricsText);
-            
             return lyricsText;
         } catch (error) {
             console.error('加载歌词失败:', error);
             return null;
         }
     }
-
-    // 获取所有可用的歌词文件列表
     async getAvailableLyrics() {
-        // 基于提供的歌词文件夹内容返回文件列表
         return [
             "一点.txt",
             "赛博朋克：边缘行者.txt",
@@ -113,28 +102,18 @@ class LyricsManager {
             "I Miss You.txt"
         ];
     }
-
-    // 清空缓存
     clearCache() {
         this.lyricsCache.clear();
     }
-
-    // 预加载指定的歌词文件
     async preloadLyrics(fileNames) {
         const promises = fileNames.map(fileName => this.loadLyrics(fileName));
         await Promise.allSettled(promises);
     }
 }
-
-// 创建全局歌词管理器实例
 const lyricsManager = new LyricsManager();
-
-// 为了保持向后兼容性，提供一个函数来获取歌词
 async function getLyrics(fileName) {
     return await lyricsManager.loadLyrics(fileName);
 }
-
-// 导出管理器和兼容函数
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { lyricsManager, getLyrics };
 } else {

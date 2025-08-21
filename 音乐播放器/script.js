@@ -73,7 +73,6 @@ const LYRICS_TIME_OFFSET = {
     "Xin Đừng Nhấc Máy（Remix）.txt": 0,
     "I Miss You.txt": 0
 };
-
 class VideoPlayer {
     constructor() {
         this.video = document.getElementById('videoPlayer');
@@ -95,70 +94,51 @@ class VideoPlayer {
         this.isDragging = false;
         this.isVolumeDragging = false;
         this.isSpeedDragging = false;
-        
         this.isCorrectionMode = false;
         this.correctedLines = [];
         this.correctedSet = new Set();
         this.lyricsCorrectBtn = document.getElementById('lyricsCorrectBtn');
         this.currentLyricsFile = null;
-        
         this.initializePlayer();
         this.bindEvents();
         this.loadLyrics();
         this.initInkSplashEffect();
     }
-
     initializePlayer() {
-
                     this.video.src = `../音乐/${this.playlist[this.currentIndex].dataset.video}`;
         this.updateActivePlaylistItem();
-        
-
         this.setPlayMode(this.playMode);
-        
-
         this.video.volume = 0.5;
         this.video.playbackRate = 1.0;
         this.volumeFill.style.width = '50%';
         this.speedFill.style.width = '50%';
     }
-
     bindEvents() {
-
         this.playlist.forEach((item, index) => {
             item.addEventListener('click', () => {
                 this.playTrack(index);
             });
         });
-
-
         const searchIcon = document.getElementById('searchIcon');
         const searchInput = document.getElementById('searchInput');
         const sectionTitle = document.querySelector('.section-title');
-        
         if (searchIcon && searchInput) {
             searchIcon.addEventListener('click', () => {
                 if (searchInput.style.display === 'none') {
-
                     searchInput.style.display = 'block';
                     searchInput.focus();
                     sectionTitle.style.visibility = 'hidden';
                 } else {
-
                     searchInput.style.display = 'none';
                     sectionTitle.style.visibility = 'visible';
                     searchInput.value = '';
                     this.showAllPlaylistItems();
                 }
             });
-
-
             searchInput.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
                 this.filterPlaylist(searchTerm);
             });
-
-
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     searchInput.style.display = 'none';
@@ -168,22 +148,14 @@ class VideoPlayer {
                 }
             });
         }
-
-
         document.getElementById('prevBtn').addEventListener('click', () => this.previous());
         document.getElementById('nextBtn').addEventListener('click', () => this.next());
         document.getElementById('randomStartBtn').addEventListener('click', () => this.randomStart());
         document.getElementById('playPauseBtn').addEventListener('click', () => this.togglePlayPause());
-
-
         document.getElementById('playModeBtn').addEventListener('click', () => this.cyclePlayMode());
-
-
         if (this.lyricsCorrectBtn) {
             this.lyricsCorrectBtn.addEventListener('click', () => this.toggleCorrectionMode());
         }
-
-
         this.video.addEventListener('ended', () => this.onVideoEnded());
         this.video.addEventListener('timeupdate', () => {
             this.updateLyrics();
@@ -194,95 +166,64 @@ class VideoPlayer {
         });
         this.video.addEventListener('pause', () => this.updatePlayPauseButton());
         this.video.addEventListener('loadedmetadata', () => this.updateTotalTime());
-        
-
         this.progressBar.addEventListener('click', (e) => this.seekTo(e));
-        
-
         this.video.addEventListener('click', () => this.togglePlayPause());
-        
-
         this.progressBar.addEventListener('mousedown', (e) => this.startDragging(e));
         document.addEventListener('mousemove', (e) => this.dragging(e));
         document.addEventListener('mouseup', () => this.stopDragging());
-        
-
         this.volumeBar.addEventListener('mousedown', (e) => this.startVolumeDragging(e));
         document.addEventListener('mousemove', (e) => this.volumeDragging(e));
         document.addEventListener('mouseup', () => this.stopVolumeDragging());
-        
-
         this.speedBar.addEventListener('mousedown', (e) => this.startSpeedDragging(e));
         document.addEventListener('mousemove', (e) => this.speedDragging(e));
         document.addEventListener('mouseup', () => this.stopSpeedDragging());
     }
-
     playTrack(index) {
         this.currentIndex = index;
         const videoFile = this.playlist[index].dataset.video;
         const lyricsFile = this.playlist[index].dataset.lyrics;
-        
         this.video.src = `../音乐/${videoFile}`;
         this.video.load();
-        
-
         this.video.volume = parseFloat(this.volumeValue.textContent) / 100;
         this.video.playbackRate = parseFloat(this.speedValue.textContent.replace('x', ''));
-        
         this.video.play();
-        
         this.updateActivePlaylistItem();
         this.loadLyrics(lyricsFile);
     }
-
     previous() {
         let newIndex = this.currentIndex - 1;
-        
-
         switch (this.playMode) {
             case 'single':
-
                 newIndex = this.currentIndex;
                 break;
             case 'list':
-
                 if (newIndex < 0) {
                     newIndex = this.playlist.length - 1;
                 }
                 break;
             case 'shuffle':
-
                 newIndex = Math.floor(Math.random() * this.playlist.length);
                 break;
         }
-        
         this.playTrack(newIndex);
     }
-
     next() {
         let newIndex = this.currentIndex + 1;
-        
-
         switch (this.playMode) {
             case 'single':
-
                 newIndex = this.currentIndex;
                 break;
             case 'list':
-
                 if (newIndex >= this.playlist.length) {
                     newIndex = 0;
                 }
                 break;
             case 'shuffle':
-
                 newIndex = Math.floor(Math.random() * this.playlist.length);
                 break;
         }
-        
         this.playTrack(newIndex);
     }
-
     togglePlayPause() {
         if (this.video.paused) {
             this.video.play();
@@ -290,7 +231,6 @@ class VideoPlayer {
             this.video.pause();
         }
     }
-
     updatePlayPauseButton() {
         const btn = document.getElementById('playPauseBtn');
         if (this.video.paused) {
@@ -299,9 +239,7 @@ class VideoPlayer {
             btn.textContent = '⏸';
         }
     }
-
     cyclePlayMode() {
-        // 循环切换播放模式：列表循环 -> 单曲循环 -> 随机播放 -> 列表循环
         switch (this.playMode) {
             case 'list':
                 this.playMode = 'single';
@@ -320,11 +258,8 @@ class VideoPlayer {
                 break;
         }
     }
-
     setPlayMode(mode) {
         this.playMode = mode;
-        
-        // 更新按钮状态和文本
         const playModeBtn = document.getElementById('playModeBtn');
         if (playModeBtn) {
         switch(mode) {
@@ -340,9 +275,7 @@ class VideoPlayer {
             }
         }
     }
-
     onVideoEnded() {
-        // 若处于矫正模式，则在歌曲结束时导出本次矫正结果并退出矫正
         if (this.isCorrectionMode && this.correctedLines.length > 0) {
             this.exportCorrectionToTxt();
             this.isCorrectionMode = false;
@@ -365,24 +298,19 @@ class VideoPlayer {
                 break;
         }
     }
-
     updateActivePlaylistItem() {
         this.playlist.forEach((item, index) => {
             item.classList.toggle('active', index === this.currentIndex);
         });
     }
-
     async loadLyrics(lyricsFile = null) {
         if (!lyricsFile) {
             lyricsFile = this.playlist[this.currentIndex].dataset.lyrics;
         }
         this.currentLyricsFile = lyricsFile;
-        // 离开当前歌曲时重置矫正（不丢数据，仅清空标记）
         this.correctedLines = [];
         this.correctedSet = new Set();
-        
         try {
-            // 从歌词文件中动态加载歌词
             const lyricsText = await getLyrics(lyricsFile);
             if (lyricsText) {
                 this.lyrics = this.parseLyrics(lyricsText);
@@ -398,10 +326,7 @@ class VideoPlayer {
             this.displayLyrics();
         }
     }
-
     parseLyrics(lyricsText) {
-        // 解析多种时间标签格式：
-        // [mm:ss.xx] 或 [mm:ss.xxx] 或 [ssss.xx]（如[0003.34]）以及可选的尾随标记（如 -1）
         const result = [];
         if (!lyricsText) return result;
         const lines = lyricsText.split('\n');
@@ -437,7 +362,6 @@ class VideoPlayer {
         result.sort((a, b) => a.time - b.time);
         return result;
     }
-
     displayLyrics() {
         this.lyricsContainer.innerHTML = '';
         if (this.lyrics.length === 0) {
@@ -449,7 +373,6 @@ class VideoPlayer {
             line.className = 'lyrics-line';
             line.textContent = lyric.text;
             line.dataset.time = lyric.time;
-            // 矫正模式下：禁用点击跳转，启用矫正
             if (this.isCorrectionMode) {
                 line.addEventListener('click', () => this.handleLyricClick(lyric));
             } else {
@@ -460,9 +383,7 @@ class VideoPlayer {
             this.lyricsContainer.appendChild(line);
         });
     }
-
     updateLyrics() {
-        // 矫正模式下，不执行自动跟随与高亮
         if (this.isCorrectionMode) return;
         let currentTime = this.video.currentTime;
         const lyricsFile = this.playlist[this.currentIndex].dataset.lyrics;
@@ -490,8 +411,6 @@ class VideoPlayer {
                 const clampedTop = Math.min(maxTop, Math.max(0, centerTop));
                 container.scrollTo({ top: clampedTop, behavior: 'smooth' });
             }
-            
-            // 发送当前歌词到父页面（用于界面歌词显示）
             try {
                 window.parent.postMessage({
                     type: 'updateInterfaceLyrics',
@@ -502,25 +421,20 @@ class VideoPlayer {
             }
         }
     }
-
     updateProgress() {
         if (this.video.duration) {
             const progress = (this.video.currentTime / this.video.duration) * 100;
             this.progressFill.style.width = progress + '%';
             this.currentTimeDisplay.textContent = this.formatTime(this.video.currentTime);
-            
-            // 更新滑块位置
             const progressThumb = this.progressFill.querySelector('.progress-thumb');
             if (progressThumb) {
                 progressThumb.style.right = `-16px`;
             }
         }
     }
-
     updateTotalTime() {
         this.totalTimeDisplay.textContent = this.formatTime(this.video.duration);
     }
-
     seekTo(e) {
         const rect = this.progressBar.getBoundingClientRect();
         const clickX = e.clientX - rect.left;
@@ -528,109 +442,78 @@ class VideoPlayer {
         const newTime = percentage * this.video.duration;
         this.video.currentTime = newTime;
     }
-
     formatTime(seconds) {
         if (isNaN(seconds)) return '00:00';
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
-
     startDragging(e) {
         this.isDragging = true;
         this.dragging(e);
     }
-
     dragging(e) {
         if (!this.isDragging) return;
-        
         const rect = this.progressBar.getBoundingClientRect();
         let clickX = e.clientX - rect.left;
-        
-        // 限制在进度条范围内
         clickX = Math.max(0, Math.min(clickX, rect.width));
-        
         const percentage = clickX / rect.width;
         const newTime = percentage * this.video.duration;
-        
-        // 更新进度条显示
         this.progressFill.style.width = percentage * 100 + '%';
         this.currentTimeDisplay.textContent = this.formatTime(newTime);
-        
-        // 实时更新视频时间
         this.video.currentTime = newTime;
     }
-
     stopDragging() {
         this.isDragging = false;
     }
-
     seekToLyric(time) {
-        // 矫正模式下禁用点击跳转
         if (this.isCorrectionMode) return;
         const lyricsFile = this.playlist[this.currentIndex].dataset.lyrics;
         const offset = LYRICS_TIME_OFFSET[lyricsFile] || 0;
         const adjustedTime = time - offset;
         this.video.currentTime = Math.max(0, adjustedTime);
     }
-
     randomStart() {
-        // 随机选择一首歌
         const randomIndex = Math.floor(Math.random() * this.playlist.length);
         this.playTrack(randomIndex);
     }
-
-    // 音量控制方法
     startVolumeDragging(e) {
         this.isVolumeDragging = true;
         this.volumeDragging(e);
     }
-
     volumeDragging(e) {
         if (!this.isVolumeDragging) return;
-        
         const rect = this.volumeBar.getBoundingClientRect();
         let clickX = e.clientX - rect.left;
         clickX = Math.max(0, Math.min(clickX, rect.width));
-        
         const percentage = clickX / rect.width;
         const volume = Math.round(percentage * 100);
         this.volumeFill.style.width = percentage * 100 + '%';
         this.video.volume = percentage;
         this.volumeValue.textContent = volume;
     }
-
     stopVolumeDragging() {
         this.isVolumeDragging = false;
     }
-
-    // 速度控制方法
     startSpeedDragging(e) {
         this.isSpeedDragging = true;
         this.speedDragging(e);
     }
-
     speedDragging(e) {
         if (!this.isSpeedDragging) return;
-        
         const rect = this.speedBar.getBoundingClientRect();
         let clickX = e.clientX - rect.left;
         clickX = Math.max(0, Math.min(clickX, rect.width));
-        
         const percentage = clickX / rect.width;
         this.speedFill.style.width = percentage * 100 + '%';
-        
-        // 计算播放速度：0.0x 到 2.0x，每次调整0.25的倍数
         const speed = percentage * 2.0;
         const roundedSpeed = Math.round(speed * 4) / 4; // 四舍五入到0.25的倍数
         this.video.playbackRate = roundedSpeed;
         this.speedValue.textContent = roundedSpeed.toFixed(2).replace(/\.0$/, '') + 'x';
     }
-
     stopSpeedDragging() {
         this.isSpeedDragging = false;
     }
-
     // 初始化墨水飞溅效果
     initInkSplashEffect() {
         // 为所有控制按钮添加墨水飞溅效果
@@ -638,20 +521,17 @@ class VideoPlayer {
         controlButtons.forEach(button => {
             this.addInkSplashToButton(button);
         });
-
         // 为播放列表项添加墨水飞溅效果
         const playlistItems = document.querySelectorAll('.playlist-item');
         playlistItems.forEach(item => {
             this.addInkSplashToButton(item);
         });
-
         // 为歌词行添加墨水飞溅效果
         const lyricsLines = document.querySelectorAll('.lyrics-line');
         lyricsLines.forEach(line => {
             this.addInkSplashToButton(line);
         });
     }
-
     // 为按钮添加墨水飞溅效果
     addInkSplashToButton(element) {
         // 添加点击事件
@@ -659,13 +539,11 @@ class VideoPlayer {
             this.createInkSplash(e, element);
         });
     }
-
     // 创建墨水飞溅效果
     createInkSplash(event, element) {
         const rect = element.getBoundingClientRect();
         const elementWidth = rect.width;
         const elementHeight = rect.height;
-
         // 动态创建12个墨水滴
         for (let i = 0; i < 12; i++) {
             const inkDrop = document.createElement('div');
@@ -683,11 +561,9 @@ class VideoPlayer {
                 filter: blur(0.5px);
             `;
             document.body.appendChild(inkDrop);
-
             // 在控件四周边缘随机选择起始位置（基于页面坐标）
             let startX, startY;
             const side = Math.floor(Math.random() * 4); // 0:上, 1:右, 2:下, 3:左
-            
             switch(side) {
                 case 0: // 上边
                     startX = rect.left + Math.random() * elementWidth;
@@ -706,7 +582,6 @@ class VideoPlayer {
                     startY = rect.top + Math.random() * elementHeight;
                     break;
             }
-            
             // 计算飞溅方向（从边缘向外，添加更多随机性）
             const centerX = rect.left + elementWidth / 2;
             const centerY = rect.top + elementHeight / 2;
@@ -715,12 +590,10 @@ class VideoPlayer {
             const distance = 80 + Math.random() * 120; // 更大的飞溅距离
             const finalX = Math.cos(randomAngle) * distance;
             const finalY = Math.sin(randomAngle) * distance;
-
             inkDrop.style.left = `${startX}px`;
             inkDrop.style.top = `${startY}px`;
             inkDrop.style.transform = 'translate(0, 0) scale(1)';
             inkDrop.style.opacity = '1';
-
             // 随机延迟动画
             const delay = Math.random() * 150;
             const rotation = (Math.random() - 0.5) * 360; // 随机旋转角度
@@ -738,7 +611,6 @@ class VideoPlayer {
             }, 800 + delay);
         }
     }
-
     toggleCorrectionMode() {
         this.isCorrectionMode = !this.isCorrectionMode;
         if (this.lyricsCorrectBtn) {
@@ -752,7 +624,6 @@ class VideoPlayer {
             this.exportCorrectionToTxt();
         }
     }
-
     handleLyricClick(lyric) {
         // 防重复：以“时间+文本”唯一标识同一行
         const key = `${lyric.time}|${lyric.text}`;
@@ -770,7 +641,6 @@ class VideoPlayer {
             dom.classList.add('corrected');
         }
     }
-
     formatStamp(sec) {
         const minutes = Math.floor(sec / 60);
         const seconds = Math.floor(sec % 60);
@@ -780,7 +650,6 @@ class VideoPlayer {
         const mmm = String(ms).padStart(3, '0');
         return `${mm}:${ss}.${mmm}`;
     }
-
     exportCorrectionToTxt() {
         const content = this.correctedLines.join('\n');
         const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -797,11 +666,9 @@ class VideoPlayer {
         this.correctedLines = [];
         this.correctedSet = new Set();
     }
-
     // 搜索播放列表
     filterPlaylist(searchTerm) {
         const playlistItems = document.querySelectorAll('.playlist-item');
-        
         playlistItems.forEach(item => {
             const songName = item.querySelector('.song-name').textContent.toLowerCase();
             if (searchTerm === '' || songName.includes(searchTerm)) {
@@ -811,7 +678,6 @@ class VideoPlayer {
             }
         });
     }
-
     // 显示所有播放列表项
     showAllPlaylistItems() {
         const playlistItems = document.querySelectorAll('.playlist-item');
@@ -821,12 +687,10 @@ class VideoPlayer {
     }
 
 }
-
 // 页面加载完成后初始化播放器
 document.addEventListener('DOMContentLoaded', () => {
     new VideoPlayer();
 });
-
 // 添加键盘快捷键支持
 document.addEventListener('keydown', (e) => {
     switch(e.code) {
@@ -845,7 +709,6 @@ document.addEventListener('keydown', (e) => {
             break;
     }
 }); 
-
 // 背景播放：与父页面通信，最小化到迷你控制条
 (function(){
     function setupBackgroundPlayMessaging(){
@@ -869,7 +732,6 @@ document.addEventListener('keydown', (e) => {
                 }
             });
         }
-
         // 界面歌词按钮
         const interfaceLyricsBtn = document.getElementById('interfaceLyricsBtn');
         if (interfaceLyricsBtn) {
@@ -883,7 +745,6 @@ document.addEventListener('keydown', (e) => {
                 }
             });
         }
-
         // 音律显示按钮（仅模拟）
         const meterToggleBtn = document.getElementById('meterToggleBtn');
         if (meterToggleBtn) {
@@ -897,7 +758,6 @@ document.addEventListener('keydown', (e) => {
                 }
             });
         }
-
         // 父页面发来的控制指令：prev / togglePlay / next / requestState
         window.addEventListener('message', function(e){
             const data = e.data || {};
@@ -924,7 +784,6 @@ document.addEventListener('keydown', (e) => {
                 console.error('handle control message failed', err);
             }
         });
-
         // 处理播放状态同步
         window.addEventListener('message', function(e){
             const data = e.data || {};
@@ -940,7 +799,6 @@ document.addEventListener('keydown', (e) => {
                     videoPlayer.currentTime = data.currentTime || 0;
                     videoPlayer.volume = data.volume || 1;
                     videoPlayer.playbackRate = data.playbackRate || 1;
-                    
                     // 根据暂停状态决定是否播放
                     if (!data.paused) {
                         videoPlayer.play().catch(() => {});
@@ -950,7 +808,6 @@ document.addEventListener('keydown', (e) => {
                 console.error('sync playback state failed', err);
             }
         });
-
         // 监听来自播放器的播放状态变化
         const videoPlayer = document.getElementById('videoPlayer');
         if (videoPlayer) {
@@ -961,7 +818,6 @@ document.addEventListener('keydown', (e) => {
             let rafId = 0;
             const FREQ_BARS = 48; // 与主页面保持一致
             const freqArray = new Uint8Array(1024);
-
             function ensureAudioGraph() {
                 if (audioContext) return;
                 try {
@@ -969,37 +825,29 @@ document.addEventListener('keydown', (e) => {
                     analyser = audioContext.createAnalyser();
                     analyser.fftSize = 2048;
                     analyser.smoothingTimeConstant = 0.85;
-                    
                     // 创建音频源节点
                     sourceNode = audioContext.createMediaElementSource(videoPlayer);
-                    
                     // 连接音频图：source -> analyser -> destination
                     sourceNode.connect(analyser);
                     analyser.connect(audioContext.destination);
-                    
                     console.log('音频分析图初始化成功');
                 } catch (err) {
                     console.error('音频分析初始化失败:', err);
                 }
             }
-
             function sampleAndPost() {
                 if (!analyser) return;
                 analyser.getByteFrequencyData(freqArray);
-                
                 // 将频谱数据压缩成48个条，重点采样中频段
                 const bars = [];
                 const totalBars = FREQ_BARS;
-                
                 // 重点采样中频段（人声和主要乐器频率）
                 const lowFreqStart = Math.floor(freqArray.length * 0.1);
                 const midFreqStart = Math.floor(freqArray.length * 0.2);
                 const highFreqStart = Math.floor(freqArray.length * 0.6);
-                
                 for (let i = 0; i < totalBars; i++) {
                     let sum = 0;
                     let count = 0;
-                    
                     if (i < totalBars * 0.3) {
                         // 低频段：较少采样
                         const start = lowFreqStart + (i / (totalBars * 0.3)) * (midFreqStart - lowFreqStart);
@@ -1025,27 +873,22 @@ document.addEventListener('keydown', (e) => {
                             count++;
                         }
                     }
-                    
                     const avg = count > 0 ? sum / count : 0;
                     let normalized = Math.min(1, avg / 255);
-                    
                     // 增强中频段的响应
                     if (i >= totalBars * 0.3 && i < totalBars * 0.7) {
                         normalized = Math.pow(normalized, 0.6);
                     } else if (i >= totalBars * 0.7) {
                         normalized = Math.pow(normalized, 0.7);
                     }
-                    
                     bars.push(normalized);
                 }
-                
                 try {
                     window.parent.postMessage({ type: 'meterData', bars }, '*');
                 } catch (_) {}
                 
                 rafId = window.requestAnimationFrame(sampleAndPost);
             }
-
             function startMeter() {
                 ensureAudioGraph();
                 if (audioContext && audioContext.state === 'suspended') {
@@ -1055,7 +898,6 @@ document.addEventListener('keydown', (e) => {
                     rafId = window.requestAnimationFrame(sampleAndPost);
                 }
             }
-
             function stopMeter() {
                 if (rafId) {
                     window.cancelAnimationFrame(rafId);
@@ -1065,7 +907,6 @@ document.addEventListener('keydown', (e) => {
                     window.parent.postMessage({ type: 'meterPause' }, '*');
                 } catch (_) {}
             }
-
             videoPlayer.addEventListener('play', function() {
                 try {
                     window.parent.postMessage({
@@ -1077,7 +918,6 @@ document.addEventListener('keydown', (e) => {
                 }
                 startMeter();
             });
-
             videoPlayer.addEventListener('pause', function() {
                 try {
                     window.parent.postMessage({
@@ -1089,12 +929,10 @@ document.addEventListener('keydown', (e) => {
                 }
                 stopMeter();
             });
-
             videoPlayer.addEventListener('ended', function() {
                 stopMeter();
             });
         }
-
         // 处理界面歌词和音律显示状态同步
         window.addEventListener('message', function(e){
             const data = e.data || {};
@@ -1119,7 +957,6 @@ document.addEventListener('keydown', (e) => {
             }
         });
     }
-
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', setupBackgroundPlayMessaging);
     } else {
