@@ -45,7 +45,7 @@ const PROJECTS = [
     icon: 'files/project/智汇出行系统/智汇出行系统.jpg',
     fullName: '基于Axure开发的手机出行购票APP原型',
     intro: '使用Axure RP制作的手机APP高保真原型，模拟完整购票软件体验，覆盖登录注册、选站购票、订单管理与个人中心，并扩展景点推荐、酒店预订等出行服务',
-    link: 'files/project/智汇出行系统/智汇出行/login.html',
+    link: '',
     techStack: [
       { icon: 'files/project/智汇出行系统/Axure.png', name: 'Axure RP' }
     ],
