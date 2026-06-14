@@ -462,4 +462,4 @@ function initWebModule() {
   });
 }
 
-AppCommon.onDomReady(initWebModule);
+window.WebModule = { init: initWebModule };

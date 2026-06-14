@@ -1208,7 +1208,7 @@ function renderMusicList(container, musics, playingId, onSelect) {
     item.className = 'music-item ui-interactive' + (music.id === playingId ? ' active' : '');
     item.dataset.id = music.id;
     item.innerHTML =
-      '<div class="music-item-cover"><img src="' + music.cover + '" alt="' + music.name + '">' +
+      '<div class="music-item-cover"><img src="' + music.cover + '" alt="' + music.name + '" loading="lazy" decoding="async">' +
       '<span class="music-item-current">当前</span></div>' +
       '<span class="music-item-name">' + music.name + '</span>';
     item.addEventListener('click', () => onSelect(music.id));
@@ -1276,5 +1276,5 @@ function initMusic() {
   renderMusicDetail(detailEl, MUSICS.find((item) => item.id === playingId), false);
 }
 
-AppCommon.onDomReady(initMusic);
+window.MusicModule = { init: initMusic };
 

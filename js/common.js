@@ -333,9 +333,85 @@
     return controller;
   }
 
+  const lazyModuleLoaders = new Map();
+  const lazyModulePromises = new Map();
+
+  function loadScript(src) {
+    const existing = document.querySelector('script[src="' + src + '"]');
+    if (existing) {
+      return existing.dataset.loaded === 'true'
+        ? Promise.resolve()
+        : new Promise((resolve, reject) => {
+          existing.addEventListener('load', () => resolve(), { once: true });
+          existing.addEventListener('error', () => reject(new Error('script load failed: ' + src)), { once: true });
+        });
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.addEventListener('load', () => {
+        script.dataset.loaded = 'true';
+        resolve();
+      }, { once: true });
+      script.addEventListener('error', () => reject(new Error('script load failed: ' + src)), { once: true });
+      document.body.appendChild(script);
+    });
+  }
+
+  function registerLazyModule(section, loader) {
+    lazyModuleLoaders.set(section, loader);
+  }
+
+  function ensureModule(section) {
+    const loader = lazyModuleLoaders.get(section);
+    if (!loader) return Promise.resolve();
+
+    if (lazyModulePromises.has(section)) return lazyModulePromises.get(section);
+
+    const promise = Promise.resolve().then(loader).catch((err) => {
+      lazyModulePromises.delete(section);
+      console.error('[module:' + section + ']', err);
+    });
+    lazyModulePromises.set(section, promise);
+    return promise;
+  }
+
+  registerLazyModule('music', async () => {
+    await loadScript('js/music.js');
+    if (window.MusicModule && typeof window.MusicModule.init === 'function') {
+      await window.MusicModule.init();
+    }
+  });
+
+  registerLazyModule('games', async () => {
+    await loadScript('js/games.js');
+    if (window.GameModule && typeof window.GameModule.init === 'function') {
+      await window.GameModule.init();
+    }
+  });
+
+  registerLazyModule('images', async () => {
+    await loadScript('js/picture.js');
+    if (window.PictureModule && typeof window.PictureModule.init === 'function') {
+      await window.PictureModule.init();
+    }
+  });
+
+  registerLazyModule('links', async () => {
+    await loadScript('js/web.js');
+    if (window.WebModule && typeof window.WebModule.init === 'function') {
+      await window.WebModule.init();
+    }
+  });
+
   onDomReady(() => {
     document.querySelectorAll('.nav-btn').forEach((btn) => {
-      btn.addEventListener('click', closeAllFilterPanels);
+      btn.addEventListener('click', () => {
+        closeAllFilterPanels();
+        ensureModule(btn.dataset.section);
+      });
     });
   });
 
@@ -353,7 +429,10 @@
     closeImagePreview,
     initImagePreview,
     createMultiSelectFilter,
-    closeAllFilterPanels
+    closeAllFilterPanels,
+    loadScript,
+    registerLazyModule,
+    ensureModule
   };
 
   window.openImagePreview = openImagePreview;
