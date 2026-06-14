@@ -1,15 +1,13 @@
 (function (window) {
   const FILTER_NONE = '__filter_none__';
   const HEART_PATH = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
-  const ASSETS_BASE = window.ASSETS_BASE || 'https://zzz174066.oss-cn-chengdu.aliyuncs.com/';
-
   function resolveAsset(path) {
     const value = String(path || '').trim();
     if (!value || value === '暂无') return value;
     if (/^https?:\/\//i.test(value)) return value;
-    const relative = value.replace(/^files\//, '');
-    const encoded = relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
-    return ASSETS_BASE + encoded;
+    const normalized = value.replace(/^\/+/, '');
+    const relative = normalized.startsWith('files/') ? normalized : 'files/' + normalized;
+    return relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
   }
 
   function resolveAssetUrls(root) {
@@ -360,7 +358,6 @@
 
   window.AppCommon = {
     FILTER_NONE,
-    ASSETS_BASE,
     onDomReady,
     resolveAsset,
     compareByName,

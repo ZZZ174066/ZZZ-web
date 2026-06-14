@@ -53,7 +53,6 @@ const ABOUT_PROFILE = {
 };
 
 function getAboutAvatarUrl() {
-  if (window.ASSETS_BASE) return window.ASSETS_BASE + ABOUT_PROFILE.avatar;
   return AppCommon.resolveAsset('files/' + ABOUT_PROFILE.avatar);
 }
 
