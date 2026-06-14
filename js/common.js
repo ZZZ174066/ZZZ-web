@@ -363,6 +363,26 @@
     return controller;
   }
 
+  function initModuleWhenActive(sectionId, initFn) {
+    if (typeof initFn !== 'function') return;
+    let started = false;
+    function start() {
+      if (started) return;
+      started = true;
+      initFn();
+    }
+
+    const section = document.querySelector('.module-section[data-section="' + sectionId + '"]');
+    if (section && section.classList.contains('active')) {
+      start();
+      return;
+    }
+
+    document.querySelectorAll('.nav-btn[data-section="' + sectionId + '"]').forEach((btn) => {
+      btn.addEventListener('click', start, { once: true });
+    });
+  }
+
   onDomReady(() => {
     resolveAssetUrls(document);
     document.querySelectorAll('.nav-btn').forEach((btn) => {
@@ -386,7 +406,8 @@
     closeImagePreview,
     initImagePreview,
     createMultiSelectFilter,
-    closeAllFilterPanels
+    closeAllFilterPanels,
+    initModuleWhenActive
   };
 
   window.openImagePreview = openImagePreview;

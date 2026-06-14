@@ -11,7 +11,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '通往西南交大各种网站',
     url: 'https://cas.swjtu.edu.cn/',
-    icon: 'files/web/交大教务网.png'
+    icon: 'files/web/交大教务网.jpg'
   },
   {
     id: '0002',
@@ -19,7 +19,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '与DeepSeek进行对话',
     url: 'https://chat.deepseek.com/',
-    icon: 'files/web/DeepSeek.png'
+    icon: 'files/web/DeepSeek.jpg'
   },
   {
     id: '0003',
@@ -27,7 +27,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '与Kimi对话，制作PPT',
     url: 'https://www.kimi.com/',
-    icon: 'files/web/kimi.png'
+    icon: 'files/web/kimi.jpg'
   },
   {
     id: '0004',
@@ -35,7 +35,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '在线学习英语',
     url: 'https://u.unipus.cn/',
-    icon: 'files/web/U校园.png'
+    icon: 'files/web/U校园.jpg'
   },
   {
     id: '0005',
@@ -43,7 +43,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '学分课程运营服务平台',
     url: 'https://www.zhihuishu.com/',
-    icon: 'files/web/智慧树.png'
+    icon: 'files/web/智慧树.jpg'
   },
   {
     id: '0006',
@@ -51,7 +51,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '在线网课学习平台',
     url: 'https://www.icourse163.org/',
-    icon: 'files/web/慕课.png'
+    icon: 'files/web/慕课.jpg'
   },
   {
     id: '0007',
@@ -59,7 +59,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '学籍/学位在线验证',
     url: 'https://www.chsi.com.cn/',
-    icon: 'files/web/学信网.png'
+    icon: 'files/web/学信网.jpg'
   },
   {
     id: '0008',
@@ -67,7 +67,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '论文查重，查AIGC',
     url: 'https://www.cqvip.com/',
-    icon: 'files/web/维普网.png'
+    icon: 'files/web/维普网.jpg'
   },
   {
     id: '0009',
@@ -75,7 +75,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '论文查找，论文查重',
     url: 'https://www.cnki.net/',
-    icon: 'files/web/知网.png'
+    icon: 'files/web/知网.jpg'
   },
   {
     id: '0010',
@@ -83,7 +83,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '坐标绘图，3D绘图等',
     url: 'https://www.geogebra.org/',
-    icon: 'files/web/数学绘图.png'
+    icon: 'files/web/数学绘图.jpg'
   },
   {
     id: '0011',
@@ -91,7 +91,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '进行各种PDF相关操作',
     url: 'https://www.lanren.work/pdf/',
-    icon: 'files/web/懒人办公.png'
+    icon: 'files/web/懒人办公.jpg'
   },
   {
     id: '0012',
@@ -99,7 +99,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '专业开发者社区',
     url: 'https://www.csdn.net/',
-    icon: 'files/web/CSDN.png'
+    icon: 'files/web/CSDN.jpg'
   },
   {
     id: '0013',
@@ -107,7 +107,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '软件源代码托管服务平台',
     url: 'https://github.com/',
-    icon: 'files/web/github.png'
+    icon: 'files/web/github.jpg'
   },
   {
     id: '0014',
@@ -115,7 +115,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '软件工程相关图绘制',
     url: 'https://boardmix.cn/',
-    icon: 'files/web/博思白板.png'
+    icon: 'files/web/博思白板.jpg'
   },
   {
     id: '0015',
@@ -123,7 +123,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '下载各种矢量图标',
     url: 'https://www.iconfont.cn/',
-    icon: 'files/web/矢量图标库.png'
+    icon: 'files/web/矢量图标库.jpg'
   },
   {
     id: '0016',
@@ -131,7 +131,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '基于Vue3的组件库',
     url: 'https://element-plus.org/zh-CN/',
-    icon: 'files/web/Element组件.png'
+    icon: 'files/web/Element组件.jpg'
   },
   {
     id: '0017',
@@ -139,7 +139,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '提供多种文件编辑操作',
     url: 'https://online-audio-converter.com/cn/#',
-    icon: 'files/web/音频转换器.png'
+    icon: 'files/web/音频转换器.jpg'
   },
   {
     id: '0018',
@@ -147,7 +147,7 @@ const WEBSITES = [
     category: '实用工具',
     description: 'Clash Verge续费',
     url: 'https://e23.lanpangyun.me/',
-    icon: 'files/web/蓝胖云.png'
+    icon: 'files/web/蓝胖云.jpg'
   },
   {
     id: '0019',
@@ -155,7 +155,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '创作者粉丝赞助平台',
     url: 'https://afdian.com/',
-    icon: 'files/web/爱发电.png'
+    icon: 'files/web/爱发电.jpg'
   },
   {
     id: '0020',
@@ -163,7 +163,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '不同类型文件相互转换',
     url: 'https://www.freeconvert.com/',
-    icon: 'files/web/文件转换器.png'
+    icon: 'files/web/文件转换器.jpg'
   },
   {
     id: '0021',
@@ -171,7 +171,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '卫星地图',
     url: 'https://earth.google.com/',
-    icon: 'files/web/谷歌地球.png'
+    icon: 'files/web/谷歌地球.jpg'
   },
   {
     id: '0022',
@@ -187,7 +187,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '收录了各种娱乐工具的网站',
     url: 'https://tools.liumingye.cn/',
-    icon: 'files/web/刘明野工具箱.png'
+    icon: 'files/web/刘明野工具箱.jpg'
   },
   {
     id: '0024',
@@ -195,7 +195,7 @@ const WEBSITES = [
     category: '实用工具',
     description: '各种壁纸、表情包等',
     url: 'https://www.soutushenqi.com/',
-    icon: 'files/web/搜图神器.png'
+    icon: 'files/web/搜图神器.jpg'
   },
   {
     id: '0025',
@@ -211,7 +211,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '记录绝区零的成就完成',
     url: 'https://zzz.liyin.space/',
-    icon: 'files/web/ZZZ成就.png'
+    icon: 'files/web/ZZZ成就.jpg'
   },
   {
     id: '0027',
@@ -219,7 +219,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '模拟CS开箱的娱乐网站',
     url: 'https://convars.com/',
-    icon: 'files/web/CS开箱模拟器.png'
+    icon: 'files/web/CS开箱模拟器.jpg'
   },
   {
     id: '0028',
@@ -227,7 +227,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '一站式Galgame文化社区',
     url: 'https://www.touchgal.ink/',
-    icon: 'files/web/touchgal.png'
+    icon: 'files/web/touchgal.jpg'
   },
   {
     id: '0029',
@@ -235,7 +235,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '方舟资源、实用指令等',
     url: 'http://www.teandy.com/',
-    icon: 'files/web/听宇方舟.png'
+    icon: 'files/web/听宇方舟.jpg'
   },
   {
     id: '0030',
@@ -243,7 +243,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '提供各类二游mod下载',
     url: 'https://gamebanana.com/',
-    icon: 'files/web/香蕉网.png'
+    icon: 'files/web/香蕉网.jpg'
   },
   {
     id: '0031',
@@ -259,7 +259,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '日漫、美漫、特摄观看',
     url: 'https://www.2kdm.com/',
-    icon: 'files/web/MuteFun.png'
+    icon: 'files/web/MuteFun.jpg'
   },
   {
     id: '0033',
@@ -267,7 +267,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '二次元ACG文化百科全书',
     url: 'https://www.2kdm.com/',
-    icon: 'files/web/萌娘百科.png'
+    icon: 'files/web/萌娘百科.jpg'
   },
   {
     id: '0034',
@@ -275,7 +275,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '免费听歌、下歌网站',
     url: 'https://music.gdstudio.org/',
-    icon: 'files/web/GD音乐台.png'
+    icon: 'files/web/GD音乐台.jpg'
   },
   {
     id: '0035',
@@ -283,7 +283,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://www.youtube.com/',
-    icon: 'files/web/YouTuBe.png'
+    icon: 'files/web/YouTuBe.jpg'
   },
   {
     id: '0036',
@@ -291,7 +291,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://www.bilibili.com/',
-    icon: 'files/web/bilibili.png'
+    icon: 'files/web/bilibili.jpg'
   },
   {
     id: '0037',
@@ -299,7 +299,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://www.nicovideo.jp/',
-    icon: 'files/web/NicoNico.png'
+    icon: 'files/web/NicoNico.jpg'
   },
   {
     id: '0038',
@@ -307,7 +307,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://rule34video.com/',
-    icon: 'files/web/rule34.png'
+    icon: 'files/web/rule34.jpg'
   },
   {
     id: '0039',
@@ -315,7 +315,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://x.com/',
-    icon: 'files/web/X.png'
+    icon: 'files/web/X.jpg'
   },
   {
     id: '0040',
@@ -323,7 +323,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://hanime1.me/',
-    icon: 'files/web/Hanime1.png'
+    icon: 'files/web/Hanime1.jpg'
   },
   {
     id: '0041',
@@ -331,7 +331,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://www.iwara.tv/',
-    icon: 'files/web/iwara.png'
+    icon: 'files/web/iwara.jpg'
   },
   {
     id: '0042',
@@ -339,7 +339,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://www.pixiv.net/',
-    icon: 'files/web/pixiv.png'
+    icon: 'files/web/pixiv.jpg'
   },
   {
     id: '0043',
@@ -347,7 +347,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: '暂无',
     url: 'https://www.fanbox.cc/',
-    icon: 'files/web/Pixiv Fanbox.png'
+    icon: 'files/web/Pixiv Fanbox.jpg'
   },
   {
     id: '0044',
@@ -363,7 +363,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '与OpenAI进行对话',
     url: 'https://chat.openai.com/',
-    icon: 'files/web/ChatGPT.png'
+    icon: 'files/web/ChatGPT.jpg'
   },
   {
     id: '0046',
@@ -371,7 +371,7 @@ const WEBSITES = [
     category: '学习工作',
     description: '与千问进行对话',
     url: 'https://www.qianwen.com/',
-    icon: 'files/web/千问.png'
+    icon: 'files/web/千问.jpg'
   },
   {
     id: '0047',
@@ -379,7 +379,31 @@ const WEBSITES = [
     category: '学习工作',
     description: 'AI写代码',
     url: 'https://www.trae.cn/work',
-    icon: 'files/web/TRAE.png'
+    icon: 'files/web/TRAE.jpg'
+  },
+  {
+    id: '0048',
+    name: '草料二维码',
+    category: '实用工具',
+    description: '生成各种二维码',
+    url: 'https://cli.im/',
+    icon: 'files/web/草料二维码.jpg'
+  },
+  {
+    id: '0049',
+    name: 'CloudFlare',
+    category: '实用工具',
+    description: 'CloudFlare管理面板',
+    url: 'https://dash.cloudflare.com/',
+    icon: 'files/web/CloudFlare.jpg'
+  },
+  {
+    id: '0050',
+    name: 'ZZZ的空间',
+    category: '实用工具',
+    description: 'ZZZ的个人空间',
+    url: 'https://zzz.3104971604.workers.dev/',
+    icon: 'files/web/ZZZ的空间.jpg'
   }
 ];
 

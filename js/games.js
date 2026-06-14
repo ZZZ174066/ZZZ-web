@@ -1227,7 +1227,7 @@ function renderGameList(container, games, activeId, onSelect) {
     item.className = 'game-item ui-interactive' + (game.id === activeId ? ' active' : '');
     item.dataset.id = game.id;
     item.innerHTML =
-      '<div class="game-item-cover"><img src="' + AppCommon.resolveAsset(game.cover) + '" alt="' + game.name + '">' +
+      '<div class="game-item-cover"><img loading="lazy" decoding="async" src="' + AppCommon.resolveAsset(game.cover) + '" alt="' + game.name + '">' +
       '<span class="game-item-current">当前</span></div>' +
       '<span class="game-item-name">' + game.name + '</span>';
     item.addEventListener('click', () => onSelect(game.id));
@@ -1293,5 +1293,7 @@ function initGames() {
   renderGameDetail(detailEl, GAMES.find((item) => item.id === viewingId));
 }
 
-AppCommon.onDomReady(initGames);
+AppCommon.onDomReady(function () {
+  AppCommon.initModuleWhenActive('games', initGames);
+});
 

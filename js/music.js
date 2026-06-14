@@ -233,7 +233,7 @@ const MUSICS = [
     id: '0024',
     name: 'モニタリング',
     alias: '视奸',
-    cover: 'files/music/モニタリング.gif',
+    cover: 'files/music/モニタリング.jpg',
     bv: 'BV1qDUPYKEzf',
     author: 'DECO 27',
     singer: '初音ミク',
@@ -583,7 +583,7 @@ const MUSICS = [
     id: '0059',
     name: 'Miku',
     alias: '无',
-    cover: 'files/music/Miku.gif',
+    cover: 'files/music/Miku.jpg',
     bv: 'BV1b94y1b7r9',
     author: 'Anamanaguchi',
     singer: '初音ミク',
@@ -613,7 +613,7 @@ const MUSICS = [
     id: '0062',
     name: 'Sweet Devil',
     alias: '甜蜜恶魔',
-    cover: 'files/music/Sweet Devil.png',
+    cover: 'files/music/Sweet Devil.jpg',
     bv: 'BV1QJ41137T2',
     author: '八王子P',
     singer: '初音ミク',
@@ -663,7 +663,7 @@ const MUSICS = [
     id: '0067',
     name: 'イガク',
     alias: '医学',
-    cover: 'files/music/イガク.gif',
+    cover: 'files/music/イガク.jpg',
     bv: 'BV1nafnYUEac',
     author: '原口沙輔',
     singer: '重音テト',
@@ -1208,7 +1208,7 @@ function renderMusicList(container, musics, playingId, onSelect) {
     item.className = 'music-item ui-interactive' + (music.id === playingId ? ' active' : '');
     item.dataset.id = music.id;
     item.innerHTML =
-      '<div class="music-item-cover"><img src="' + AppCommon.resolveAsset(music.cover) + '" alt="' + music.name + '">' +
+      '<div class="music-item-cover"><img loading="lazy" decoding="async" src="' + AppCommon.resolveAsset(music.cover) + '" alt="' + music.name + '">' +
       '<span class="music-item-current">当前</span></div>' +
       '<span class="music-item-name">' + music.name + '</span>';
     item.addEventListener('click', () => onSelect(music.id));
@@ -1276,5 +1276,7 @@ function initMusic() {
   renderMusicDetail(detailEl, MUSICS.find((item) => item.id === playingId), false);
 }
 
-AppCommon.onDomReady(initMusic);
+AppCommon.onDomReady(function () {
+  AppCommon.initModuleWhenActive('music', initMusic);
+});
 
