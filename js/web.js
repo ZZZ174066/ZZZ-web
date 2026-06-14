@@ -401,7 +401,7 @@ const WEBSITES = [
     id: '0050',
     name: 'ZZZ的空间',
     category: '游戏娱乐',
-    description: 'CloudFlare',
+    description: 'CloudFlare托管版',
     url: 'https://zzz.3104971604.workers.dev/',
     icon: 'files/web/ZZZ的空间.jpg'
   },
@@ -415,15 +415,15 @@ const WEBSITES = [
   },
   {
     id: '0052',
-    name: 'Steam',
+    name: 'steam',
     category: '游戏娱乐',
-    description: 'Steam游戏平台',
+    description: 'steam游戏平台',
     url: 'https://store.steampowered.com/',
     icon: 'files/web/Steam.jpg'
   },
   {
     id: '0053',
-    name: 'geekuninstaller/',
+    name: 'geekuninstaller',
     category: '实用工具',
     description: '完全卸载软件',
     url: 'https://geekuninstaller.com/',
