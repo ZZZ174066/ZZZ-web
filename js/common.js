@@ -7,7 +7,9 @@
     const value = String(path || '').trim();
     if (!value || value === '暂无') return value;
     if (/^https?:\/\//i.test(value)) return value;
-    return ASSETS_BASE + value.replace(/^files\//, '');
+    const relative = value.replace(/^files\//, '');
+    const encoded = relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
+    return ASSETS_BASE + encoded;
   }
 
   function resolveAssetUrls(root) {
