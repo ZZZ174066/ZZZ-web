@@ -136,7 +136,7 @@ const PROJECTS = [
     shortName: '车牌识别系统',
     icon: 'files/project/车牌识别/车牌识别.png',
     fullName: '基于YOLOv5的中国车牌识别系统',
-    intro: '使用Python与PyTorch开发的端到端中国车牌检测与识别程序，含Tkinter图形界面，支持单层/双层车牌识别、多候选识别与图像增强，可处理模糊、遮挡、光照不足等极端场景',
+    intro: '使用Python与PyTorch开发的中国车牌检测与识别程序，含Tkinter图形界面，支持单层/双层车牌识别、多候选识别与图像增强，可处理模糊、遮挡、光照不足等极端场景',
     link: '暂无',
     techStack: [
       { icon: 'files/project/车牌识别/Python.png', name: 'Python' },
