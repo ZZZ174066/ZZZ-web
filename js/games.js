@@ -2,7 +2,7 @@ const GAMES = [
   {
     id: '0001',
     name: '100%鲜橙汁',
-    cover: 'files/game/100percent鲜橙汁.jpg',
+    cover: 'files/game/百分百鲜橙汁.jpg',
     originalPrice: 29,
     buyPrice: 2.9,
     playTime: '0h',
