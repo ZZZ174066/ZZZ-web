@@ -68,6 +68,57 @@ body.app-active {
   opacity: 1;
 }
 
+#app > .site-header,
+#app > .site-main {
+  position: relative;
+  z-index: 1;
+}
+
+.app-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#app-bg-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.app-bg-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 0%, rgba(0, 0, 0, 0.32) 100%);
+}
+
+.app-bg-scanlines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(110, 197, 255, 0.35) 2px,
+    rgba(110, 197, 255, 0.35) 3px
+  );
+  animation: app-scan-drift 12s linear infinite;
+}
+
+@keyframes app-scan-drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-bg-scanlines {
+    animation: none;
+  }
+}
+
 /* ===== 正式界面设计系统 ===== */
 #app {
   --ui-line-width: 5px;
@@ -126,11 +177,13 @@ body.app-active {
 
 #app .ui-interactive:hover {
   background: var(--ui-bg-hover);
+  box-shadow: 0 0 10px rgba(110, 197, 255, 0.18), var(--ui-shadow);
 }
 
 #app .ui-interactive:active {
   background: var(--ui-bg-active);
   transform: scale(0.97);
+  box-shadow: 0 0 22px rgba(110, 197, 255, 0.55), 0 0 40px rgba(110, 197, 255, 0.2), var(--ui-shadow);
 }
 
 /* ===== 正式界面排头 ===== */
@@ -264,6 +317,242 @@ body.app-active {
 .module-placeholder {
   font-size: 1rem;
   line-height: 1.6;
+}
+
+/* ===== 更新日志 ===== */
+.module-section[data-section="changelog"].active {
+  display: block;
+  height: 100%;
+}
+
+.changelog-layout {
+  height: 100%;
+  overflow-y: auto;
+  padding: 4px 2px 8px;
+}
+
+.changelog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.changelog-item {
+  padding: 12px 14px;
+  border: var(--ui-line-width) solid var(--ui-sky-blue);
+  border-radius: var(--ui-radius);
+  background: rgba(110, 197, 255, 0.04);
+  box-shadow: var(--ui-shadow);
+}
+
+.changelog-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.changelog-date {
+  display: inline-flex;
+  align-items: center;
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+  padding: var(--ui-padding-button) calc(var(--ui-padding-button) + 4px);
+  border: var(--ui-line-width) solid var(--ui-sky-blue);
+  border-radius: var(--ui-radius);
+  background: var(--ui-sky-blue);
+  box-shadow: var(--ui-shadow);
+  font-family: var(--ui-font-family);
+  font-size: 14px;
+  line-height: 1;
+  color: #000;
+  font-weight: bold;
+  text-shadow: 1px 0 0 currentColor, 0 1px 0 currentColor;
+}
+
+.changelog-entry-title {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: normal;
+  color: var(--ui-sky-blue);
+}
+
+.changelog-points {
+  margin: 0;
+  padding-left: 1.2em;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ui-sky-blue);
+}
+
+.changelog-points li + li {
+  margin-top: 2px;
+}
+
+/* ===== 关于个人 ===== */
+.module-section[data-section="about"].active {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.about-layout {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+.about-column {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--ui-padding-area);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.about-panel-box {
+  border: var(--ui-line-width) solid var(--ui-sky-blue);
+  border-radius: var(--ui-radius);
+  background: transparent;
+  box-shadow: var(--ui-shadow);
+  box-sizing: border-box;
+}
+
+.about-column-title {
+  width: 100%;
+  flex-shrink: 0;
+  height: var(--ui-control-height);
+  min-height: var(--ui-control-height);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ui-padding-button);
+  background: var(--ui-sky-blue);
+  color: #000;
+  border: var(--ui-line-width) solid var(--ui-sky-blue);
+  border-radius: var(--ui-radius);
+  box-shadow: var(--ui-shadow);
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 1px 0 0 currentColor, 0 1px 0 currentColor;
+  line-height: 1;
+  text-align: center;
+}
+
+.about-column-body {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.45;
+  color: var(--ui-sky-blue);
+}
+
+.about-column-body h3,
+.about-column-body p,
+.about-column-body dt,
+.about-column-body dd {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.about-avatar {
+  display: block;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0;
+  padding: 0;
+  border: var(--ui-line-width) solid var(--ui-sky-blue);
+  border-radius: var(--ui-radius);
+  background: var(--ui-media-bg);
+  box-shadow: var(--ui-shadow);
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 1;
+}
+
+.about-avatar-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.about-info-list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.about-info-row {
+  margin: 0;
+}
+
+.about-info-row dt,
+.about-info-row dd {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.about-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.about-card {
+  padding: 10px 12px;
+  border: var(--ui-line-width) solid var(--ui-sky-blue);
+  border-radius: var(--ui-radius);
+  background: rgba(110, 197, 255, 0.04);
+  box-shadow: var(--ui-shadow);
+  text-align: center;
+}
+
+.about-card-title {
+  margin: 0 0 6px;
+}
+
+.about-card-detail {
+  margin: 0 0 6px;
+}
+
+.about-card-period {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.about-message-empty {
+  flex: 1;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  opacity: 0.75;
 }
 
 /* ===== 项目分享 ===== */

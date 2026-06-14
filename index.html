@@ -22,6 +22,11 @@
   </div>
 
   <div id="app">
+    <div class="app-bg" aria-hidden="true">
+      <canvas id="app-bg-canvas"></canvas>
+      <div class="app-bg-vignette"></div>
+      <div class="app-bg-scanlines"></div>
+    </div>
     <header class="site-header">
       <div class="header-avatar">
         <img src="https://zzz174066.oss-cn-chengdu.aliyuncs.com/ZZZ.png" alt="ZZZ">
@@ -36,6 +41,7 @@
           <button type="button" class="ui-btn ui-interactive nav-btn" data-section="games">游戏分享</button>
           <button type="button" class="ui-btn ui-interactive nav-btn" data-section="links">网站分享</button>
           <button type="button" class="ui-btn ui-interactive nav-btn" data-section="about">关于个人</button>
+          <button type="button" class="ui-btn ui-interactive nav-btn" data-section="changelog">更新日志</button>
         </nav>
       </div>
     </header>
@@ -112,8 +118,10 @@
             <div class="web-layout" id="web-layout"></div>
           </section>
           <section class="module-section" data-section="about">
-            <h2 class="module-title">关于个人</h2>
-            <p class="module-placeholder">此处展示个人介绍。</p>
+            <div class="about-layout" id="about-layout"></div>
+          </section>
+          <section class="module-section" data-section="changelog">
+            <div class="changelog-layout" id="changelog-content"></div>
           </section>
         </div>
       </div>
@@ -520,9 +528,12 @@
     })();
   </script>
   <script src="js/common.js"></script>
+  <script src="js/effects.js"></script>
   <script src="js/project.js"></script>
   <script src="js/music.js"></script>
   <script src="js/games.js"></script>
   <script src="js/web.js"></script>
+  <script src="js/about.js"></script>
+  <script src="js/changelog.js"></script>
 </body>
 </html>
