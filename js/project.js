@@ -117,7 +117,7 @@ const PROJECTS = [
     icon: 'files/project/视频播放器/视频播放器.png',
     fullName: '基于HTML5和Canvas开发的本地视频分类播放器',
     intro: '本地媒体播放器，通过文件夹导入管理视频库，支持分类检索、频谱可视化，并为部分曲目配置专属面板特效与进度条样式',
-    link: 'files/project/视频播放器/视频播放器/index.html',
+    link: '',
     techStack: [
       { icon: 'files/project/视频播放器/CSS.png', name: 'CSS' },
       { icon: 'files/project/视频播放器/HTML5.png', name: 'HTML5' },
