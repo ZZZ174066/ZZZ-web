@@ -17,7 +17,7 @@ const MUSICS = [
     bv: 'BV1nk9fBTEkE',
     author: 'Atena',
     singer: '重音テト',
-    level: 5
+    level: 4
   },
   {
     id: '0003',
@@ -77,7 +77,7 @@ const MUSICS = [
     bv: 'BV1phhHz8EPF',
     author: 'なきそ',
     singer: '初音ミク',
-    level: 5
+    level: 4
   },
   {
     id: '0009',
@@ -137,7 +137,7 @@ const MUSICS = [
     bv: 'BV1gU4y187xA',
     author: 'Aiobahn',
     singer: 'KOTOKO',
-    level: 4
+    level: 3
   },
   {
     id: '0015',
@@ -147,7 +147,7 @@ const MUSICS = [
     bv: 'BV1U8DMBaEZm',
     author: 'NEKOZUME',
     singer: '重音テト，雨衣',
-    level: 5
+    level: 4
   },
   {
     id: '0016',
@@ -157,7 +157,7 @@ const MUSICS = [
     bv: 'BV1GADYYmEnd',
     author: '柊マグネタイト',
     singer: '重音テト',
-    level: 5
+    level: 4
   },
   {
     id: '0017',
@@ -287,7 +287,7 @@ const MUSICS = [
     bv: 'BV1i541157SB',
     author: 'ピノキオピー',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0030',
@@ -317,7 +317,7 @@ const MUSICS = [
     bv: 'BV1cJ411q7GF',
     author: 'john',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0033',
@@ -327,7 +327,7 @@ const MUSICS = [
     bv: 'BV1pnHWzkE4j',
     author: 'ピノキオピー',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0034',
@@ -337,7 +337,7 @@ const MUSICS = [
     bv: 'BV1u54y1f7mY',
     author: 'DECO*27',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0035',
@@ -367,7 +367,7 @@ const MUSICS = [
     bv: 'BV1ZcKdzDE5Q',
     author: '春野',
     singer: '洛天依',
-    level: 4
+    level: 3
   },
   {
     id: '0038',
@@ -387,7 +387,7 @@ const MUSICS = [
     bv: 'BV1hVDvYUEk9',
     author: 'MIMI',
     singer: '初音ミク，重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0040',
@@ -397,7 +397,7 @@ const MUSICS = [
     bv: 'BV11Z4y1k7wC',
     author: 'ピノキオピー',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0041',
@@ -427,7 +427,7 @@ const MUSICS = [
     bv: 'BV1iA5jzxEQL',
     author: 'しゃいと',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0044',
@@ -437,7 +437,7 @@ const MUSICS = [
     bv: 'BV1UfZ2YwEP5',
     author: 'ナユタン星人',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0045',
@@ -447,7 +447,7 @@ const MUSICS = [
     bv: 'BV1fdduBFEww',
     author: 'かてらざわ',
     singer: '重音テト，ずんだもん',
-    level: 4
+    level: 3
   },
   {
     id: '0046',
@@ -457,7 +457,7 @@ const MUSICS = [
     bv: 'BV1qx411t74h',
     author: 'iKz',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0047',
@@ -467,7 +467,7 @@ const MUSICS = [
     bv: 'BV1ucGzzuEhw',
     author: '蛋包饭咖喱饭',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0048',
@@ -477,7 +477,7 @@ const MUSICS = [
     bv: 'BV1Vt411H7j8',
     author: 'DECO*27',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0049',
@@ -487,7 +487,7 @@ const MUSICS = [
     bv: 'BV1euAPePE1y',
     author: 'Atena',
     singer: '初音ミク，重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0050',
@@ -497,7 +497,7 @@ const MUSICS = [
     bv: 'BV1ii4y1c7it',
     author: 'Ayase',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0051',
@@ -517,7 +517,7 @@ const MUSICS = [
     bv: 'BV1K8KUzUEdX',
     author: 'Atena',
     singer: '鏡音リン，GUMI',
-    level: 4
+    level: 3
   },
   {
     id: '0053',
@@ -527,7 +527,7 @@ const MUSICS = [
     bv: 'BV1HEcfefEKD',
     author: 'SAWTOWNE',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0054',
@@ -557,7 +557,7 @@ const MUSICS = [
     bv: 'BV1QX4y1o7YC',
     author: '主播女孩重度依赖',
     singer: 'KOTOKO',
-    level: 4
+    level: 3
   },
   {
     id: '0057',
@@ -567,7 +567,7 @@ const MUSICS = [
     bv: 'BV1Ya4y1E7pk',
     author: 'Kanaria',
     singer: 'GUMI',
-    level: 4
+    level: 3
   },
   {
     id: '0058',
@@ -577,7 +577,7 @@ const MUSICS = [
     bv: 'BV12142197jj',
     author: 'SAWTOWNE',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0059',
@@ -587,7 +587,7 @@ const MUSICS = [
     bv: 'BV1b94y1b7r9',
     author: 'Anamanaguchi',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0060',
@@ -597,7 +597,7 @@ const MUSICS = [
     bv: 'BV1GBptz6EbJ',
     author: 'TAK',
     singer: '初音ミク，重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0061',
@@ -617,7 +617,7 @@ const MUSICS = [
     bv: 'BV1QJ41137T2',
     author: '八王子P',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0063',
@@ -627,7 +627,7 @@ const MUSICS = [
     bv: 'BV1SfK9zPEL3',
     author: 'ピノキオピー',
     singer: '初音ミク，重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0064',
@@ -697,7 +697,7 @@ const MUSICS = [
     bv: 'BV1dTEFzpEKd',
     author: '吉田夜世',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0071',
@@ -707,7 +707,7 @@ const MUSICS = [
     bv: 'BV13e7PztEGd',
     author: '吉本おじさん',
     singer: '雨衣',
-    level: 4
+    level: 3
   },
   {
     id: '0072',
@@ -717,7 +717,7 @@ const MUSICS = [
     bv: 'BV1ZoLdz1Eog',
     author: 'ゴジマジp',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0073',
@@ -737,7 +737,7 @@ const MUSICS = [
     bv: 'BV1rmc6ziEHN',
     author: 'MIMI',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0075',
@@ -747,7 +747,7 @@ const MUSICS = [
     bv: 'BV1PSAZeiECV',
     author: '廃原メモリ',
     singer: '重音テト，足立レイ',
-    level: 4
+    level: 3
   },
   {
     id: '0076',
@@ -757,7 +757,7 @@ const MUSICS = [
     bv: 'BV1Jsu3zMEpY',
     author: 'DECO*27',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0077',
@@ -767,7 +767,7 @@ const MUSICS = [
     bv: 'BV148tzzVEoK',
     author: 'マサラダ',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0078',
@@ -777,7 +777,7 @@ const MUSICS = [
     bv: 'BV1cZw9eDERz',
     author: 'DECO*27',
     singer: '初音ミク',
-    level: 5
+    level: 4
   },
   {
     id: '0079',
@@ -807,7 +807,7 @@ const MUSICS = [
     bv: 'BV1jC4y157tN',
     author: '原口沙輔',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0082',
@@ -827,7 +827,7 @@ const MUSICS = [
     bv: 'BV1aL411n7tQ',
     author: 'ピノキオピー',
     singer: '初音ミク，鏡音リン',
-    level: 4
+    level: 3
   },
   {
     id: '0084',
@@ -837,7 +837,7 @@ const MUSICS = [
     bv: 'BV19i421f7AE',
     author: '原口沙輔',
     singer: 'ゆーり',
-    level: 4
+    level: 3
   },
   {
     id: '0085',
@@ -847,7 +847,7 @@ const MUSICS = [
     bv: 'BV1FEBiBhEbY',
     author: '雨良 Amala',
     singer: '初音ミク，亞北ネル，重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0086',
@@ -857,7 +857,7 @@ const MUSICS = [
     bv: 'BV1Zw4m1e7k1',
     author: 'DECO*27',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0087',
@@ -877,7 +877,7 @@ const MUSICS = [
     bv: 'BV1VPcrzREby',
     author: 'MIMI',
     singer: '可不',
-    level: 4
+    level: 3
   },
   {
     id: '0089',
@@ -887,7 +887,7 @@ const MUSICS = [
     bv: 'BV11A4m1P7qa',
     author: 'MARETU',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0090',
@@ -897,7 +897,7 @@ const MUSICS = [
     bv: 'BV1wx411p73F',
     author: 'DECO*27',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0091',
@@ -907,7 +907,7 @@ const MUSICS = [
     bv: 'BV1YPo5BKEW7',
     author: 'MIMI',
     singer: '初音ミク，重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0092',
@@ -917,7 +917,7 @@ const MUSICS = [
     bv: 'BV1a4411m7YJ',
     author: 'Ayase',
     singer: '初音ミク',
-    level: 4
+    level: 3
   },
   {
     id: '0093',
@@ -947,7 +947,7 @@ const MUSICS = [
     bv: 'BV1sM4m1z7SN',
     author: '藤原ハガネ',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0096',
@@ -957,7 +957,7 @@ const MUSICS = [
     bv: 'BV1zLVz6kEVK',
     author: 'MIMI',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0097',
@@ -967,7 +967,7 @@ const MUSICS = [
     bv: 'BV1Y9iZYUE6y',
     author: 'ぬぬぬぬぬぬぬぬぬぬ',
     singer: '初音ミク',
-    level: 5
+    level: 4
   },
   {
     id: '0098',
@@ -977,7 +977,7 @@ const MUSICS = [
     bv: 'BV1cMeAzLEJb',
     author: 'マサラダ',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0099',
@@ -987,7 +987,7 @@ const MUSICS = [
     bv: 'BV1oAtcz7Eyg',
     author: 'マサラダ',
     singer: '重音テト',
-    level: 4
+    level: 3
   },
   {
     id: '0100',
@@ -997,7 +997,7 @@ const MUSICS = [
     bv: 'BV1zBq6BuEyH',
     author: 'rusino777',
     singer: '初音ミク',
-    level: 4
+    level: 3
   }
 ];
 
