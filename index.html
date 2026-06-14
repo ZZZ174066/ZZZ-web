@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZZZ的空间</title>
   <script src="js/common.js"></script>
+  <link rel="icon" type="image/jpeg" href="files/ZZZ.jpg" id="site-favicon">
+  <script>
+    (function () {
+      var link = document.getElementById('site-favicon');
+      if (link && typeof window.resolveAssetPath === 'function') {
+        link.href = window.resolveAssetPath('files/ZZZ.jpg');
+      }
+    })();
+  </script>
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/SolidZORO/zpix-pixel-font@v3.1.9/dist/zpix.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="css/style.css">
 </head>

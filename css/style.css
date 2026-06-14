@@ -993,7 +993,8 @@ body.app-active {
 }
 
 .music-filter-btn,
-.game-filter-btn {
+.game-filter-btn,
+.web-column-title {
   width: 100%;
   height: var(--ui-control-height);
   min-height: var(--ui-control-height);
@@ -1014,6 +1015,14 @@ body.app-active {
   line-height: 1;
   cursor: pointer;
   overflow: hidden;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.web-column-title {
+  flex-shrink: 0;
+  text-align: center;
 }
 
 #app .music-filter-btn.ui-interactive:hover,
@@ -1928,26 +1937,60 @@ body.app-active {
   box-sizing: border-box;
 }
 
-.web-column-title {
+.web-column-title-input {
   width: 100%;
   flex-shrink: 0;
   height: var(--ui-control-height);
   min-height: var(--ui-control-height);
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  margin: 0;
   padding: var(--ui-padding-button);
-  background: var(--ui-sky-blue);
-  color: #000;
   border: var(--ui-line-width) solid var(--ui-sky-blue);
   border-radius: var(--ui-radius);
+  background: var(--ui-sky-blue);
+  color: #000;
   box-shadow: var(--ui-shadow);
+  font-family: var(--ui-font-family);
   font-size: 14px;
   font-weight: bold;
   text-shadow: 1px 0 0 currentColor, 0 1px 0 currentColor;
   line-height: 1;
   text-align: center;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#app .web-column-title.ui-interactive:hover,
+#app .web-column-title.ui-interactive:active {
+  background: var(--ui-sky-blue);
+  color: #000;
+  transform: none;
+  box-shadow: var(--ui-shadow);
+}
+
+.web-column-title-input::placeholder {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.web-column-title-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.web-column-title[hidden],
+.web-column-title-input[hidden] {
+  display: none;
+}
+
+.web-site-item[hidden] {
+  display: none;
+}
+
+.web-site-item--secret:not([hidden]) {
+  border-style: dashed;
+  background: rgba(110, 197, 255, 0.08);
+  box-shadow: 0 0 12px rgba(110, 197, 255, 0.28), var(--ui-shadow);
 }
 
 .web-site-list {

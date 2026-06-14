@@ -643,7 +643,7 @@ const MUSICS = [
     id: '0065',
     name: 'アシンメトリー',
     alias: '不对称性',
-    cover: 'files/music/アシンメトリー.gif',
+    cover: 'files/music/アシンメトリー.jpg',
     bv: 'BV1mgn6z8EsU',
     author: 'asakowa',
     singer: '初音ミク，重音テト',

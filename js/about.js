@@ -1,5 +1,5 @@
 const ABOUT_PROFILE = {
-  avatar: 'ZZZ.png',
+  avatar: 'ZZZ.jpg',
   basic: [
     { label: '昵称', value: 'ZZZ' },
     { label: '性别', value: '男' },

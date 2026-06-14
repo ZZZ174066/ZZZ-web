@@ -225,7 +225,7 @@ const WEBSITES = [
     id: '0028',
     name: 'TouchGal',
     category: '游戏娱乐',
-    description: '一站式Galgame文化社区',
+    description: '隐藏，一站式Galgame文化社区',
     url: 'https://www.touchgal.ink/',
     icon: 'files/web/touchgal.jpg'
   },
@@ -281,7 +281,7 @@ const WEBSITES = [
     id: '0035',
     name: 'YouTuBe',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '美国视频网站',
     url: 'https://www.youtube.com/',
     icon: 'files/web/YouTuBe.jpg'
   },
@@ -289,7 +289,7 @@ const WEBSITES = [
     id: '0036',
     name: 'bilibili',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '中国视频网站',
     url: 'https://www.bilibili.com/',
     icon: 'files/web/bilibili.jpg'
   },
@@ -297,7 +297,7 @@ const WEBSITES = [
     id: '0037',
     name: 'NicoNico',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '日本视频网站',
     url: 'https://www.nicovideo.jp/',
     icon: 'files/web/NicoNico.jpg'
   },
@@ -305,7 +305,7 @@ const WEBSITES = [
     id: '0038',
     name: 'Rule34',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '隐藏，动漫视频网站',
     url: 'https://rule34video.com/',
     icon: 'files/web/rule34.jpg'
   },
@@ -313,7 +313,7 @@ const WEBSITES = [
     id: '0039',
     name: 'X',
     category: '游戏娱乐',
-    description: '暂无',
+    description: 'Twitter (推特)',
     url: 'https://x.com/',
     icon: 'files/web/X.jpg'
   },
@@ -321,7 +321,7 @@ const WEBSITES = [
     id: '0040',
     name: 'Hanime1',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '隐藏，动漫视频网站',
     url: 'https://hanime1.me/',
     icon: 'files/web/Hanime1.jpg'
   },
@@ -329,7 +329,7 @@ const WEBSITES = [
     id: '0041',
     name: 'iwara',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '隐藏，动漫视频网站',
     url: 'https://www.iwara.tv/',
     icon: 'files/web/iwara.jpg'
   },
@@ -337,7 +337,7 @@ const WEBSITES = [
     id: '0042',
     name: 'Pixiv',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '隐藏，P站同人画师平台',
     url: 'https://www.pixiv.net/',
     icon: 'files/web/pixiv.jpg'
   },
@@ -345,7 +345,7 @@ const WEBSITES = [
     id: '0043',
     name: 'Pixiv Fanbox',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '隐藏，P站画师赞助平台',
     url: 'https://www.fanbox.cc/',
     icon: 'files/web/Pixiv Fanbox.jpg'
   },
@@ -353,7 +353,7 @@ const WEBSITES = [
     id: '0044',
     name: '寄子游戏社区',
     category: '游戏娱乐',
-    description: '暂无',
+    description: '隐藏，各类破解游戏和mod',
     url: 'https://jijizizi.cn/',
     icon: 'files/web/寄子.jpg'
   },
@@ -400,12 +400,56 @@ const WEBSITES = [
   {
     id: '0050',
     name: 'ZZZ的空间',
-    category: '实用工具',
-    description: 'ZZZ的个人空间',
+    category: '游戏娱乐',
+    description: 'CloudFlare',
     url: 'https://zzz.3104971604.workers.dev/',
     icon: 'files/web/ZZZ的空间.jpg'
+  },
+  {
+    id: '0051',
+    name: 'Everything',
+    category: '实用工具',
+    description: '文件快速搜索工具',
+    url: 'https://www.voidtools.com/zh-cn/',
+    icon: 'files/web/Everything.jpg'
+  },
+  {
+    id: '0052',
+    name: 'Steam',
+    category: '游戏娱乐',
+    description: 'Steam游戏平台',
+    url: 'https://store.steampowered.com/',
+    icon: 'files/web/Steam.jpg'
+  },
+  {
+    id: '0053',
+    name: 'geekuninstaller/',
+    category: '实用工具',
+    description: '完全卸载软件',
+    url: 'https://geekuninstaller.com/',
+    icon: 'files/web/geekuninstaller.jpg'
+  },
+  {
+    id: '0054',
+    name: '皮卡丘的音乐站',
+    category: '游戏娱乐',
+    description: '免费美观的音乐站',
+    url: 'http://qjjlb.quanjian.com.cn/musicdl/',
+    icon: 'files/web/皮卡丘的音乐站.gif'
   }
 ];
+
+function isHiddenWebSite(site) {
+  return /^隐藏[，,]/.test(String(site.description || '').trim());
+}
+
+function getWebSiteDisplayDescription(site) {
+  const description = String(site.description || '').trim();
+  if (isHiddenWebSite(site)) {
+    return description.replace(/^隐藏[，,]/, '');
+  }
+  return description;
+}
 
 function getWebsitesByCategory(category) {
   return WEBSITES
@@ -419,6 +463,12 @@ function createWebSiteItem(site) {
   link.href = site.url;
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
+  link.dataset.searchText = (site.name + ' ' + site.description).toLowerCase();
+
+  if (isHiddenWebSite(site)) {
+    link.dataset.hiddenSite = 'true';
+    link.classList.add('web-site-item--secret');
+  }
 
   const iconWrap = document.createElement('span');
   iconWrap.className = 'web-site-icon-wrap';
@@ -440,7 +490,7 @@ function createWebSiteItem(site) {
 
   const descEl = document.createElement('p');
   descEl.className = 'web-site-desc';
-  descEl.textContent = site.description;
+  descEl.textContent = getWebSiteDisplayDescription(site);
 
   info.appendChild(nameEl);
   info.appendChild(descEl);
@@ -449,13 +499,116 @@ function createWebSiteItem(site) {
   return link;
 }
 
+let activeWebSearch = null;
+
+function webItemMatchesFilter(item, query) {
+  const normalized = String(query || '').trim().toLowerCase();
+  const isHidden = item.dataset.hiddenSite === 'true';
+  const showsHidden = normalized.includes('隐藏');
+  const text = item.dataset.searchText || '';
+
+  if (!normalized) return !isHidden;
+  if (isHidden && !showsHidden) return false;
+  return text.includes(normalized);
+}
+
+function applyWebColumnFilter(listEl, query) {
+  const items = listEl.querySelectorAll('.web-site-item');
+  let visibleCount = 0;
+
+  items.forEach((item) => {
+    const match = webItemMatchesFilter(item, query);
+    item.hidden = !match;
+    if (match) visibleCount += 1;
+  });
+
+  let emptyEl = listEl.querySelector('.web-search-empty');
+  if (items.length && visibleCount === 0) {
+    if (!emptyEl) {
+      emptyEl = document.createElement('p');
+      emptyEl.className = 'web-empty web-search-empty';
+      emptyEl.textContent = '未找到匹配网站';
+      listEl.appendChild(emptyEl);
+    }
+    emptyEl.hidden = false;
+  } else if (emptyEl) {
+    emptyEl.hidden = true;
+  }
+}
+
+function closeWebColumnSearch() {
+  if (!activeWebSearch) return;
+
+  const state = activeWebSearch;
+  activeWebSearch = null;
+  state.searchInput.value = '';
+  state.searchInput.hidden = true;
+  state.titleBtn.hidden = false;
+  applyWebColumnFilter(state.listEl, '');
+}
+
+function openWebColumnSearch(column, titleBtn, searchInput, listEl) {
+  if (activeWebSearch && activeWebSearch.column !== column) {
+    closeWebColumnSearch();
+  }
+
+  activeWebSearch = { column, titleBtn, searchInput, listEl };
+  titleBtn.hidden = true;
+  searchInput.hidden = false;
+  searchInput.focus();
+  searchInput.select();
+}
+
+function bindWebColumnSearch(column, titleBtn, searchInput, listEl) {
+  titleBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    openWebColumnSearch(column, titleBtn, searchInput, listEl);
+  });
+
+  searchInput.addEventListener('input', () => {
+    applyWebColumnFilter(listEl, searchInput.value);
+  });
+
+  searchInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeWebColumnSearch();
+    }
+  });
+}
+
+function initWebSearchGlobal() {
+  if (initWebSearchGlobal.done) return;
+  initWebSearchGlobal.done = true;
+
+  document.addEventListener('pointerdown', (event) => {
+    if (!activeWebSearch) return;
+    if (activeWebSearch.column.contains(event.target)) return;
+    closeWebColumnSearch();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeWebColumnSearch();
+  });
+}
+
 function renderWebColumn(container, category) {
   container.innerHTML = '';
 
-  const title = document.createElement('div');
-  title.className = 'web-column-title';
-  title.textContent = category.label;
-  container.appendChild(title);
+  const titleBtn = document.createElement('button');
+  titleBtn.type = 'button';
+  titleBtn.className = 'web-column-title ui-interactive';
+  titleBtn.textContent = category.label;
+
+  const searchInput = document.createElement('input');
+  searchInput.type = 'search';
+  searchInput.className = 'web-column-title-input';
+  searchInput.placeholder = '搜索网站名或简介';
+  searchInput.setAttribute('aria-label', category.label + ' 搜索');
+  searchInput.hidden = true;
+
+  container.appendChild(titleBtn);
+  container.appendChild(searchInput);
 
   const list = document.createElement('div');
   list.className = 'web-site-list';
@@ -470,12 +623,15 @@ function renderWebColumn(container, category) {
   }
 
   container.appendChild(list);
+  applyWebColumnFilter(list, '');
+  bindWebColumnSearch(container, titleBtn, searchInput, list);
 }
 
 function initWebModule() {
   const layout = document.getElementById('web-layout');
   if (!layout) return;
 
+  initWebSearchGlobal();
   layout.innerHTML = '';
   WEB_CATEGORIES.forEach((category) => {
     const column = document.createElement('section');

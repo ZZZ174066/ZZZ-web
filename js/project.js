@@ -45,7 +45,7 @@ const PROJECTS = [
     icon: 'files/project/智汇出行系统/智汇出行系统.jpg',
     fullName: '基于Axure开发的手机出行购票APP原型',
     intro: '使用Axure RP制作的手机APP高保真原型，模拟完整购票软件体验，覆盖登录注册、选站购票、订单管理与个人中心，并扩展景点推荐、酒店预订等出行服务',
-    link: '暂无',
+    link: 'https://zzz174066.github.io/ZZZ-ZHCX/',
     techStack: [
       { icon: 'files/project/智汇出行系统/Axure.jpg', name: 'Axure RP' }
     ],
@@ -117,7 +117,7 @@ const PROJECTS = [
     icon: 'files/project/视频播放器/视频播放器.jpg',
     fullName: '基于HTML5和Canvas开发的本地视频分类播放器',
     intro: '本地媒体播放器，通过文件夹导入管理视频库，支持分类检索、频谱可视化，并为部分曲目配置专属面板特效与进度条样式',
-    link: '暂无',
+    link: 'https://zzz174066.github.io/ZZZ-player/',
     techStack: [
       { icon: 'files/project/视频播放器/CSS.jpg', name: 'CSS' },
       { icon: 'files/project/视频播放器/HTML5.jpg', name: 'HTML5' },
