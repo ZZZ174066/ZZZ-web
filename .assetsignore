@@ -1,0 +1,10 @@
+.git/
+**/.git/**
+node_modules/
+.wrangler/
+.DS_Store
+Thumbs.db
+*.pack
+*.idx
+*.rev
+*.bitmap
