@@ -419,7 +419,7 @@ const WEBSITES = [
     category: '游戏娱乐',
     description: 'steam游戏平台',
     url: 'https://store.steampowered.com/',
-    icon: 'files/web/Steam.jpg'
+    icon: 'files/web/steam.jpg'
   },
   {
     id: '0053',
