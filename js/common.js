@@ -1,16 +1,27 @@
 (function (window) {
   const FILTER_NONE = '__filter_none__';
   const HEART_PATH = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
-  function resolveAsset(path) {
-    if (typeof window.resolveAssetPath === 'function') {
-      return window.resolveAssetPath(path);
+  const ASSETS_CDN_DEFAULT = 'https://cdn.jsdelivr.net/gh/ZZZ174066/ZZZ@main';
+
+  function normalizeAssetsCdn(base) {
+    let value = String(base || ASSETS_CDN_DEFAULT).trim().replace(/\/+$/, '');
+    const rawMatch = value.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)/i);
+    if (rawMatch) {
+      value = 'https://cdn.jsdelivr.net/gh/' + rawMatch[1] + '/' + rawMatch[2] + '@' + rawMatch[3];
     }
+    return value;
+  }
+
+  const ASSETS_CDN = normalizeAssetsCdn(window.ASSETS_CDN);
+
+  function resolveAsset(path) {
     const value = String(path || '').trim();
     if (!value || value === '暂无') return value;
     if (/^https?:\/\//i.test(value)) return value;
     const normalized = value.replace(/^\/+/, '');
     const relative = normalized.startsWith('files/') ? normalized : 'files/' + normalized;
-    return relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
+    const encoded = relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
+    return ASSETS_CDN + '/' + encoded;
   }
 
   function resolveAssetUrls(root) {
@@ -361,6 +372,7 @@
 
   window.AppCommon = {
     FILTER_NONE,
+    ASSETS_CDN,
     onDomReady,
     resolveAsset,
     compareByName,
@@ -378,4 +390,6 @@
   };
 
   window.openImagePreview = openImagePreview;
+  window.resolveAssetPath = resolveAsset;
+  window.ASSETS_CDN = ASSETS_CDN;
 })(window);

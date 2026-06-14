@@ -4,21 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZZZ的空间</title>
-  <script>
-    window.ASSETS_CDN = 'https://cdn.jsdelivr.net/gh/ZZZ174066/ZZZ@main';
-    window.resolveAssetPath = function (path) {
-      var value = String(path || '').trim();
-      if (!value || value === '暂无') return value;
-      if (/^https?:\/\//i.test(value)) return value;
-      var normalized = value.replace(/^\/+/, '');
-      var relative = normalized.indexOf('files/') === 0 ? normalized : 'files/' + normalized;
-      var encoded = relative.split('/').map(function (segment) {
-        return encodeURIComponent(segment);
-      }).join('/');
-      var base = String(window.ASSETS_CDN || '').replace(/\/+$/, '');
-      return base ? base + '/' + encoded : encoded;
-    };
-  </script>
+  <script src="js/common.js"></script>
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/SolidZORO/zpix-pixel-font@v3.1.9/dist/zpix.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -550,7 +536,6 @@
       initNav();
     })();
   </script>
-  <script src="js/common.js"></script>
   <script src="js/effects.js"></script>
   <script src="js/project.js"></script>
   <script src="js/music.js"></script>
