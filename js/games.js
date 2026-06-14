@@ -7,7 +7,7 @@ const GAMES = [
     buyPrice: 2.9,
     playTime: '0h',
     tags: ['动漫', '棋牌', '策略', '卡牌', '多人', '回合制'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -18,7 +18,7 @@ const GAMES = [
     buyPrice: 25.74,
     playTime: '0h',
     tags: ['音乐', '节奏', '单人', '休闲', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -29,7 +29,7 @@ const GAMES = [
     buyPrice: 9,
     playTime: '0h',
     tags: ['解密', '剧情', '恐怖', '单人'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -51,7 +51,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['视觉小说', '恐怖', '单人', '剧情', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -106,7 +106,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['剧情', '像素', '单人', '角色扮演', '多结局'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -117,7 +117,7 @@ const GAMES = [
     buyPrice: 13.88,
     playTime: '0h',
     tags: ['剧情', '电影式', '单人', '多结局', '角色扮演'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -128,7 +128,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['多人', '恐怖', '策略'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -161,7 +161,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['剧情', '视觉小说', '单人', '多结局', '角色扮演', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -172,7 +172,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['剧情', '像素', '单人', '恐怖', '角色扮演', '动漫', '冒险'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -183,7 +183,7 @@ const GAMES = [
     buyPrice: 43.98,
     playTime: '0h',
     tags: ['剧情', '开放世界', '单人', '冒险', '角色扮演'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -194,7 +194,7 @@ const GAMES = [
     buyPrice: 6,
     playTime: '0h',
     tags: ['生存', '开放世界', '冒险', '多人', '建造'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -205,7 +205,7 @@ const GAMES = [
     buyPrice: 16.8,
     playTime: '0h',
     tags: ['开放世界', '多人', '竞技'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -216,7 +216,7 @@ const GAMES = [
     buyPrice: 14,
     playTime: '0h',
     tags: ['开放世界', '多人', '射击', '休闲'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -227,7 +227,7 @@ const GAMES = [
     buyPrice: 8,
     playTime: '0h',
     tags: ['开放世界', '多人', '生存', '建造', '恐怖'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -260,7 +260,7 @@ const GAMES = [
     buyPrice: 86.88,
     playTime: '0h',
     tags: ['角色扮演', '单人', '回合制', '剧情', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -271,7 +271,7 @@ const GAMES = [
     buyPrice: 9.85,
     playTime: '0h',
     tags: ['解密', '多人', '冒险'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -282,7 +282,7 @@ const GAMES = [
     buyPrice: 9.48,
     playTime: '0h',
     tags: ['角色扮演', '单人', '动作', '砍杀'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -293,7 +293,7 @@ const GAMES = [
     buyPrice: 19.8,
     playTime: '0h',
     tags: ['多人', '冒险', '解密'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -304,7 +304,7 @@ const GAMES = [
     buyPrice: 5.8,
     playTime: '0h',
     tags: ['音乐', '动漫', '单人', '节奏', '休闲'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -315,7 +315,7 @@ const GAMES = [
     buyPrice: 14.9,
     playTime: '0h',
     tags: ['单人', '剧情', '角色扮演', '开放世界', '冒险'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -326,7 +326,7 @@ const GAMES = [
     buyPrice: 11.8,
     playTime: '0h',
     tags: ['恐怖', '单人', '冒险', '解谜'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -337,7 +337,7 @@ const GAMES = [
     buyPrice: 3.9,
     playTime: '0h',
     tags: ['恐怖', '单人', '解密'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -348,7 +348,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['动漫', '多人', '竞技', '大逃杀'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -359,7 +359,7 @@ const GAMES = [
     buyPrice: 15.79,
     playTime: '0h',
     tags: ['动作', '砍杀', '单人'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -370,7 +370,7 @@ const GAMES = [
     buyPrice: 3.8,
     playTime: '0h',
     tags: ['单人', '模拟'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -381,7 +381,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['单人', '动作', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -392,7 +392,7 @@ const GAMES = [
     buyPrice: 8.15,
     playTime: '0h',
     tags: ['单人', '模拟经营', '策略', '建造'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -403,7 +403,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['单人', '恐怖', '动漫', '视觉小说', '像素'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -414,7 +414,7 @@ const GAMES = [
     buyPrice: 13.5,
     playTime: '0h',
     tags: ['多人', '策略'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -436,7 +436,7 @@ const GAMES = [
     buyPrice: 7.6,
     playTime: '0h',
     tags: ['单人', '像素', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -447,7 +447,7 @@ const GAMES = [
     buyPrice: 17.38,
     playTime: '0h',
     tags: ['单人', '动作', '动漫', '角色扮演'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -469,7 +469,7 @@ const GAMES = [
     buyPrice: 4.8,
     playTime: '0h',
     tags: ['单人', '节奏', '音乐', '像素', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -480,7 +480,7 @@ const GAMES = [
     buyPrice: 23.2,
     playTime: '0h',
     tags: ['单人', '视觉小说', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -491,7 +491,7 @@ const GAMES = [
     buyPrice: 16.69,
     playTime: '0h',
     tags: ['单人', '动作', '砍杀', '角色扮演'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -502,7 +502,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['单人', '恐怖', '视觉小说', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -513,7 +513,7 @@ const GAMES = [
     buyPrice: 5,
     playTime: '0h',
     tags: ['多人', '休闲'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -524,7 +524,7 @@ const GAMES = [
     buyPrice: 18.69,
     playTime: '0h',
     tags: ['单人', '末日', '角色扮演', '开放世界', '冒险'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -535,7 +535,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['单人', '动漫', '视觉小说'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -546,7 +546,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['单人', '动漫', '视觉小说'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -557,7 +557,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['单人', '动漫', '视觉小说'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -568,7 +568,7 @@ const GAMES = [
     buyPrice: 4,
     playTime: '0h',
     tags: ['单人', '音乐', '节奏', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -579,7 +579,7 @@ const GAMES = [
     buyPrice: 25.88,
     playTime: '0h',
     tags: ['动作', '砍杀', '单人'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -590,7 +590,7 @@ const GAMES = [
     buyPrice: 5.4,
     playTime: '0h',
     tags: ['单人', '模拟', '休闲'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -601,7 +601,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['多人', '策略'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -612,7 +612,7 @@ const GAMES = [
     buyPrice: 12.8,
     playTime: '0h',
     tags: ['单人', '冒险', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -623,7 +623,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['单人', '射击', '动作', '剧情'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -634,7 +634,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['单人', '解密', '动漫', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -645,7 +645,7 @@ const GAMES = [
     buyPrice: 3.8,
     playTime: '0h',
     tags: ['单人', '动作', '砍杀', '动漫','弹幕射击'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -656,7 +656,7 @@ const GAMES = [
     buyPrice: 11.1,
     playTime: '0h',
     tags: ['单人', '开放世界', '剧情', '角色扮演'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -667,7 +667,7 @@ const GAMES = [
     buyPrice: 4.2,
     playTime: '0h',
     tags: ['多人', '射击', '末日','恐怖'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -678,7 +678,7 @@ const GAMES = [
     buyPrice: 4.2,
     playTime: '0h',
     tags: ['多人', '射击', '末日','恐怖'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -689,7 +689,7 @@ const GAMES = [
     buyPrice: 4.5,
     playTime: '0h',
     tags: ['单人', '解密', '剧情', '恐怖'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -700,7 +700,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['单人', '剧情', '视觉小说', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -711,7 +711,7 @@ const GAMES = [
     buyPrice: 39,
     playTime: '0h',
     tags: ['多人', '动作', '冒险', '砍杀'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -722,7 +722,7 @@ const GAMES = [
     buyPrice: 38.48,
     playTime: '0h',
     tags: ['多人', '动作', '冒险', '砍杀'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -744,7 +744,7 @@ const GAMES = [
     buyPrice: 21.24,
     playTime: '0h',
     tags: ['单人', '冒险', '闯关', '动作'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -755,7 +755,7 @@ const GAMES = [
     buyPrice: 18,
     playTime: '0h',
     tags: ['单人', '冒险', '闯关', '动作'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -766,7 +766,7 @@ const GAMES = [
     buyPrice: 7.6,
     playTime: '0h',
     tags: ['单人', '生存', '恐怖'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -788,7 +788,7 @@ const GAMES = [
     buyPrice: 3.5,
     playTime: '0h',
     tags: ['多人', '射击', '动作'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -799,7 +799,7 @@ const GAMES = [
     buyPrice: 4.2,
     playTime: '0h',
     tags: ['多人', '解密', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -810,7 +810,7 @@ const GAMES = [
     buyPrice: 4.2,
     playTime: '0h',
     tags: ['多人', '解密', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -821,7 +821,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['多人', '竞技', '射击', '大逃杀'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -832,7 +832,7 @@ const GAMES = [
     buyPrice: 16,
     playTime: '0h',
     tags: ['单人', '策略', '解密'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -843,7 +843,7 @@ const GAMES = [
     buyPrice: 11,
     playTime: '0h',
     tags: ['单人', '策略', '回合制'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -854,7 +854,7 @@ const GAMES = [
     buyPrice: 17.5,
     playTime: '0h',
     tags: ['单人', '冒险', '开放世界'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -865,7 +865,7 @@ const GAMES = [
     buyPrice: 14,
     playTime: '0h',
     tags: ['多人', '生存', '开放世界', '恐怖', '建造'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -876,7 +876,7 @@ const GAMES = [
     buyPrice: 32.4,
     playTime: '0h',
     tags: ['多人', '生存', '开放世界', '恐怖', '建造'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -887,7 +887,7 @@ const GAMES = [
     buyPrice: 12,
     playTime: '0h',
     tags: ['单人', '休闲', '模拟经营', '剧情', '建造'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -898,7 +898,7 @@ const GAMES = [
     buyPrice: 24,
     playTime: '0h',
     tags: ['多人', '休闲', '模拟经营', '模拟', '建造', '像素'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -909,7 +909,7 @@ const GAMES = [
     buyPrice: 24,
     playTime: '0h',
     tags: ['多人', '休闲', '模拟经营', '模拟', '建造', '像素'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -920,7 +920,7 @@ const GAMES = [
     buyPrice: 5.8,
     playTime: '0h',
     tags: ['单人', '冒险', '解密', '闯关', '休闲'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -931,7 +931,7 @@ const GAMES = [
     buyPrice: 7,
     playTime: '0h',
     tags: ['单人', '生存', '开放世界'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -942,7 +942,7 @@ const GAMES = [
     buyPrice: 42,
     playTime: '0h',
     tags: ['单人', '解密', '闯关'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -953,7 +953,7 @@ const GAMES = [
     buyPrice: 7.6,
     playTime: '0h',
     tags: ['单人', '模拟', '开放世界'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -964,7 +964,7 @@ const GAMES = [
     buyPrice: 2,
     playTime: '0h',
     tags: ['单人', '冒险', '动作', '剧情', '解密'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -975,7 +975,7 @@ const GAMES = [
     buyPrice: 0,
     playTime: '0h',
     tags: ['单人', '策略', '模拟'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -986,7 +986,7 @@ const GAMES = [
     buyPrice: 3.6,
     playTime: '0h',
     tags: ['单人', '剧情', '像素', '多结局'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -997,7 +997,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['单人', '剧情', '视觉小说', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -1008,7 +1008,7 @@ const GAMES = [
     buyPrice: 3,
     playTime: '0h',
     tags: ['单人', '剧情', '视觉小说', '动漫'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   },
   {
@@ -1019,7 +1019,7 @@ const GAMES = [
     buyPrice: 1,
     playTime: '0h',
     tags: ['单人', '策略', '回合制', '角色扮演'],
-    rating: 0,
+    rating: 1,
     review: '暂无'
   }
 ]
