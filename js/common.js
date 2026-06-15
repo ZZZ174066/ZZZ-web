@@ -16,11 +16,15 @@
   }
 
   function normalizeAssetsCdn(base) {
-    let value = String(base || ASSETS_CDN_DEFAULT).trim().replace(/\/+$/, '');
+    const fallback = ASSETS_CDN_DEFAULT;
+    let value = String(base || '').trim().replace(/\/+$/, '');
     if (/^https:\/\/raw\.githubusercontent\.com\//i.test(value)) {
       return toJsDelivrAssetUrl(value);
     }
-    return value || ASSETS_CDN_DEFAULT;
+    if (!/^https:\/\/cdn\.jsdelivr\.net\/gh\//i.test(value)) {
+      return fallback;
+    }
+    return value;
   }
 
   const ASSETS_CDN = normalizeAssetsCdn(window.ASSETS_CDN);
@@ -37,11 +41,17 @@
 
   function resolveAssetUrls(root) {
     if (!root) return;
-    root.querySelectorAll('img[src]').forEach((img) => {
-      const src = img.getAttribute('src');
+    root.querySelectorAll('img[src], link[rel="icon"][href]').forEach((node) => {
+      const src = node.getAttribute('src') || node.getAttribute('href');
       if (!src) return;
-      if (src.indexOf('files/') === 0 || /^https:\/\/raw\.githubusercontent\.com\//i.test(src)) {
-        img.src = resolveAsset(src);
+      if (
+        src.indexOf('files/') === 0 ||
+        /^https:\/\/raw\.githubusercontent\.com\//i.test(src) ||
+        /^ZZZ\//i.test(src)
+      ) {
+        const resolved = resolveAsset(src.replace(/^ZZZ\//, 'files/'));
+        if (node.hasAttribute('src')) node.src = resolved;
+        else node.href = resolved;
       }
     });
   }
