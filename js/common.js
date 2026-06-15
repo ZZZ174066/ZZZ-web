@@ -29,13 +29,30 @@
 
   const ASSETS_CDN = normalizeAssetsCdn(window.ASSETS_CDN);
 
+  function shouldUseSameOriginAssets() {
+    if (window.ASSETS_SAME_ORIGIN === false) return false;
+    if (window.ASSETS_SAME_ORIGIN === true) return true;
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    if (protocol === 'file:') return false;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') return false;
+    return true;
+  }
+
+  function encodeAssetPath(relative) {
+    return relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
+  }
+
   function resolveAsset(path) {
     const value = String(path || '').trim();
     if (!value || value === '暂无') return value;
     if (/^https?:\/\//i.test(value)) return toJsDelivrAssetUrl(value);
     const normalized = value.replace(/^\/+/, '');
     const relative = normalized.startsWith('files/') ? normalized : 'files/' + normalized;
-    const encoded = relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
+    const encoded = encodeAssetPath(relative);
+    if (shouldUseSameOriginAssets()) {
+      return '/' + encoded;
+    }
     return ASSETS_CDN + '/' + encoded;
   }
 
@@ -46,10 +63,16 @@
       if (!src) return;
       if (
         src.indexOf('files/') === 0 ||
+        src.indexOf('/files/') === 0 ||
         /^https:\/\/raw\.githubusercontent\.com\//i.test(src) ||
+        /^https:\/\/cdn\.jsdelivr\.net\//i.test(src) ||
         /^ZZZ\//i.test(src)
       ) {
-        const resolved = resolveAsset(src.replace(/^ZZZ\//, 'files/'));
+        const normalized = src
+          .replace(/^ZZZ\//, 'files/')
+          .replace(/^\/files\//, 'files/')
+          .replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\/[^/]+\/[^/]+@[^/]+\/files\//i, 'files/');
+        const resolved = resolveAsset(normalized);
         if (node.hasAttribute('src')) node.src = resolved;
         else node.href = resolved;
       }

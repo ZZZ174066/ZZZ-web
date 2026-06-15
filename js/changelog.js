@@ -1,5 +1,14 @@
 const CHANGELOG = [
   {
+    date: '2026-06-10',
+    title: '资源加载',
+    items: [
+      '线上图片改为同源 /files/ 路径，由 Worker 代理 jsDelivr',
+      '消除 Edge「Tracking Prevention blocked access to storage」控制台刷屏',
+      '本地开发仍直连 jsDelivr，无需额外配置'
+    ]
+  },
+  {
     date: '2026-06-14',
     title: '关于个人',
     items: [
