@@ -3,13 +3,24 @@
   const HEART_PATH = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
   const ASSETS_CDN_DEFAULT = 'https://cdn.jsdelivr.net/gh/ZZZ174066/ZZZ@main';
 
+  function toJsDelivrAssetUrl(url) {
+    const value = String(url || '').trim();
+    const rawMatch = value.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/?(.*)$/i);
+    if (!rawMatch) return value;
+    const encoded = String(rawMatch[4] || '')
+      .replace(/^\/+/, '')
+      .split('/')
+      .map((segment) => encodeURIComponent(segment))
+      .join('/');
+    return 'https://cdn.jsdelivr.net/gh/' + rawMatch[1] + '/' + rawMatch[2] + '@' + rawMatch[3] + (encoded ? '/' + encoded : '');
+  }
+
   function normalizeAssetsCdn(base) {
     let value = String(base || ASSETS_CDN_DEFAULT).trim().replace(/\/+$/, '');
-    const rawMatch = value.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)/i);
-    if (rawMatch) {
-      value = 'https://cdn.jsdelivr.net/gh/' + rawMatch[1] + '/' + rawMatch[2] + '@' + rawMatch[3];
+    if (/^https:\/\/raw\.githubusercontent\.com\//i.test(value)) {
+      return toJsDelivrAssetUrl(value);
     }
-    return value;
+    return value || ASSETS_CDN_DEFAULT;
   }
 
   const ASSETS_CDN = normalizeAssetsCdn(window.ASSETS_CDN);
@@ -17,7 +28,7 @@
   function resolveAsset(path) {
     const value = String(path || '').trim();
     if (!value || value === '暂无') return value;
-    if (/^https?:\/\//i.test(value)) return value;
+    if (/^https?:\/\//i.test(value)) return toJsDelivrAssetUrl(value);
     const normalized = value.replace(/^\/+/, '');
     const relative = normalized.startsWith('files/') ? normalized : 'files/' + normalized;
     const encoded = relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
@@ -26,8 +37,12 @@
 
   function resolveAssetUrls(root) {
     if (!root) return;
-    root.querySelectorAll('img[src^="files/"]').forEach((img) => {
-      img.src = resolveAsset(img.getAttribute('src'));
+    root.querySelectorAll('img[src]').forEach((img) => {
+      const src = img.getAttribute('src');
+      if (!src) return;
+      if (src.indexOf('files/') === 0 || /^https:\/\/raw\.githubusercontent\.com\//i.test(src)) {
+        img.src = resolveAsset(src);
+      }
     });
   }
 
