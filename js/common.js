@@ -16,32 +16,14 @@
   }
 
   function normalizeAssetsCdn(base) {
-    const fallback = ASSETS_CDN_DEFAULT;
-    let value = String(base || '').trim().replace(/\/+$/, '');
+    let value = String(base || ASSETS_CDN_DEFAULT).trim().replace(/\/+$/, '');
     if (/^https:\/\/raw\.githubusercontent\.com\//i.test(value)) {
       return toJsDelivrAssetUrl(value);
     }
-    if (!/^https:\/\/cdn\.jsdelivr\.net\/gh\//i.test(value)) {
-      return fallback;
-    }
-    return value;
+    return value || ASSETS_CDN_DEFAULT;
   }
 
   const ASSETS_CDN = normalizeAssetsCdn(window.ASSETS_CDN);
-
-  function shouldUseSameOriginAssets() {
-    if (window.ASSETS_SAME_ORIGIN === false) return false;
-    if (window.ASSETS_SAME_ORIGIN === true) return true;
-    const protocol = window.location.protocol;
-    const hostname = window.location.hostname;
-    if (protocol === 'file:') return false;
-    if (hostname === 'localhost' || hostname === '127.0.0.1') return false;
-    return true;
-  }
-
-  function encodeAssetPath(relative) {
-    return relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
-  }
 
   function resolveAsset(path) {
     const value = String(path || '').trim();
@@ -49,32 +31,17 @@
     if (/^https?:\/\//i.test(value)) return toJsDelivrAssetUrl(value);
     const normalized = value.replace(/^\/+/, '');
     const relative = normalized.startsWith('files/') ? normalized : 'files/' + normalized;
-    const encoded = encodeAssetPath(relative);
-    if (shouldUseSameOriginAssets()) {
-      return '/' + encoded;
-    }
+    const encoded = relative.split('/').map((segment) => encodeURIComponent(segment)).join('/');
     return ASSETS_CDN + '/' + encoded;
   }
 
   function resolveAssetUrls(root) {
     if (!root) return;
-    root.querySelectorAll('img[src], link[rel="icon"][href]').forEach((node) => {
-      const src = node.getAttribute('src') || node.getAttribute('href');
+    root.querySelectorAll('img[src]').forEach((img) => {
+      const src = img.getAttribute('src');
       if (!src) return;
-      if (
-        src.indexOf('files/') === 0 ||
-        src.indexOf('/files/') === 0 ||
-        /^https:\/\/raw\.githubusercontent\.com\//i.test(src) ||
-        /^https:\/\/cdn\.jsdelivr\.net\//i.test(src) ||
-        /^ZZZ\//i.test(src)
-      ) {
-        const normalized = src
-          .replace(/^ZZZ\//, 'files/')
-          .replace(/^\/files\//, 'files/')
-          .replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\/[^/]+\/[^/]+@[^/]+\/files\//i, 'files/');
-        const resolved = resolveAsset(normalized);
-        if (node.hasAttribute('src')) node.src = resolved;
-        else node.href = resolved;
+      if (src.indexOf('files/') === 0 || /^https:\/\/raw\.githubusercontent\.com\//i.test(src)) {
+        img.src = resolveAsset(src);
       }
     });
   }
