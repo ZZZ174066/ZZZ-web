@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZZZ的空间</title>
-  <script>window.ASSETS_CDN = 'https://cdn.jsdelivr.net/gh/ZZZ174066/ZZZ@main';</script>
+  <script>
+    window.ASSETS_CDN = 'https://cdn.jsdelivr.net/gh/ZZZ174066/ZZZ@main';
+    window.SITE_AVATAR_URL = window.ASSETS_CDN + '/files/ZZZ.jpg';
+  </script>
   <script src="js/common.js"></script>
   <link rel="icon" type="image/jpeg" href="https://cdn.jsdelivr.net/gh/ZZZ174066/ZZZ@main/files/ZZZ.jpg">
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/SolidZORO/zpix-pixel-font@v3.1.9/dist/zpix.ttf" as="font" type="font/ttf" crossorigin>
@@ -16,7 +19,7 @@
       <canvas id="blackhole-canvas"></canvas>
 
       <div id="avatar-wrapper">
-        <img id="avatar" src="files/ZZZ.jpg" alt="ZZZ" title="跳过动画">
+        <img id="avatar" src="https://cdn.jsdelivr.net/gh/ZZZ174066/ZZZ@main/files/ZZZ.jpg" alt="ZZZ" title="跳过动画">
       </div>
 
       <p id="welcome-text"></p>
@@ -31,17 +34,8 @@
     </div>
     <header class="site-header">
       <div class="header-avatar">
-        <img src="files/ZZZ.jpg" alt="ZZZ">
+        <img src="https://cdn.jsdelivr.net/gh/ZZZ174066/ZZZ@main/files/ZZZ.jpg" alt="ZZZ">
       </div>
-      <script>
-        (function () {
-          if (typeof window.resolveAssetPath !== 'function') return;
-          document.querySelectorAll('#avatar, .header-avatar img').forEach(function (img) {
-            var src = img.getAttribute('src');
-            if (src && src.indexOf('files/') === 0) img.src = window.resolveAssetPath(src);
-          });
-        })();
-      </script>
       <div class="header-body">
         <p class="header-motto">
           <span id="motto-text"></span><span class="motto-cursor">|</span>
